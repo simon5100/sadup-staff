@@ -2,7 +2,7 @@ package sadupstaff.entity.district;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import org.hibernate.annotations.DynamicUpdate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +16,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@DynamicUpdate
 public class District {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
 
@@ -35,7 +36,7 @@ public class District {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH},
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL},
             mappedBy = "sectDistrict")
     private List<Section> sections = new ArrayList<>();
 }

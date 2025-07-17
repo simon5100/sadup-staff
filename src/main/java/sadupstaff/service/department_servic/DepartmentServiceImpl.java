@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sadupstaff.repository.DepartmentRepository;
 import sadupstaff.entity.management.Department;
-
+import sadupstaff.service.UpdatingData;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,6 +16,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
 
+    private final UpdatingData updatingData;
+
     @Override
     @Transactional
     public List<Department> getAllDepartments() {
@@ -25,13 +27,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     @Transactional
     public Department getDepartment(UUID id) {
-        Department department = null;
         Optional<Department> departmentOptional = departmentRepository.findById(id);
         if (departmentOptional.isPresent()) {
-            department = departmentOptional.get();
+            return departmentOptional.get();
         }
-
-        return department;
+        return null;
     }
 
     @Override
@@ -42,8 +42,14 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     @Transactional
+    public void updateDepartment(UUID id, Department departmentUpdate) {
+        Department department = getDepartment(id);
+        departmentRepository.save(updatingData.updatingData(department, departmentUpdate, Department.class));
+    }
+
+    @Override
+    @Transactional
     public void deleteDepartment(UUID id){
         departmentRepository.deleteById(id);
-
     }
 }

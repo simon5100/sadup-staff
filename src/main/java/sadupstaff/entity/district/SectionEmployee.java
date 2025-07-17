@@ -3,9 +3,7 @@ package sadupstaff.entity.district;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.*;
-import sadupstaff.entity.management.Department;
 import sadupstaff.enums.SectionEmployeeEnum;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -20,7 +18,7 @@ import java.util.UUID;
 public class SectionEmployee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
 
@@ -50,8 +48,7 @@ public class SectionEmployee {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
     @JoinColumn(name = "section_id")
     private Section empSection;
-
 }

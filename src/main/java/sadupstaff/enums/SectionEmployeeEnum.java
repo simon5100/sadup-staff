@@ -13,5 +13,4 @@ public enum SectionEmployeeEnum {
     SPECIALIST("Специалист");
 
     private final String stringConvert;
-
 }

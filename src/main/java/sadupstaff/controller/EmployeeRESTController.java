@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import sadupstaff.entity.management.Employee;
 import sadupstaff.service.employee.EmployeeService;
-
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class EmployeeRESTController {
 
@@ -23,7 +22,6 @@ public class EmployeeRESTController {
     @GetMapping("/employees/{id}")
     public Employee getEmployee(@PathVariable UUID id) {
         Employee employee = employeeService.getEmployee(id);
-
         return employee;
     }
 
@@ -33,19 +31,14 @@ public class EmployeeRESTController {
         return employee;
     }
 
-    @PutMapping("/employees")
-    public Employee updateEmployee(@RequestBody Employee employee) {
-        employeeService.saveEmployee(employee);
-        return employee;
+    @PutMapping("/employees/{id}")
+    public Employee updateEmployee(@PathVariable UUID id, @RequestBody Employee employee) {
+        employeeService.updateEmployee(id, employee);
+        return employeeService.getEmployee(id);
     }
 
     @DeleteMapping("/employees/{id}")
-    public String deleteEmployee(@PathVariable UUID id) {
-        Employee employee = employeeService.getEmployee(id);
-
+    public void deleteEmployee(@PathVariable UUID id) {
         employeeService.deleteEmployee(id);
-
-        return employee + " удален";
     }
-
 }

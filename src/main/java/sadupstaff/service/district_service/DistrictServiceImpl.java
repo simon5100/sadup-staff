@@ -1,12 +1,11 @@
 package sadupstaff.service.district_service;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sadupstaff.entity.district.District;
 import sadupstaff.repository.DistrictRepository;
-
+import sadupstaff.service.UpdatingData;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,6 +16,7 @@ public class DistrictServiceImpl implements DistrictService{
 
     private final DistrictRepository districtRepository;
 
+    private final UpdatingData updatingData;
 
     @Override
     @Transactional
@@ -27,18 +27,24 @@ public class DistrictServiceImpl implements DistrictService{
     @Override
     @Transactional
     public District getDistrict(UUID id) {
-        District district = null;
         Optional<District> districtOptional = districtRepository.findById(id);
         if (districtOptional.isPresent()) {
-            district = districtOptional.get();
+            return districtOptional.get();
         }
-        return district;
+        return null;
     }
 
     @Override
     @Transactional
     public void saveDistrict(District district) {
         districtRepository.save(district);
+    }
+
+    @Override
+    @Transactional
+    public void updateDistrict(UUID id, District districtUpdate) {
+        District district = getDistrict(id);
+        districtRepository.save(updatingData.updatingData(district, districtUpdate, District.class));
     }
 
     @Override

@@ -6,8 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sadupstaff.entity.district.SectionEmployee;
 import sadupstaff.repository.SectionEmployeeRepository;
 import sadupstaff.repository.SectionRepository;
-import sadupstaff.service.section_service.SectionService;
-
+import sadupstaff.service.UpdatingData;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,6 +19,8 @@ public class SectionEmployeeServiceImpl implements SectionEmployeeService {
 
     private final SectionRepository sectionRepository;
 
+    private final UpdatingData updatingData;
+
 
     @Override
     @Transactional
@@ -30,15 +31,11 @@ public class SectionEmployeeServiceImpl implements SectionEmployeeService {
     @Override
     @Transactional
     public SectionEmployee getSectionEmployee(UUID id) {
-        SectionEmployee sectionEmployee = null;
-        Optional<SectionEmployee> optionalSectionEmployee =
-                sectionEmployeeRepository.findById(id);
-
+        Optional<SectionEmployee> optionalSectionEmployee = sectionEmployeeRepository.findById(id);
         if (optionalSectionEmployee.isPresent()) {
-            sectionEmployee = optionalSectionEmployee.get();
+            return optionalSectionEmployee.get();
         }
-
-        return sectionEmployee;
+        return null;
     }
 
     @Override
@@ -49,8 +46,14 @@ public class SectionEmployeeServiceImpl implements SectionEmployeeService {
 
     @Override
     @Transactional
+    public void updateSectionEmployee(UUID id, SectionEmployee sectionEmployeeUpdate) {
+        SectionEmployee sectionEmployee = getSectionEmployee(id);
+        sectionEmployeeRepository.save(updatingData.updatingData(sectionEmployee, sectionEmployeeUpdate, SectionEmployee.class));
+    }
+
+    @Override
+    @Transactional
     public void deleteSectionEmployee(UUID id) {
         sectionEmployeeRepository.deleteById(id);
-
     }
 }

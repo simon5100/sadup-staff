@@ -4,15 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import sadupstaff.entity.management.Department;
 import sadupstaff.service.department_servic.DepartmentService;
-
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class DepartmentRESTController {
-
 
     private final DepartmentService departmentService;
 
@@ -24,7 +22,6 @@ public class DepartmentRESTController {
     @GetMapping("/departments/{id}")
     public Department getDepartment(@PathVariable UUID id) {
         Department department = departmentService.getDepartment(id);
-
         return department;
     }
 
@@ -34,19 +31,14 @@ public class DepartmentRESTController {
         return department;
     }
 
-    @PutMapping("/departments")
-    public Department updateDepartment(@RequestBody Department department) {
-        departmentService.saveDepartment(department);
-        return department;
+    @PutMapping("/departments/{id}")
+    public Department updateDepartment(@PathVariable UUID id, @RequestBody Department department) {
+        departmentService.updateDepartment(id, department);
+        return departmentService.getDepartment(id);
     }
 
     @DeleteMapping("/departments/{id}")
-    public String deleteDepartment(@PathVariable UUID id) {
-        Department department = departmentService.getDepartment(id);
-
+    public void deleteDepartment(@PathVariable UUID id) {
         departmentService.deleteDepartment(id);
-
-        return department + " удален";
     }
-
 }

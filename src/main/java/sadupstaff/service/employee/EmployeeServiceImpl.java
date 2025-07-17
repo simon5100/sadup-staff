@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sadupstaff.repository.EmploeeyRepository;
 import sadupstaff.entity.management.Employee;
+import sadupstaff.service.UpdatingData;
 import sadupstaff.service.department_servic.DepartmentServiceImpl;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,6 +19,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final DepartmentServiceImpl departmentService;
 
+    private final UpdatingData updatingData;
+
     @Override
     @Transactional
     public List<Employee> getAllEmployees() {
@@ -28,13 +30,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public Employee getEmployee(UUID id) {
-        Employee employee = null;
         Optional<Employee> employeeOptional = emploeeyRepository.findById(id);
         if (employeeOptional.isPresent()) {
-            employee = employeeOptional.get();
+            return employeeOptional.get();
         }
-
-        return employee;
+        return null;
     }
 
     @Override
@@ -45,8 +45,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
+    public void updateEmployee(UUID id, Employee employeeUpdate) {
+        Employee employee = getEmployee(id);
+        emploeeyRepository.save(updatingData.updatingData(employee, employeeUpdate, Employee.class));
+    }
+
+    @Override
+    @Transactional
     public void deleteEmployee(UUID id){
         emploeeyRepository.deleteById(id);
-
     }
 }

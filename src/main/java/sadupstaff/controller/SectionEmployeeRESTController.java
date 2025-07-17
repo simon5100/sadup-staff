@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import sadupstaff.entity.district.SectionEmployee;
 import sadupstaff.service.section_employee_service.SectionEmployeeService;
-
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class SectionEmployeeRESTController {
 
@@ -28,23 +27,16 @@ public class SectionEmployeeRESTController {
     @PostMapping("/sectionEmployees")
     public SectionEmployee addSection (@RequestBody SectionEmployee sectionEmployee) {
         sectionEmployeeService.saveSectionEmployee(sectionEmployee);
-
         return sectionEmployee;
     }
 
-    @PutMapping("/sectionEmployees")
-    public SectionEmployee updateSection (@RequestBody SectionEmployee sectionEmployee) {
-        sectionEmployeeService.saveSectionEmployee(sectionEmployee);
-
-        return sectionEmployee;
+    @PutMapping("/sectionEmployees/{id}")
+    public SectionEmployee updateSection (@PathVariable UUID id, @RequestBody SectionEmployee sectionEmployee) {
+        sectionEmployeeService.updateSectionEmployee(id, sectionEmployee);
+        return sectionEmployeeService.getSectionEmployee(id);
     }
     @DeleteMapping("/sectionEmployees/{id}")
-    public String deleteSection(@PathVariable UUID id) {
-        SectionEmployee sectionEmployee =
-                sectionEmployeeService.getSectionEmployee(id);
-
+    public void deleteSection(@PathVariable UUID id) {
         sectionEmployeeService.deleteSectionEmployee(id);
-
-        return sectionEmployee + " удален";
     }
 }
