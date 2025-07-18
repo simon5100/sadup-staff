@@ -1,4 +1,4 @@
-package sadupstaff.service.department_servic;
+package sadupstaff.service.department;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

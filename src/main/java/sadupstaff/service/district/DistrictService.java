@@ -1,4 +1,4 @@
-package sadupstaff.service.district_service;
+package sadupstaff.service.district;
 
 import sadupstaff.entity.district.District;
 import java.util.List;

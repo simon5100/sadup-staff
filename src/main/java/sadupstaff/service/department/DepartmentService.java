@@ -1,4 +1,4 @@
-package sadupstaff.service.department_servic;
+package sadupstaff.service.department;
 
 import sadupstaff.entity.management.Department;
 import java.util.List;

@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sadupstaff.repository.EmploeeyRepository;
 import sadupstaff.entity.management.Employee;
 import sadupstaff.service.UpdatingData;
-import sadupstaff.service.department_servic.DepartmentServiceImpl;
+import sadupstaff.service.department.DepartmentServiceImpl;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

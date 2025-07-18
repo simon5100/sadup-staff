@@ -1,4 +1,4 @@
-package sadupstaff.service.district_service;
+package sadupstaff.service.district;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
