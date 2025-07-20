@@ -1,4 +1,4 @@
-package sadupstaff.controller;
+package sadupstaff.controller.restv1;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,28 +14,28 @@ public class SectionEmployeeRESTController {
 
     private final SectionEmployeeService sectionEmployeeService;
 
-    @GetMapping("/v1/sectionEmployees")
+    @GetMapping("/v2/sectionEmployees")
     public List<SectionEmployee> showSections() {
         return sectionEmployeeService.getAllSectionEmployee();
     }
 
-    @GetMapping("/v1/sectionEmployees/{id}")
+    @GetMapping("/v2/sectionEmployees/{id}")
     public SectionEmployee showSection(@PathVariable UUID id) {
         return sectionEmployeeService.getSectionEmployee(id);
     }
 
-    @PostMapping("/v1/sectionEmployees")
+    @PostMapping("/v2/sectionEmployees")
     public SectionEmployee addSection (@RequestBody SectionEmployee sectionEmployee) {
         sectionEmployeeService.saveSectionEmployee(sectionEmployee);
         return sectionEmployee;
     }
 
-    @PutMapping("/v1/sectionEmployees/{id}")
+    @PutMapping("/v2/sectionEmployees/{id}")
     public SectionEmployee updateSection (@PathVariable UUID id, @RequestBody SectionEmployee sectionEmployee) {
         sectionEmployeeService.updateSectionEmployee(id, sectionEmployee);
         return sectionEmployeeService.getSectionEmployee(id);
     }
-    @DeleteMapping("/v1/sectionEmployees/{id}")
+    @DeleteMapping("/v2/sectionEmployees/{id}")
     public void deleteSection(@PathVariable UUID id) {
         sectionEmployeeService.deleteSectionEmployee(id);
     }

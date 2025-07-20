@@ -1,4 +1,4 @@
-package sadupstaff.controller;
+package sadupstaff.controller.restv1;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,30 +14,30 @@ public class DepartmentRESTController {
 
     private final DepartmentService departmentService;
 
-    @GetMapping("/v1/departments")
+    @GetMapping("/v2/departments")
     public List<Department> showAllDepartments() {
         return departmentService.getAllDepartments();
     }
 
-    @GetMapping("/v1/departments/{id}")
+    @GetMapping("/v2/departments/{id}")
     public Department getDepartment(@PathVariable UUID id) {
         Department department = departmentService.getDepartment(id);
         return department;
     }
 
-    @PostMapping("/v1/departments")
+    @PostMapping("/v2/departments")
     public Department addDepartment(@RequestBody Department department) {
         departmentService.saveDepartment(department);
         return department;
     }
 
-    @PutMapping("/v1/departments/{id}")
+    @PutMapping("/v2/departments/{id}")
     public Department updateDepartment(@PathVariable UUID id, @RequestBody Department department) {
         departmentService.updateDepartment(id, department);
         return departmentService.getDepartment(id);
     }
 
-    @DeleteMapping("/v1/departments/{id}")
+    @DeleteMapping("/v2/departments/{id}")
     public void deleteDepartment(@PathVariable UUID id) {
         departmentService.deleteDepartment(id);
     }

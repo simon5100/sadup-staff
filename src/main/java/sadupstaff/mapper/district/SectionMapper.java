@@ -1,0 +1,8 @@
+package sadupstaff.mapper.district;
+
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "spring")
+public interface SectionMapper {
+
+}
