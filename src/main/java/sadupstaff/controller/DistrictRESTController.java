@@ -1,4 +1,4 @@
-package sadupstaff.controller.restv2;
+package sadupstaff.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,29 +15,29 @@ public class DistrictRESTController {
 
     private final DistrictService districtService;
 
-    @GetMapping("/v2/districts")
+    @GetMapping("/v1/districts")
     public List<District> showDistricts() {
         return districtService.getAllDistrict();
     }
 
-    @GetMapping("/v2/districts/{id}")
+    @GetMapping("/v1/districts/{id}")
     public District showDistrict(@PathVariable UUID id) {
         return districtService.getDistrict(id);
     }
 
-    @PostMapping("/v2/districts")
+    @PostMapping("/v1/districts")
     public District addDistrict (@RequestBody District district) {
         districtService.saveDistrict(district);
         return district;
     }
 
-    @PutMapping("/v2/districts/{id}")
+    @PutMapping("/v1/districts/{id}")
     public District updateDistrict (@PathVariable UUID id, @RequestBody District district) {
         districtService.updateDistrict(id, district);
         return districtService.getDistrict(id);
     }
 
-    @DeleteMapping("/v2/districts/{id}")
+    @DeleteMapping("/v1/districts/{id}")
     public void deleteDistrict(@PathVariable UUID id) {
         districtService.deleteDistrict(id);
     }

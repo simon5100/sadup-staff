@@ -2,20 +2,25 @@ package sadupstaff.model.employee;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ResponseEmployee {
 
-    final private String personelNumber;
+    private UUID id;
 
-    final private String firstName;
+    private String personelNumber;
 
-    final private String lastName;
+    private String firstName;
 
-    final private String patronymic;
+    private String lastName;
 
-    final private String position;
+    private String patronymic;
 
-    final private String departmentName;
+    private String position;
+
+    private String departmentName;
 }

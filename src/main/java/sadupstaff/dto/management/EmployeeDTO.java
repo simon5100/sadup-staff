@@ -1,10 +1,13 @@
 package sadupstaff.dto.management;
 
 import lombok.*;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 public class EmployeeDTO {
+
+    final private UUID id;
 
     final private String personelNumber;
 
