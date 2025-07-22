@@ -1,7 +1,8 @@
 package sadupstaff.service.employee;
 
-import sadupstaff.dto.management.EmployeeDTO;
-import sadupstaff.entity.management.Employee;
+import sadupstaff.dto.management.employee.EmployeeDTO;
+import sadupstaff.dto.management.employee.UpdateEmployeeDTO;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -11,9 +12,9 @@ public interface EmployeeService {
 
     public EmployeeDTO getEmployee(UUID id);
 
-    public void saveEmployee(EmployeeDTO employeeDTO);
+    public UUID saveEmployee(EmployeeDTO employeeDTO);
 
-    public void updateEmployee(UUID id, EmployeeDTO employeeDTO);
+    public void updateEmployee(UUID id, UpdateEmployeeDTO updateEmployeeDTO);
 
     public void deleteEmployee(UUID id);
 }

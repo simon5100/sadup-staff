@@ -2,12 +2,14 @@ package sadupstaff.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import sadupstaff.entity.management.Employee;
+import sadupstaff.dto.management.employee.EmployeeDTO;
+import sadupstaff.dto.management.employee.UpdateEmployeeDTO;
 import sadupstaff.mapper.management.employee.MapperCreateEmployee;
-import sadupstaff.mapper.management.employee.MapperFindAllEmployee;
 import sadupstaff.mapper.management.employee.MapperFindIdEmployee;
 import sadupstaff.mapper.management.employee.MapperUpdateEmployee;
+import sadupstaff.model.employee.CreateRequestEmployee;
 import sadupstaff.model.employee.ResponseEmployee;
+import sadupstaff.model.employee.UpdateRequestEmployee;
 import sadupstaff.service.employee.EmployeeService;
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +25,7 @@ public class EmployeeRESTController {
     private final MapperFindIdEmployee findIdEmployee;
     private final MapperUpdateEmployee updateEmployee;
     private final MapperFindAllEmployee findAllEmployee;
+    private final MapperUpdateEmployee mapperUpdateEmployee;
 
 
     @GetMapping("/v1/employees")
@@ -32,23 +35,25 @@ public class EmployeeRESTController {
                 .collect(Collectors.toList());
     }
 
-//    @GetMapping("/v1/employees/{id}")
-//    public ResponseEmployee getEmployee(@PathVariable UUID id) {
-//        Employee employee = employeeService.getEmployee(id);
-//        return employee;
-//    }
+    @GetMapping("/v1/employees/{id}")
+    public ResponseEmployee getEmployee(@PathVariable UUID id) {
+        EmployeeDTO employeeDTO = employeeService.getEmployee(id);
+        return findIdEmployee.employeeDTOToEmployeeResponse(employeeDTO);
+    }
 
-//    @PostMapping("/v2/employees")
-//    public ResponseEmployee addEmployee(@RequestBody CreateRequestEmployee createRequestEmployee) {
-//        EmployeeDTO employeeDTO = createEmployee.toDto(createRequestEmployee);
-//        Employee employee = createEmployee.toEntity(employeeDTO);
-//        employeeService.saveEmployee(employee);
-//
-//
-//        return new ResponseEmployee();
-//    }
+    @PostMapping("/v1/employees")
+    public ResponseEmployee addEmployee(@RequestBody CreateRequestEmployee createRequestEmployee) {
+        EmployeeDTO employeeDTO = createEmployee.toDto(createRequestEmployee);
+        return getEmployee(employeeService.saveEmployee(employeeDTO));
+    }
 
-//
+    @PutMapping("/v1/employees/{id}")
+    public ResponseEmployee updateEmployee(@PathVariable UUID id, @RequestBody UpdateRequestEmployee updateRequestEmployee) {
+        UpdateEmployeeDTO updateEmployeeDTO = mapperUpdateEmployee
+                .updateRequestEmployeetoUpdateEmployeeDTO(updateRequestEmployee);
+        employeeService.updateEmployee(id, updateEmployeeDTO);
+        return getEmployee(id);
+    }
 
     @DeleteMapping("/v1/employees/{id}")
     public void deleteEmployee(@PathVariable UUID id) {

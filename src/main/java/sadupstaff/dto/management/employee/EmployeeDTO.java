@@ -1,6 +1,7 @@
-package sadupstaff.dto.management;
+package sadupstaff.dto.management.employee;
 
 import lombok.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -20,4 +21,8 @@ public class EmployeeDTO {
     final private String position;
 
     final private String departmentName;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

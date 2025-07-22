@@ -2,7 +2,7 @@ package sadupstaff.mapper.management.employee;
 
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
-import sadupstaff.dto.management.EmployeeDTO;
+import sadupstaff.dto.management.employee.EmployeeDTO;
 import sadupstaff.entity.management.Employee;
 import sadupstaff.model.employee.ResponseEmployee;
 
