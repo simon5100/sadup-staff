@@ -3,6 +3,7 @@ package sadupstaff.service.employee;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sadupstaff.dto.management.department.DepartmentDTO;
 import sadupstaff.dto.management.employee.EmployeeDTO;
 import sadupstaff.dto.management.employee.UpdateEmployeeDTO;
 import sadupstaff.mapper.management.employee.MapperCreateEmployee;
@@ -67,6 +68,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         mapperUpdateEmployee.updateEmployeeDTO(updateData, updateEmployeeDTO);
         employeeDTO = mapperUpdateEmployee.updateEmployeeDTOToEmployeeDTO(updateEmployeeDTO);
         saveEmployee(employeeDTO);
+    }
+
+    @Override
+    public void addEmployeeInDepartment(EmployeeDTO employeeDTO) {
+        DepartmentDTO departmentDTO = departmentService.getAllDepartments().stream()
+                .filter(departmentDto -> departmentDto.getName().equals(employeeDTO.getDepartmentName()))
+                .findFirst().orElse(null);
     }
 
     @Override

@@ -16,5 +16,7 @@ public interface EmployeeService {
 
     public void updateEmployee(UUID id, UpdateEmployeeDTO updateEmployeeDTO);
 
+    public void addEmployeeInDepartment(EmployeeDTO employeeDTO);
+
     public void deleteEmployee(UUID id);
 }

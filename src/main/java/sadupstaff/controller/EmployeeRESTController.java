@@ -24,7 +24,6 @@ public class EmployeeRESTController {
     private final MapperCreateEmployee createEmployee;
     private final MapperFindIdEmployee findIdEmployee;
     private final MapperUpdateEmployee updateEmployee;
-    private final MapperFindAllEmployee findAllEmployee;
     private final MapperUpdateEmployee mapperUpdateEmployee;
 
 

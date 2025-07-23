@@ -37,4 +37,8 @@ public class Department {
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL},
             mappedBy = "empDepartment")
     private List<Employee> emps = new ArrayList<>();
+
+    public void addEmployee(Employee emp) {
+        emps.add(emp);
+    }
 }

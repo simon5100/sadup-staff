@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class UdateDepartmentDTO {
+public class UpdateDepartmentDTO {
 
     private UUID id;
 
