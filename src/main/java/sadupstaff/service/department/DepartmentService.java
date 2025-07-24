@@ -9,7 +9,9 @@ import java.util.UUID;
 public interface DepartmentService {
     public List<DepartmentDTO> getAllDepartments();
 
-    public DepartmentDTO getDepartment(UUID id);
+    public DepartmentDTO getDepartmentForId(UUID id);
+
+    public Department getDepartmentForName(String name);
 
     public UUID saveDepartment(DepartmentDTO departmentDTO);
 

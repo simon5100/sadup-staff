@@ -11,7 +11,6 @@ import sadupstaff.mapper.management.department.MapperUpdateDepartment;
 import sadupstaff.repository.DepartmentRepository;
 import sadupstaff.entity.management.Department;
 import sadupstaff.service.UpdatingData;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -38,10 +37,20 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     @Transactional
-    public DepartmentDTO getDepartment(UUID id) {
+    public DepartmentDTO getDepartmentForId(UUID id) {
         Optional<Department> departmentOptional = departmentRepository.findById(id);
         if (departmentOptional.isPresent()) {
             return mapperFindDepartment.departmentToDepartmentDTO(departmentOptional.get());
+        }
+        return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Department getDepartmentForName(String name) {
+        Optional<Department> departmentOptional = Optional.ofNullable(departmentRepository.findDepartmentByName(name));
+        if (departmentOptional.isPresent()) {
+            return departmentOptional.get();
         }
         return null;
     }
@@ -60,7 +69,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     @Transactional
     public void updateDepartment(UUID id, UpdateDepartmentDTO updateData) {
-        DepartmentDTO departmentDTO = getDepartment(id);
+        DepartmentDTO departmentDTO = getDepartmentForId(id);
         UpdateDepartmentDTO updateDepartmentDTO = mapperUpdateDepartment
                 .departmentDTOToUpdateDepartmentDTO(departmentDTO);
         mapperUpdateDepartment.updateDepartmentDTO(updateData, updateDepartmentDTO);

@@ -5,17 +5,15 @@ import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 import sadupstaff.dto.management.employee.EmployeeDTO;
 import sadupstaff.entity.management.Employee;
-import sadupstaff.model.employee.ResponseEmployee;
+import sadupstaff.mapper.management.department.MapperDepartment;
 
 @Component
-@Mapper(componentModel = "spring")
-public interface MapperFindIdEmployee {
+@Mapper(componentModel = "spring", uses = MapperDepartment.class)
+public interface MapperEmployee {
 
     @Mapping(target = "departmentName", source = "department.name")
-    EmployeeDTO employeeToEmployeeDTO(Employee employee);
+    EmployeeDTO toDTO(Employee employee);
 
-    ResponseEmployee employeeDTOToEmployeeResponse(EmployeeDTO employeeDTO);
-
-
+    Employee toEmployee(EmployeeDTO employeeDTO);
 
 }

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import sadupstaff.dto.management.employee.EmployeeDTO;
 import sadupstaff.dto.management.employee.UpdateEmployeeDTO;
 import sadupstaff.mapper.management.employee.MapperCreateEmployee;
+import sadupstaff.mapper.management.employee.MapperEmployee;
 import sadupstaff.mapper.management.employee.MapperFindIdEmployee;
 import sadupstaff.mapper.management.employee.MapperUpdateEmployee;
 import sadupstaff.model.employee.CreateRequestEmployee;
@@ -25,6 +26,7 @@ public class EmployeeRESTController {
     private final MapperFindIdEmployee findIdEmployee;
     private final MapperUpdateEmployee updateEmployee;
     private final MapperUpdateEmployee mapperUpdateEmployee;
+    private final MapperEmployee mapperEmployee;
 
 
     @GetMapping("/v1/employees")

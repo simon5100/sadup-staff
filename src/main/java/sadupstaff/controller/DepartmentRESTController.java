@@ -3,7 +3,6 @@ package sadupstaff.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import sadupstaff.dto.management.department.UpdateDepartmentDTO;
-import sadupstaff.entity.management.Department;
 import sadupstaff.mapper.management.department.MapperCreateDepartment;
 import sadupstaff.mapper.management.department.MapperFindDepartment;
 import sadupstaff.mapper.management.department.MapperUpdateDepartment;
@@ -35,7 +34,7 @@ public class DepartmentRESTController {
 
     @GetMapping("/v1/departments/{id}")
     public ResponseDepartment getDepartment(@PathVariable UUID id) {
-        return mapperFindDepartment.DTOToResponseDepartment(departmentService.getDepartment(id));
+        return mapperFindDepartment.DTOToResponseDepartment(departmentService.getDepartmentForId(id));
     }
 
     @PostMapping("/v1/departments")
