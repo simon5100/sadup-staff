@@ -26,6 +26,4 @@ public class CreateRequestEmployee {
 
     @NotBlank
     private String departmentName;
-
-
 }

@@ -1,18 +1,22 @@
 package sadupstaff.service.district;
 
+import sadupstaff.dto.district.DistrictDTO;
+import sadupstaff.dto.district.UpdateDistrictDTO;
 import sadupstaff.entity.district.District;
 import java.util.List;
 import java.util.UUID;
 
 public interface DistrictService {
 
-    public List<District> getAllDistrict();
+    public List<DistrictDTO> getAllDistrict();
 
-    public District getDistrict(UUID id);
+    public DistrictDTO getDistrictById(UUID id);
 
-    public void saveDistrict(District district);
+    public District getDistrictByName(String name);
 
-    public void updateDistrict(UUID id, District districtNew);
+    public UUID saveDistrict(DistrictDTO districtDTO);
+
+    public void updateDistrict(UUID id, UpdateDistrictDTO updateData);
 
     public void deleteDistrict(UUID id);
 }

@@ -1,6 +1,7 @@
-package sadupstaff.dto.district;
+package sadupstaff.dto.sectionemployee;
 
 import lombok.*;
+import sadupstaff.dto.section.SectionDTO;
 import sadupstaff.enums.SectionEmployeeEnum;
 
 @Data

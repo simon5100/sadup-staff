@@ -14,5 +14,4 @@ public class CreateRequestDepartment {
     private String name;
 
     private String description;
-
 }

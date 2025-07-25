@@ -1,15 +1,25 @@
 package sadupstaff.dto.district;
 
 import lombok.*;
-import java.util.ArrayList;
+import sadupstaff.dto.section.SectionDTO;
+
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
+@AllArgsConstructor
 public class DistrictDTO {
 
-    private String name;
+    final private UUID id;
 
-    private String description;
+    final private String name;
 
-    private List<SectionDTO> sections = new ArrayList<>();
+    final private String description;
+
+    final private LocalDateTime createdAt;
+
+    final private LocalDateTime updatedAt;
+
+    final private List<SectionDTO> sections;
 }

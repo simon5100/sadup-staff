@@ -10,7 +10,6 @@ import sadupstaff.model.department.CreateRequestDepartment;
 import sadupstaff.model.department.ResponseDepartment;
 import sadupstaff.model.department.UpdateRequestDepartment;
 import sadupstaff.service.department.DepartmentService;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -34,7 +33,7 @@ public class DepartmentRESTController {
 
     @GetMapping("/v1/departments/{id}")
     public ResponseDepartment getDepartment(@PathVariable UUID id) {
-        return mapperFindDepartment.DTOToResponseDepartment(departmentService.getDepartmentForId(id));
+        return mapperFindDepartment.DTOToResponseDepartment(departmentService.getDepartmentById(id));
     }
 
     @PostMapping("/v1/departments")

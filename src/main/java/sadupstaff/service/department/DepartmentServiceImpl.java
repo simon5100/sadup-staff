@@ -5,12 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sadupstaff.dto.management.department.DepartmentDTO;
 import sadupstaff.dto.management.department.UpdateDepartmentDTO;
-import sadupstaff.mapper.management.department.MapperCreateDepartment;
-import sadupstaff.mapper.management.department.MapperFindDepartment;
+import sadupstaff.mapper.management.department.MapperDepartment;
 import sadupstaff.mapper.management.department.MapperUpdateDepartment;
 import sadupstaff.repository.DepartmentRepository;
 import sadupstaff.entity.management.Department;
-import sadupstaff.service.UpdatingData;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -22,32 +20,30 @@ import java.util.stream.Collectors;
 public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
-    private final UpdatingData updatingData;
-    private final MapperCreateDepartment mapperCreateDepartment;
     private final MapperUpdateDepartment mapperUpdateDepartment;
-    private final MapperFindDepartment mapperFindDepartment;
+    private final MapperDepartment mapperDepartment;
 
     @Override
     @Transactional
     public List<DepartmentDTO> getAllDepartments() {
         return departmentRepository.findAll().stream()
-                .map(department -> mapperFindDepartment.departmentToDepartmentDTO(department))
+                .map(department -> mapperDepartment.toDTO(department))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public DepartmentDTO getDepartmentForId(UUID id) {
+    public DepartmentDTO getDepartmentById(UUID id) {
         Optional<Department> departmentOptional = departmentRepository.findById(id);
         if (departmentOptional.isPresent()) {
-            return mapperFindDepartment.departmentToDepartmentDTO(departmentOptional.get());
+            return mapperDepartment.toDTO(departmentOptional.get());
         }
         return null;
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Department getDepartmentForName(String name) {
+    @Transactional
+    public Department getDepartmentByName(String name) {
         Optional<Department> departmentOptional = Optional.ofNullable(departmentRepository.findDepartmentByName(name));
         if (departmentOptional.isPresent()) {
             return departmentOptional.get();
@@ -58,7 +54,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     @Transactional
     public UUID saveDepartment(DepartmentDTO departmentDTO) {
-        Department department = mapperCreateDepartment.DTOToEntity(departmentDTO);
+        Department department = mapperDepartment.toDepartment(departmentDTO);
         if (department.getCreatedAt() == null) {
             department.setCreatedAt(LocalDateTime.now());
         }
@@ -69,7 +65,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     @Transactional
     public void updateDepartment(UUID id, UpdateDepartmentDTO updateData) {
-        DepartmentDTO departmentDTO = getDepartmentForId(id);
+        DepartmentDTO departmentDTO = getDepartmentById(id);
         UpdateDepartmentDTO updateDepartmentDTO = mapperUpdateDepartment
                 .departmentDTOToUpdateDepartmentDTO(departmentDTO);
         mapperUpdateDepartment.updateDepartmentDTO(updateData, updateDepartmentDTO);

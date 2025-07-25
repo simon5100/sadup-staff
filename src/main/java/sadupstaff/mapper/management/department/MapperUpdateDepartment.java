@@ -7,7 +7,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.stereotype.Component;
 import sadupstaff.dto.management.department.DepartmentDTO;
 import sadupstaff.dto.management.department.UpdateDepartmentDTO;
-import sadupstaff.entity.management.Department;
 import sadupstaff.model.department.UpdateRequestDepartment;
 
 @Component
@@ -19,8 +18,6 @@ public interface MapperUpdateDepartment {
     UpdateDepartmentDTO departmentDTOToUpdateDepartmentDTO(DepartmentDTO DepartmentDTO);
 
     DepartmentDTO updateDepartmentDTOToDepartmentDTO(UpdateDepartmentDTO updateDepartmentDTO);
-
-    UpdateDepartmentDTO departmentToUpdateDepartmentDTO(Department Department);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateDepartmentDTO(UpdateDepartmentDTO updateData, @MappingTarget UpdateDepartmentDTO updateDepartmentDTO);

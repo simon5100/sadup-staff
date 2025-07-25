@@ -5,4 +5,6 @@ import sadupstaff.entity.district.District;
 import java.util.UUID;
 
 public interface DistrictRepository extends JpaRepository<District, UUID> {
+
+    District findDistrictByName(String name);
 }

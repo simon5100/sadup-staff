@@ -1,6 +1,9 @@
-package sadupstaff.dto.district;
+package sadupstaff.dto.section;
 
 import lombok.*;
+import sadupstaff.dto.district.DistrictDTO;
+import sadupstaff.dto.sectionemployee.SectionEmployeeDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
