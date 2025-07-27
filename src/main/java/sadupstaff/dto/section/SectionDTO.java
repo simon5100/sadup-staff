@@ -1,20 +1,25 @@
 package sadupstaff.dto.section;
 
 import lombok.*;
-import sadupstaff.dto.district.DistrictDTO;
 import sadupstaff.dto.sectionemployee.SectionEmployeeDTO;
-
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 public class SectionDTO {
 
-    private String personelNumber;
+    final private UUID id;
 
-    private String name;
+    final private String personelNumber;
 
-    private DistrictDTO sectDistrict;
+    final private String name;
 
-    private List<SectionEmployeeDTO> empsSect = new ArrayList<>();
+    final private LocalDateTime createdAt;
+
+    final private LocalDateTime updatedAt;
+
+    final private String districtName;
+
+    final private List<SectionEmployeeDTO> empsSect;
 }

@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 import sadupstaff.dto.management.department.DepartmentDTO;
 import sadupstaff.entity.management.Department;
 import sadupstaff.mapper.management.employee.MapperEmployee;
-import sadupstaff.mapper.management.employee.MapperFindIdEmployee;
+import sadupstaff.mapper.management.employee.MapperFindEmployee;
 
 @Component
-@Mapper(componentModel = "spring", uses = {MapperEmployee.class, MapperFindIdEmployee.class})
+@Mapper(componentModel = "spring", uses = {MapperEmployee.class, MapperFindEmployee.class})
 public interface MapperDepartment {
 
     DepartmentDTO toDTO(Department department);

@@ -1,21 +1,29 @@
 package sadupstaff.dto.sectionemployee;
 
 import lombok.*;
-import sadupstaff.dto.section.SectionDTO;
 import sadupstaff.enums.SectionEmployeeEnum;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
+@AllArgsConstructor
 public class SectionEmployeeDTO {
 
-    private String personelNumber;
+    final private UUID id;
 
-    private String firstName;
+    final private String personelNumber;
 
-    private String lastName;
+    final private String firstName;
 
-    private String patronymic;
+    final private String lastName;
 
-    private SectionEmployeeEnum position;
+    final private String patronymic;
 
-    private SectionDTO empSection;
+    final private SectionEmployeeEnum position;
+
+    final private String sectionName;
+
+    final private LocalDateTime createdAt;
+
+    final private LocalDateTime updatedAt;
 }

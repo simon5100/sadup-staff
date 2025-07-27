@@ -7,7 +7,7 @@ import sadupstaff.model.employee.ResponseEmployee;
 
 @Component
 @Mapper(componentModel = "spring")
-public interface MapperFindIdEmployee {
+public interface MapperFindEmployee {
 
     ResponseEmployee employeeDTOToEmployeeResponse(EmployeeDTO employeeDTO);
 }

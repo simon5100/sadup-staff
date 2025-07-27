@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sadupstaff.dto.section.SectionDTO;
+import sadupstaff.model.section.ResponseSection;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -23,5 +25,5 @@ public class ResponseDistrict {
 
     private LocalDateTime updatedAt;
 
-    private List<SectionDTO> sections;
+    private List<ResponseSection> sections;
 }

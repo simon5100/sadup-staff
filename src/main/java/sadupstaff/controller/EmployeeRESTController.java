@@ -6,7 +6,7 @@ import sadupstaff.dto.management.employee.EmployeeDTO;
 import sadupstaff.dto.management.employee.UpdateEmployeeDTO;
 import sadupstaff.mapper.management.employee.MapperCreateEmployee;
 import sadupstaff.mapper.management.employee.MapperEmployee;
-import sadupstaff.mapper.management.employee.MapperFindIdEmployee;
+import sadupstaff.mapper.management.employee.MapperFindEmployee;
 import sadupstaff.mapper.management.employee.MapperUpdateEmployee;
 import sadupstaff.model.employee.CreateRequestEmployee;
 import sadupstaff.model.employee.ResponseEmployee;
@@ -23,7 +23,7 @@ public class EmployeeRESTController {
 
     private final EmployeeService employeeService;
     private final MapperCreateEmployee createEmployee;
-    private final MapperFindIdEmployee findIdEmployee;
+    private final MapperFindEmployee findIdEmployee;
     private final MapperUpdateEmployee updateEmployee;
     private final MapperUpdateEmployee mapperUpdateEmployee;
     private final MapperEmployee mapperEmployee;

@@ -1,18 +1,19 @@
 package sadupstaff.service.sectionemployee;
 
-import sadupstaff.entity.district.SectionEmployee;
+import sadupstaff.dto.sectionemployee.SectionEmployeeDTO;
+import sadupstaff.dto.sectionemployee.UpdateSectionEmployeeDTO;
 import java.util.List;
 import java.util.UUID;
 
 public interface SectionEmployeeService {
 
-    public List<SectionEmployee> getAllSectionEmployee();
+    public List<SectionEmployeeDTO> getAllSectionEmployee();
 
-    public SectionEmployee getSectionEmployee(UUID id);
+    public SectionEmployeeDTO getSectionEmployee(UUID id);
 
-    public void saveSectionEmployee(SectionEmployee sectionEmployee);
+    public UUID saveSectionEmployee(SectionEmployeeDTO sectionEmployeeDTO);
 
-    public void updateSectionEmployee(UUID id, SectionEmployee sectionEmployeeNew);
+    public void updateSectionEmployee(UUID id, UpdateSectionEmployeeDTO updateSectionEmployeeDTO);
 
     public void deleteSectionEmployee(UUID id);
 }

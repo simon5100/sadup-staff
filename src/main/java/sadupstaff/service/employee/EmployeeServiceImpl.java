@@ -56,7 +56,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         employee.setUpdatedAt(LocalDateTime.now());
         employee = emploeeyRepository.save(employee);
-        department.addEmployee(employee);
         return employee.getId();
     }
 

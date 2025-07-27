@@ -1,4 +1,4 @@
-package sadupstaff.model.employee;
+package sadupstaff.model.sectionemployee;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateRequestEmployee {
+public class ResponseSectionEmployee {
 
     private UUID id;
 
@@ -22,5 +22,5 @@ public class UpdateRequestEmployee {
 
     private String position;
 
-    private String departmentName;
+    private String sectionName;
 }
