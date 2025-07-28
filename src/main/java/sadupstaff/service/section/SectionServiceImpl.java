@@ -12,7 +12,6 @@ import sadupstaff.mapper.management.section.MapperFindSection;
 import sadupstaff.mapper.management.section.MapperSection;
 import sadupstaff.mapper.management.section.MapperUpdateSection;
 import sadupstaff.repository.SectionRepository;
-import sadupstaff.service.UpdatingData;
 import sadupstaff.service.district.DistrictServiceImpl;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,13 +24,9 @@ import java.util.stream.Collectors;
 public class SectionServiceImpl implements SectionService{
 
     private final MapperSection mapperSection;
-    private final MapperCreateSection mapperCreateSection;
     private final MapperUpdateSection mapperUpdateSection;
-    private final MapperFindSection mapperFindSection;
     private final SectionRepository sectionRepository;
     private final DistrictServiceImpl districtService;
-    private final UpdatingData updatingData;
-
 
     @Override
     @Transactional

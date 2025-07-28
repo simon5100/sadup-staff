@@ -3,7 +3,6 @@ package sadupstaff.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import sadupstaff.dto.section.UpdateSectionDTO;
-import sadupstaff.entity.district.Section;
 import sadupstaff.mapper.management.section.MapperCreateSection;
 import sadupstaff.mapper.management.section.MapperFindSection;
 import sadupstaff.mapper.management.section.MapperUpdateSection;
@@ -11,7 +10,6 @@ import sadupstaff.model.section.CreateRequestSection;
 import sadupstaff.model.section.ResponseSection;
 import sadupstaff.model.section.UpdateRequestSection;
 import sadupstaff.service.section.SectionService;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;

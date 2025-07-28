@@ -7,14 +7,10 @@ import sadupstaff.dto.sectionemployee.SectionEmployeeDTO;
 import sadupstaff.dto.sectionemployee.UpdateSectionEmployeeDTO;
 import sadupstaff.entity.district.Section;
 import sadupstaff.entity.district.SectionEmployee;
-import sadupstaff.mapper.management.sectionemployee.MapperCreateSectionEmployee;
-import sadupstaff.mapper.management.sectionemployee.MapperFindSectionEmployee;
 import sadupstaff.mapper.management.sectionemployee.MapperSectionEmployee;
 import sadupstaff.mapper.management.sectionemployee.MapperUpdateSectionEmployee;
 import sadupstaff.repository.SectionEmployeeRepository;
-import sadupstaff.service.UpdatingData;
 import sadupstaff.service.section.SectionServiceImpl;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +25,6 @@ public class SectionEmployeeServiceImpl implements SectionEmployeeService {
     private final MapperUpdateSectionEmployee mapperUpdateSectionEmployee;
     private final SectionEmployeeRepository sectionEmployeeRepository;
     private final SectionServiceImpl sectionService;
-
 
     @Override
     @Transactional

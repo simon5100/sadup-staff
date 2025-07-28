@@ -2,7 +2,6 @@ package sadupstaff.dto.district;
 
 import lombok.*;
 import sadupstaff.dto.section.SectionDTO;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;

@@ -28,7 +28,6 @@ public class EmployeeRESTController {
     private final MapperUpdateEmployee mapperUpdateEmployee;
     private final MapperEmployee mapperEmployee;
 
-
     @GetMapping("/v1/employees")
     public List<ResponseEmployee> showAllEmployees() {
         return employeeService.getAllEmployees().stream()
