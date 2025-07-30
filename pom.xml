@@ -140,4 +140,15 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>no-liquibase-test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <liquibase.enabled>false</liquibase.enabled>
+            </properties>
+        </profile>
+    </profiles>
 </project>
