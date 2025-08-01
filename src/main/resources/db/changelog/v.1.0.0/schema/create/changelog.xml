@@ -4,10 +4,10 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="init-1-create-schema" author="you">
-        <sql>CREATE SCHEMA IF NOT EXISTS sudstaff;</sql>
+    <changeSet id="30.07.2025-create-schema-sudstaff" author="Polikarpov-Semen">
+        <sqlFile path="SQL/create-schema-sudstaff.sql"
+                 relativeToChangelogFile="true"
+                 encoding="UTF-8"
+        />
     </changeSet>
-
-    <include file="v.1.0.0/changelog.xml" relativeToChangelogFile="true"/>
-
 </databaseChangeLog>

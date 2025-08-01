@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  app:
+    image: 'sadup-staff'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: 'sadup-staff-app'
+    ports:
+      - '8080:8080'
+    depends_on:
+      - datdbase
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/sud?currentSchema=sudstaff
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=ukfdysqcgtwbfkbcn410
+
+
+  database:
+    image: 'postgres:17'
+    container_name: 'dbsadup'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ukfdysqcgtwbfkbcn410
+      POSTGRES_DB: sud
+      PGDATA: "/var/lib/postgresql/data/docker-data/sud"
+    ports:
+      - '5432:5432'
