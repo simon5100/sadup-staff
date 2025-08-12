@@ -1,6 +1,5 @@
-package sadupstaff.model.employee;
+package sadupstaff.dto.request.employee;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,22 +7,17 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateRequestEmployee {
+public class UpdateRequestEmployee {
 
-    @NotBlank
     private String personelNumber;
 
-    @NotBlank
     private String firstName;
 
-    @NotBlank
     private String lastName;
 
     private String patronymic;
 
-    @NotBlank
     private String position;
 
-    @NotBlank
     private String departmentName;
 }

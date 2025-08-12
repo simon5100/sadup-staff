@@ -3,13 +3,13 @@ package sadupstaff.mapper.employee;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
-import sadupstaff.dto.management.employee.EmployeeDTO;
-import sadupstaff.model.employee.CreateRequestEmployee;
+import sadupstaff.dto.request.employee.CreateRequestEmployee;
+import sadupstaff.entity.management.Employee;
 
 @Component
 @Mapper(componentModel = "spring")
 public interface MapperCreateEmployee {
 
     @Mapping(target = "id", ignore = true)
-    EmployeeDTO toDto(CreateRequestEmployee createRequestEmployee);
+    Employee toEntity(CreateRequestEmployee createRequestEmployee);
 }

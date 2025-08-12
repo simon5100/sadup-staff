@@ -1,13 +1,15 @@
 package sadupstaff.mapper.employee;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
-import sadupstaff.dto.management.employee.EmployeeDTO;
-import sadupstaff.model.employee.ResponseEmployee;
+import sadupstaff.dto.response.ResponseEmployee;
+import sadupstaff.entity.management.Employee;
 
 @Component
 @Mapper(componentModel = "spring")
 public interface MapperFindEmployee {
 
-    ResponseEmployee employeeDTOToEmployeeResponse(EmployeeDTO employeeDTO);
+    @Mapping(target = "departmentName", source = "department.name")
+    ResponseEmployee employeeToEmployeeResponse(Employee employee);
 }

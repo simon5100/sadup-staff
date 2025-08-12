@@ -1,11 +1,14 @@
 package sadupstaff.mapper.section;
 
 import org.mapstruct.Mapper;
-import sadupstaff.dto.section.SectionDTO;
-import sadupstaff.model.section.ResponseSection;
+import org.mapstruct.Mapping;
+import sadupstaff.dto.response.ResponseSection;
+import sadupstaff.entity.district.Section;
+import sadupstaff.mapper.sectionemployee.MapperFindSectionEmployee;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = MapperFindSectionEmployee.class)
 public interface MapperFindSection {
 
-    ResponseSection DTOToResponseSection(SectionDTO sectionDTO);
+    @Mapping(target = "districtName", source = "district.name")
+    ResponseSection entityToResponseSection(Section section);
 }

@@ -3,9 +3,9 @@ package sadupstaff.controller.district;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import sadupstaff.model.district.CreateRequestDistrict;
-import sadupstaff.model.district.ResponseDistrict;
-import sadupstaff.model.district.UpdateRequestDistrict;
+import sadupstaff.dto.request.district.CreateRequestDistrict;
+import sadupstaff.dto.response.ResponseDistrict;
+import sadupstaff.dto.request.district.UpdateRequestDistrict;
 import java.util.List;
 import java.util.UUID;
 

@@ -5,9 +5,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.stereotype.Component;
-import sadupstaff.dto.management.department.DepartmentDTO;
-import sadupstaff.dto.management.department.UpdateDepartmentDTO;
-import sadupstaff.model.department.UpdateRequestDepartment;
+import sadupstaff.dto.department.DepartmentDTO;
+import sadupstaff.dto.department.UpdateDepartmentDTO;
+import sadupstaff.dto.request.department.UpdateRequestDepartment;
 
 @Component
 @Mapper(componentModel = "spring")

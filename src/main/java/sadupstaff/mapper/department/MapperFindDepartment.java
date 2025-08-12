@@ -2,12 +2,12 @@ package sadupstaff.mapper.department;
 
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
-import sadupstaff.dto.management.department.DepartmentDTO;
-import sadupstaff.model.department.ResponseDepartment;
+import sadupstaff.dto.response.ResponseDepartment;
+import sadupstaff.entity.management.Department;
 
 @Component
 @Mapper(componentModel = "spring")
 public interface MapperFindDepartment {
 
-    ResponseDepartment DTOToResponseDepartment(DepartmentDTO departmentDTO);
+    ResponseDepartment entityToResponseDepartment(Department department);
 }

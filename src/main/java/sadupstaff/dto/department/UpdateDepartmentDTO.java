@@ -1,17 +1,15 @@
-package sadupstaff.model.department;
+package sadupstaff.dto.department;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import sadupstaff.model.employee.ResponseEmployee;
+import sadupstaff.dto.employee.EmployeeDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class ResponseDepartment {
+public class UpdateDepartmentDTO {
 
     private UUID id;
 
@@ -23,5 +21,5 @@ public class ResponseDepartment {
 
     private LocalDateTime updatedAt;
 
-    private List<ResponseEmployee> emps;
+    private List<EmployeeDTO> emps;
 }

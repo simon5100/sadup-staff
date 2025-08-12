@@ -2,9 +2,9 @@ package sadupstaff.mapper.employee;
 
 import org.mapstruct.*;
 import org.springframework.stereotype.Component;
-import sadupstaff.dto.management.employee.EmployeeDTO;
-import sadupstaff.dto.management.employee.UpdateEmployeeDTO;
-import sadupstaff.model.employee.UpdateRequestEmployee;
+import sadupstaff.dto.employee.EmployeeDTO;
+import sadupstaff.dto.employee.UpdateEmployeeDTO;
+import sadupstaff.dto.request.employee.UpdateRequestEmployee;
 
 @Component
 @Mapper(componentModel = "spring")

@@ -6,7 +6,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import sadupstaff.dto.section.SectionDTO;
 import sadupstaff.dto.section.UpdateSectionDTO;
-import sadupstaff.model.section.UpdateRequestSection;
+import sadupstaff.dto.request.section.UpdateRequestSection;
 
 @Mapper(componentModel = "spring")
 public interface MapperUpdateSection {

@@ -3,10 +3,15 @@ package sadupstaff.service.section;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sadupstaff.dto.request.section.CreateRequestSection;
+import sadupstaff.dto.request.section.UpdateRequestSection;
+import sadupstaff.dto.response.ResponseSection;
 import sadupstaff.dto.section.SectionDTO;
 import sadupstaff.dto.section.UpdateSectionDTO;
 import sadupstaff.entity.district.District;
 import sadupstaff.entity.district.Section;
+import sadupstaff.mapper.section.MapperCreateSection;
+import sadupstaff.mapper.section.MapperFindSection;
 import sadupstaff.mapper.section.MapperSection;
 import sadupstaff.mapper.section.MapperUpdateSection;
 import sadupstaff.repository.SectionRepository;
@@ -25,19 +30,30 @@ public class SectionServiceImpl implements SectionService{
     private final MapperUpdateSection mapperUpdateSection;
     private final SectionRepository sectionRepository;
     private final DistrictServiceImpl districtService;
+    private final MapperFindSection mapperFindSection;
+    private final MapperCreateSection mapperCreateSection;
 
     @Override
     @Transactional
-    public List<SectionDTO> getAllSection() {
+    public List<ResponseSection> getAllSection() {
 
         return sectionRepository.findAll().stream()
-                .map(section -> mapperSection.toDTO(section))
+                .map(section -> mapperFindSection.entityToResponseSection(section))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public SectionDTO getSectionById(UUID id) {
+    public ResponseSection getSectionById(UUID id) {
+        Optional<Section> optionalSection = sectionRepository.findById(id);
+        if(optionalSection.isPresent()) {
+            return mapperFindSection.entityToResponseSection(optionalSection.get());
+        }
+        return null;
+    }
+
+    @Override
+    public SectionDTO getSectionByIdForUpdate(UUID id) {
         Optional<Section> optionalSection = sectionRepository.findById(id);
         if(optionalSection.isPresent()) {
             return mapperSection.toDTO(optionalSection.get());
@@ -56,28 +72,30 @@ public class SectionServiceImpl implements SectionService{
 
     @Override
     @Transactional
-    public UUID saveSection(SectionDTO sectionDTO) {
-        Section section = mapperSection.toSection(sectionDTO);
-        District district = districtService.getDistrictByName(sectionDTO.getDistrictName());
+    public ResponseSection saveNewSection(CreateRequestSection createRequest) {
+        Section section = mapperCreateSection.createSectionToEntity(createRequest);
+        District district = districtService.getDistrictByName(createRequest.getDistrictName());
         section.setDistrict(district);
-        if (section.getCreatedAt() == null) {
-            section.setCreatedAt(LocalDateTime.now());
-        }
-
+        section.setCreatedAt(LocalDateTime.now());
         section.setUpdatedAt(LocalDateTime.now());
         section = sectionRepository.save(section);
-        return section.getId();
+
+        return getSectionById(section.getId());
     }
 
     @Override
     @Transactional
-    public void updateSection(UUID id, UpdateSectionDTO updateData) {
-        SectionDTO sectionDTO = getSectionById(id);
+    public ResponseSection updateSection(UUID id, UpdateRequestSection updateRequest) {
+        UpdateSectionDTO updateData = mapperUpdateSection.updateRequestToDTO(updateRequest);
+        SectionDTO sectionDTO = getSectionByIdForUpdate(id);
         UpdateSectionDTO updateSectionDTO = mapperUpdateSection
                 .sectionDTOToUpdateSectionDTO(sectionDTO);
         mapperUpdateSection.update(updateData,updateSectionDTO);
         sectionDTO = mapperUpdateSection.updateSectionToSectionDTO(updateSectionDTO);
-        saveSection(sectionDTO);
+        Section section = mapperSection.toSection(sectionDTO);
+        sectionRepository.save(section);
+
+        return getSectionById(id);
     }
 
     @Override

@@ -1,18 +1,14 @@
-package sadupstaff.model.section;
+package sadupstaff.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sadupstaff.model.sectionemployee.ResponseSectionEmployee;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseSection {
-
-    private UUID id;
 
     private String personelNumber;
 

@@ -1,19 +1,15 @@
-package sadupstaff.model.district;
+package sadupstaff.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sadupstaff.model.section.ResponseSection;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseDistrict {
-
-    private UUID id;
+public class ResponseDepartment {
 
     private String name;
 
@@ -23,5 +19,5 @@ public class ResponseDistrict {
 
     private LocalDateTime updatedAt;
 
-    private List<ResponseSection> sections;
+    private List<ResponseEmployee> emps;
 }

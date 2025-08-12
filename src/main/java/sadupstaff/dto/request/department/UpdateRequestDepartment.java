@@ -1,4 +1,4 @@
-package sadupstaff.model.department;
+package sadupstaff.dto.request.department;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

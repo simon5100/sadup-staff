@@ -6,7 +6,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import sadupstaff.dto.district.DistrictDTO;
 import sadupstaff.dto.district.UpdateDistrictDTO;
-import sadupstaff.model.district.UpdateRequestDistrict;
+import sadupstaff.dto.request.district.UpdateRequestDistrict;
 
 @Mapper(componentModel = "spring")
 public interface MapperUpdateDistrict {

@@ -3,9 +3,9 @@ package sadupstaff.controller.department;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import sadupstaff.model.department.CreateRequestDepartment;
-import sadupstaff.model.department.ResponseDepartment;
-import sadupstaff.model.department.UpdateRequestDepartment;
+import sadupstaff.dto.request.department.CreateRequestDepartment;
+import sadupstaff.dto.response.ResponseDepartment;
+import sadupstaff.dto.request.department.UpdateRequestDepartment;
 import java.util.List;
 import java.util.UUID;
 

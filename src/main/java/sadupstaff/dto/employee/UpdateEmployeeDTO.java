@@ -1,4 +1,4 @@
-package sadupstaff.dto.management.employee;
+package sadupstaff.dto.employee;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

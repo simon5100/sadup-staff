@@ -2,12 +2,12 @@ spring:
   application:
     name: spring_course_springboot
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: f,tkz17rd80htu41
     driver-class-name: org.postgresql.Driver
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
 
 server:
-  port: ${SERVER_PORT:8080}
+  port: 8080

@@ -1,4 +1,4 @@
-package sadupstaff.model.section;
+package sadupstaff.dto.request.employee;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,14 +8,22 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateRequestSection {
+public class CreateRequestEmployee {
 
     @NotBlank
     private String personelNumber;
 
     @NotBlank
-    private String name;
+    private String firstName;
 
     @NotBlank
-    private String districtName;
+    private String lastName;
+
+    private String patronymic;
+
+    @NotBlank
+    private String position;
+
+    @NotBlank
+    private String departmentName;
 }

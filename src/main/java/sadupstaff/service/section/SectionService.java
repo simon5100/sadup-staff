@@ -1,23 +1,26 @@
 package sadupstaff.service.section;
 
+import sadupstaff.dto.request.section.CreateRequestSection;
+import sadupstaff.dto.request.section.UpdateRequestSection;
+import sadupstaff.dto.response.ResponseSection;
 import sadupstaff.dto.section.SectionDTO;
-import sadupstaff.dto.section.UpdateSectionDTO;
 import sadupstaff.entity.district.Section;
-
 import java.util.List;
 import java.util.UUID;
 
 public interface SectionService {
 
-    public List<SectionDTO> getAllSection();
+    List<ResponseSection> getAllSection();
 
-    public SectionDTO getSectionById(UUID id);
+    ResponseSection getSectionById(UUID id);
 
-    public Section getSectionByName(String name);
+    SectionDTO getSectionByIdForUpdate(UUID id);
 
-    public UUID saveSection(SectionDTO sectionDTO);
+    Section getSectionByName(String name);
 
-    public void updateSection(UUID id, UpdateSectionDTO updateSectionDTO);
+    ResponseSection saveNewSection(CreateRequestSection createRequest);
 
-    public void deleteSection(UUID id);
+    ResponseSection updateSection(UUID id, UpdateRequestSection updateRequest);
+
+    void deleteSection(UUID id);
 }

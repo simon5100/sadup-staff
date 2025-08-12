@@ -3,10 +3,15 @@ package sadupstaff.service.employee;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sadupstaff.dto.management.employee.EmployeeDTO;
-import sadupstaff.dto.management.employee.UpdateEmployeeDTO;
+import sadupstaff.dto.employee.EmployeeDTO;
+import sadupstaff.dto.employee.UpdateEmployeeDTO;
+import sadupstaff.dto.request.employee.CreateRequestEmployee;
+import sadupstaff.dto.request.employee.UpdateRequestEmployee;
+import sadupstaff.dto.response.ResponseEmployee;
 import sadupstaff.entity.management.Department;
+import sadupstaff.mapper.employee.MapperCreateEmployee;
 import sadupstaff.mapper.employee.MapperEmployee;
+import sadupstaff.mapper.employee.MapperFindEmployee;
 import sadupstaff.mapper.employee.MapperUpdateEmployee;
 import sadupstaff.repository.EmploeeyRepository;
 import sadupstaff.entity.management.Employee;
@@ -25,18 +30,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final DepartmentServiceImpl departmentService;
     private final MapperUpdateEmployee mapperUpdateEmployee;
     private final MapperEmployee mapperEmployee;
+    private final MapperFindEmployee mapperFindEmployee;
+    private final MapperCreateEmployee mapperCreateEmployee;
 
     @Override
     @Transactional
-    public List<EmployeeDTO> getAllEmployees() {
+    public List<ResponseEmployee> getAllEmployees() {
         return emploeeyRepository.findAll().stream()
-                .map(employee -> mapperEmployee.toDTO(employee))
+                .map(employee -> mapperFindEmployee.employeeToEmployeeResponse(employee))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public EmployeeDTO getEmployee(UUID id) {
+    public ResponseEmployee getEmployee(UUID id) {
+        Optional<Employee> employeeOptional = emploeeyRepository.findById(id);
+        if (employeeOptional.isPresent()) {
+            return mapperFindEmployee.employeeToEmployeeResponse(employeeOptional.get());
+        }
+        return null;
+    }
+
+    @Override
+    public EmployeeDTO getEmployeeByIdForUpdate(UUID id) {
         Optional<Employee> employeeOptional = emploeeyRepository.findById(id);
         if (employeeOptional.isPresent()) {
             return mapperEmployee.toDTO(employeeOptional.get());
@@ -46,27 +62,32 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public UUID saveEmployee(EmployeeDTO employeeDTO) {
-        Employee employee = mapperEmployee.toEmployee(employeeDTO);
-        Department department = departmentService.getDepartmentByName(employeeDTO.getDepartmentName());
+    public ResponseEmployee saveNewEmployee(CreateRequestEmployee createRequestEmployee) {
+        Employee employee = mapperCreateEmployee.toEntity(createRequestEmployee);
+        Department department = departmentService.getDepartmentByName(createRequestEmployee.getDepartmentName());
         employee.setDepartment(department);
-        if (employee.getCreatedAt() == null) {
-            employee.setCreatedAt(LocalDateTime.now());
-        }
+        employee.setCreatedAt(LocalDateTime.now());
         employee.setUpdatedAt(LocalDateTime.now());
         employee = emploeeyRepository.save(employee);
-        return employee.getId();
+
+        return getEmployee(employee.getId());
     }
 
     @Override
     @Transactional
-    public void updateEmployee(UUID id, UpdateEmployeeDTO updateData) {
-        EmployeeDTO employeeDTO = getEmployee(id);
+    public ResponseEmployee updateEmployee(UUID id, UpdateRequestEmployee updateRequestEmployee) {
+        UpdateEmployeeDTO updateData = mapperUpdateEmployee
+                .updateRequestEmployeetoUpdateEmployeeDTO(updateRequestEmployee);
+        EmployeeDTO employeeDTO = getEmployeeByIdForUpdate(id);
         UpdateEmployeeDTO updateEmployeeDTO = mapperUpdateEmployee
                 .EmployeeDTOToUpdateEmployeeDTO(employeeDTO);
         mapperUpdateEmployee.updateEmployeeDTO(updateData, updateEmployeeDTO);
         employeeDTO = mapperUpdateEmployee.updateEmployeeDTOToEmployeeDTO(updateEmployeeDTO);
-        saveEmployee(employeeDTO);
+        Employee employee = mapperEmployee.toEmployee(employeeDTO);
+        employee.setUpdatedAt(LocalDateTime.now());
+        emploeeyRepository.save(employee);
+
+        return getEmployee(id);
     }
 
     @Override

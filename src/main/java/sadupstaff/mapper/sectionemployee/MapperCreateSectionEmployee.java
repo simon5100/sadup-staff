@@ -3,9 +3,9 @@ package sadupstaff.mapper.sectionemployee;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import sadupstaff.dto.sectionemployee.SectionEmployeeDTO;
+import sadupstaff.entity.district.SectionEmployee;
 import sadupstaff.enums.SectionEmployeeEnum;
-import sadupstaff.model.sectionemployee.CreateRequestSectionEmployee;
+import sadupstaff.dto.request.sectionemployee.CreateRequestSectionEmployee;
 
 @Mapper(componentModel = "spring", uses = {SectionEmployeeEnum.class})
 public interface MapperCreateSectionEmployee {
@@ -22,5 +22,5 @@ public interface MapperCreateSectionEmployee {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "position", target = "position", qualifiedByName = "convert")
-    SectionEmployeeDTO toDTO(CreateRequestSectionEmployee createRequestSectionEmployee);
+    SectionEmployee toEntity(CreateRequestSectionEmployee createRequestSectionEmployee);
 }

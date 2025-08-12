@@ -1,21 +1,25 @@
 package sadupstaff.service.department;
 
-import sadupstaff.dto.management.department.DepartmentDTO;
-import sadupstaff.dto.management.department.UpdateDepartmentDTO;
+import sadupstaff.dto.department.DepartmentDTO;
+import sadupstaff.dto.request.department.CreateRequestDepartment;
+import sadupstaff.dto.request.department.UpdateRequestDepartment;
+import sadupstaff.dto.response.ResponseDepartment;
 import sadupstaff.entity.management.Department;
 import java.util.List;
 import java.util.UUID;
 
 public interface DepartmentService {
-    public List<DepartmentDTO> getAllDepartments();
+    List<ResponseDepartment> getAllDepartments();
 
-    public DepartmentDTO getDepartmentById(UUID id);
+    ResponseDepartment getDepartmentById(UUID id);
 
-    public Department getDepartmentByName(String name);
+    DepartmentDTO getDepartmentByIdForUpdate(UUID id);
 
-    public UUID saveDepartment(DepartmentDTO departmentDTO);
+    Department getDepartmentByName(String name);
 
-    public void updateDepartment(UUID id, UpdateDepartmentDTO updateData);
+    ResponseDepartment saveNewDepartment(CreateRequestDepartment createRequest);
 
-    public void deleteDepartment(UUID id);
+    ResponseDepartment updateDepartment(UUID id, UpdateRequestDepartment updateRequest);
+
+    void deleteDepartment(UUID id);
 }

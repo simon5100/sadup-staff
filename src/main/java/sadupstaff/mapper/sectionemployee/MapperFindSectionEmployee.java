@@ -1,17 +1,18 @@
 package sadupstaff.mapper.sectionemployee;
 
 import org.mapstruct.*;
-import sadupstaff.dto.sectionemployee.SectionEmployeeDTO;
-import sadupstaff.model.sectionemployee.ResponseSectionEmployee;
+import sadupstaff.dto.response.ResponseSectionEmployee;
+import sadupstaff.entity.district.SectionEmployee;
 
 @Mapper(componentModel = "spring")
 public interface MapperFindSectionEmployee {
 
     @Mapping(target = "position", ignore = true)
-    ResponseSectionEmployee DTOtoResponse(SectionEmployeeDTO sectionEmployeeDTO);
+    @Mapping(target = "sectionName", source = "section.name")
+    ResponseSectionEmployee entityToResponse(SectionEmployee sectionEmployee);
 
     @AfterMapping
-    default void enumInString(@MappingTarget ResponseSectionEmployee responseSectionEmployee, SectionEmployeeDTO sectionEmployeeDTO) {
-        responseSectionEmployee.setPosition(sectionEmployeeDTO.getPosition().getStringConvert());
+    default void enumInString(@MappingTarget ResponseSectionEmployee responseSectionEmployee, SectionEmployee sectionEmployee) {
+        responseSectionEmployee.setPosition(sectionEmployee.getPosition().getStringConvert());
     }
 }

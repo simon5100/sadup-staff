@@ -1,4 +1,4 @@
-package sadupstaff.dto.management.employee;
+package sadupstaff.dto.employee;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;

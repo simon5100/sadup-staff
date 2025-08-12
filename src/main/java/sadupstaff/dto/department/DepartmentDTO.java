@@ -1,9 +1,9 @@
-package sadupstaff.dto.management.department;
+package sadupstaff.dto.department;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import sadupstaff.dto.management.employee.EmployeeDTO;
+import sadupstaff.dto.employee.EmployeeDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;

@@ -3,9 +3,9 @@ package sadupstaff.controller.employee;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import sadupstaff.model.employee.CreateRequestEmployee;
-import sadupstaff.model.employee.ResponseEmployee;
-import sadupstaff.model.employee.UpdateRequestEmployee;
+import sadupstaff.dto.request.employee.CreateRequestEmployee;
+import sadupstaff.dto.response.ResponseEmployee;
+import sadupstaff.dto.request.employee.UpdateRequestEmployee;
 import java.util.List;
 import java.util.UUID;
 

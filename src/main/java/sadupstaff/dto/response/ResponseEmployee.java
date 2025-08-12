@@ -1,16 +1,14 @@
-package sadupstaff.model.employee;
+package sadupstaff.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateRequestEmployee {
-
-    private UUID id;
+public class ResponseEmployee {
 
     private String personelNumber;
 
@@ -23,4 +21,8 @@ public class UpdateRequestEmployee {
     private String position;
 
     private String departmentName;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

@@ -1,4 +1,4 @@
-package sadupstaff.model.department;
+package sadupstaff.dto.request.department;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

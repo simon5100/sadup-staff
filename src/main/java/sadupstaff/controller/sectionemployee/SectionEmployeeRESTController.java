@@ -3,9 +3,9 @@ package sadupstaff.controller.sectionemployee;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import sadupstaff.model.sectionemployee.CreateRequestSectionEmployee;
-import sadupstaff.model.sectionemployee.ResponseSectionEmployee;
-import sadupstaff.model.sectionemployee.UpdateRequestSectionEmployee;
+import sadupstaff.dto.request.sectionemployee.CreateRequestSectionEmployee;
+import sadupstaff.dto.response.ResponseSectionEmployee;
+import sadupstaff.dto.request.sectionemployee.UpdateRequestSectionEmployee;
 import java.util.List;
 import java.util.UUID;
 

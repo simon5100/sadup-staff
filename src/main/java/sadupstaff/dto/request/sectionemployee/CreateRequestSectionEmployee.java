@@ -1,26 +1,29 @@
-package sadupstaff.model.sectionemployee;
+package sadupstaff.dto.request.sectionemployee;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseSectionEmployee {
+public class CreateRequestSectionEmployee {
 
-    private UUID id;
-
+    @NotBlank
     private String personelNumber;
 
+    @NotBlank
     private String firstName;
 
+    @NotBlank
     private String lastName;
 
     private String patronymic;
 
+    @NotBlank
     private String position;
 
+    @NotBlank
     private String sectionName;
 }
