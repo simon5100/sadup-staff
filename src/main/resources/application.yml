@@ -3,8 +3,8 @@ spring:
     name: spring_course_springboot
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: f,tkz17rd80htu41
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
