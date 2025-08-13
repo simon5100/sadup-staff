@@ -3,16 +3,14 @@ package sadupstaff.service.section;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sadupstaff.dto.request.section.CreateRequestSection;
-import sadupstaff.dto.request.section.UpdateRequestSection;
-import sadupstaff.dto.response.ResponseSection;
-import sadupstaff.dto.section.SectionDTO;
+import sadupstaff.dto.request.section.CreateSectionRequest;
+import sadupstaff.dto.request.section.UpdateSectionRequest;
+import sadupstaff.dto.response.SectionResponse;
 import sadupstaff.dto.section.UpdateSectionDTO;
 import sadupstaff.entity.district.District;
 import sadupstaff.entity.district.Section;
 import sadupstaff.mapper.section.MapperCreateSection;
 import sadupstaff.mapper.section.MapperFindSection;
-import sadupstaff.mapper.section.MapperSection;
 import sadupstaff.mapper.section.MapperUpdateSection;
 import sadupstaff.repository.SectionRepository;
 import sadupstaff.service.district.DistrictServiceImpl;
@@ -26,7 +24,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SectionServiceImpl implements SectionService{
 
-    private final MapperSection mapperSection;
     private final MapperUpdateSection mapperUpdateSection;
     private final SectionRepository sectionRepository;
     private final DistrictServiceImpl districtService;
@@ -35,28 +32,28 @@ public class SectionServiceImpl implements SectionService{
 
     @Override
     @Transactional
-    public List<ResponseSection> getAllSection() {
+    public List<SectionResponse> getAllSection() {
 
         return sectionRepository.findAll().stream()
-                .map(section -> mapperFindSection.entityToResponseSection(section))
+                .map(section -> mapperFindSection.entityToResponse(section))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public ResponseSection getSectionById(UUID id) {
+    public SectionResponse getSectionById(UUID id) {
         Optional<Section> optionalSection = sectionRepository.findById(id);
         if(optionalSection.isPresent()) {
-            return mapperFindSection.entityToResponseSection(optionalSection.get());
+            return mapperFindSection.entityToResponse(optionalSection.get());
         }
         return null;
     }
 
     @Override
-    public SectionDTO getSectionByIdForUpdate(UUID id) {
+    public Section getSectionByIdForUpdate(UUID id) {
         Optional<Section> optionalSection = sectionRepository.findById(id);
         if(optionalSection.isPresent()) {
-            return mapperSection.toDTO(optionalSection.get());
+            return optionalSection.get();
         }
         return null;
     }
@@ -72,8 +69,8 @@ public class SectionServiceImpl implements SectionService{
 
     @Override
     @Transactional
-    public ResponseSection saveNewSection(CreateRequestSection createRequest) {
-        Section section = mapperCreateSection.createSectionToEntity(createRequest);
+    public SectionResponse saveSection(CreateSectionRequest createRequest) {
+        Section section = mapperCreateSection.toEntity(createRequest);
         District district = districtService.getDistrictByName(createRequest.getDistrictName());
         section.setDistrict(district);
         section.setCreatedAt(LocalDateTime.now());
@@ -85,14 +82,13 @@ public class SectionServiceImpl implements SectionService{
 
     @Override
     @Transactional
-    public ResponseSection updateSection(UUID id, UpdateRequestSection updateRequest) {
+    public SectionResponse updateSection(UUID id, UpdateSectionRequest updateRequest) {
         UpdateSectionDTO updateData = mapperUpdateSection.updateRequestToDTO(updateRequest);
-        SectionDTO sectionDTO = getSectionByIdForUpdate(id);
-        UpdateSectionDTO updateSectionDTO = mapperUpdateSection
-                .sectionDTOToUpdateSectionDTO(sectionDTO);
-        mapperUpdateSection.update(updateData,updateSectionDTO);
-        sectionDTO = mapperUpdateSection.updateSectionToSectionDTO(updateSectionDTO);
-        Section section = mapperSection.toSection(sectionDTO);
+        UpdateSectionDTO updateSectionOld = mapperUpdateSection
+                .entityToUpdateSectionDTO(getSectionByIdForUpdate(id));
+        mapperUpdateSection.update(updateData, updateSectionOld);
+        Section section = mapperUpdateSection.updateSectionToEntity(updateSectionOld);
+        section.setUpdatedAt(LocalDateTime.now());
         sectionRepository.save(section);
 
         return getSectionById(id);

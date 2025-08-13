@@ -92,6 +92,7 @@
             <artifactId>liquibase-core</artifactId>
             <version>4.33.0</version>
         </dependency>
+
     </dependencies>
 
     <build>

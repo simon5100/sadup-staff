@@ -4,19 +4,21 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import sadupstaff.dto.district.DistrictDTO;
 import sadupstaff.dto.district.UpdateDistrictDTO;
-import sadupstaff.dto.request.district.UpdateRequestDistrict;
+import sadupstaff.dto.request.district.UpdateDistrictRequest;
+import sadupstaff.entity.district.District;
+import sadupstaff.mapper.section.MapperFindSection;
+import sadupstaff.mapper.section.MapperSection;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {MapperSection .class, MapperFindSection .class})
 public interface MapperUpdateDistrict {
 
-    UpdateDistrictDTO updateRequestToDTO(UpdateRequestDistrict updateRequest);
+    UpdateDistrictDTO updateRequestToDTO(UpdateDistrictRequest updateRequest);
 
-    UpdateDistrictDTO toDTO(DistrictDTO districtDTO);
+    UpdateDistrictDTO entityToUpdateDistrictDTO(District district);
 
-    DistrictDTO updateDTOToDTO(UpdateDistrictDTO updateDTO);
+    District updateDTOToEntity(UpdateDistrictDTO updateDTO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateDistrictDTO(UpdateDistrictDTO updateDTD, @MappingTarget UpdateDistrictDTO updateDistrictDTO);
+    void updateDistrictData(UpdateDistrictDTO updateDTD, @MappingTarget UpdateDistrictDTO updateDistrictDTO);
 }

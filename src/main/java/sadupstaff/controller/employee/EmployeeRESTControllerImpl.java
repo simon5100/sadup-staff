@@ -2,9 +2,9 @@ package sadupstaff.controller.employee;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import sadupstaff.dto.request.employee.CreateRequestEmployee;
-import sadupstaff.dto.response.ResponseEmployee;
-import sadupstaff.dto.request.employee.UpdateRequestEmployee;
+import sadupstaff.dto.request.employee.CreateEmployeeRequest;
+import sadupstaff.dto.request.employee.UpdateEmployeeRequest;
+import sadupstaff.dto.response.EmployeeResponse;
 import sadupstaff.service.employee.EmployeeService;
 import java.util.List;
 import java.util.UUID;
@@ -15,20 +15,20 @@ public class EmployeeRESTControllerImpl implements EmployeeRESTController {
 
     private final EmployeeService employeeService;
 
-    public List<ResponseEmployee> showAllEmployees() {
+    public List<EmployeeResponse> showAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
-    public ResponseEmployee getEmployee(@PathVariable UUID id) {
+    public EmployeeResponse getEmployee(@PathVariable UUID id) {
         return employeeService.getEmployee(id);
     }
 
-    public ResponseEmployee addEmployee(@RequestBody CreateRequestEmployee createRequestEmployee) {
-        return employeeService.saveNewEmployee(createRequestEmployee);
+    public EmployeeResponse addEmployee(@RequestBody CreateEmployeeRequest createEmployeeRequest) {
+        return employeeService.saveEmployee(createEmployeeRequest);
     }
 
-    public ResponseEmployee updateEmployee(@PathVariable UUID id, @RequestBody UpdateRequestEmployee updateRequestEmployee) {
-        return employeeService.updateEmployee(id, updateRequestEmployee);
+    public EmployeeResponse updateEmployee(@PathVariable UUID id, @RequestBody UpdateEmployeeRequest updateEmployeeRequest) {
+        return employeeService.updateEmployee(id, updateEmployeeRequest);
     }
 
     public void deleteEmployee(@PathVariable UUID id) {

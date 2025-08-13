@@ -2,9 +2,9 @@ package sadupstaff.controller.district;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import sadupstaff.dto.request.district.CreateRequestDistrict;
-import sadupstaff.dto.response.ResponseDistrict;
-import sadupstaff.dto.request.district.UpdateRequestDistrict;
+import sadupstaff.dto.request.district.CreateDistrictRequest;
+import sadupstaff.dto.response.DistrictResponse;
+import sadupstaff.dto.request.district.UpdateDistrictRequest;
 import sadupstaff.service.district.DistrictService;
 import java.util.List;
 import java.util.UUID;
@@ -15,19 +15,19 @@ public class DistrictRESTControllerImpl implements DistrictRESTController {
 
     private final DistrictService districtService;
 
-    public List<ResponseDistrict> showDistricts() {
+    public List<DistrictResponse> showDistricts() {
         return districtService.getAllDistrict();
     }
 
-    public ResponseDistrict showDistrict(@PathVariable UUID id) {
+    public DistrictResponse showDistrict(@PathVariable UUID id) {
         return districtService.getDistrictById(id);
     }
 
-    public ResponseDistrict addDistrict (@RequestBody CreateRequestDistrict createRequest) {
-        return districtService.saveNewDistrict(createRequest);
+    public DistrictResponse addDistrict (@RequestBody CreateDistrictRequest createRequest) {
+        return districtService.saveDistrict(createRequest);
     }
 
-    public ResponseDistrict updateDistrict (@PathVariable UUID id, @RequestBody UpdateRequestDistrict updateReques) {
+    public DistrictResponse updateDistrict (@PathVariable UUID id, @RequestBody UpdateDistrictRequest updateReques) {
         return districtService.updateDistrict(id, updateReques);
     }
 

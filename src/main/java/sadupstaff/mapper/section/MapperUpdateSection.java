@@ -4,18 +4,18 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import sadupstaff.dto.section.SectionDTO;
 import sadupstaff.dto.section.UpdateSectionDTO;
-import sadupstaff.dto.request.section.UpdateRequestSection;
+import sadupstaff.dto.request.section.UpdateSectionRequest;
+import sadupstaff.entity.district.Section;
 
 @Mapper(componentModel = "spring")
 public interface MapperUpdateSection {
 
-    UpdateSectionDTO updateRequestToDTO(UpdateRequestSection updateRequest);
+    UpdateSectionDTO updateRequestToDTO(UpdateSectionRequest updateRequest);
 
-    UpdateSectionDTO sectionDTOToUpdateSectionDTO(SectionDTO sectionDTO);
+    UpdateSectionDTO entityToUpdateSectionDTO(Section section);
 
-    SectionDTO updateSectionToSectionDTO(UpdateSectionDTO updateSectionDTO);
+    Section updateSectionToEntity(UpdateSectionDTO updateSectionDTO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void update(UpdateSectionDTO updateData, @MappingTarget UpdateSectionDTO updateSectionDTO);

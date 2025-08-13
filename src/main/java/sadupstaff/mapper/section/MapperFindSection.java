@@ -2,7 +2,7 @@ package sadupstaff.mapper.section;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import sadupstaff.dto.response.ResponseSection;
+import sadupstaff.dto.response.SectionResponse;
 import sadupstaff.entity.district.Section;
 import sadupstaff.mapper.sectionemployee.MapperFindSectionEmployee;
 
@@ -10,5 +10,5 @@ import sadupstaff.mapper.sectionemployee.MapperFindSectionEmployee;
 public interface MapperFindSection {
 
     @Mapping(target = "districtName", source = "district.name")
-    ResponseSection entityToResponseSection(Section section);
+    SectionResponse entityToResponse(Section section);
 }

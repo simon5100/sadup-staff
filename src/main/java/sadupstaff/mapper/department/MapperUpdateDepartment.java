@@ -1,24 +1,23 @@
 package sadupstaff.mapper.department;
 
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import org.springframework.stereotype.Component;
-import sadupstaff.dto.department.DepartmentDTO;
 import sadupstaff.dto.department.UpdateDepartmentDTO;
-import sadupstaff.dto.request.department.UpdateRequestDepartment;
+import sadupstaff.dto.request.department.UpdateDepartmentRequest;
+import sadupstaff.entity.management.Department;
+import sadupstaff.mapper.employee.MapperEmployee;
+import sadupstaff.mapper.employee.MapperFindEmployee;
 
 @Component
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {MapperEmployee.class, MapperFindEmployee.class})
 public interface MapperUpdateDepartment {
 
-    UpdateDepartmentDTO updateRequestToDTO(UpdateRequestDepartment updateRequestDepartment);
+    UpdateDepartmentDTO updateRequestToDTO(UpdateDepartmentRequest updateDepartmentRequest);
 
-    UpdateDepartmentDTO departmentDTOToUpdateDepartmentDTO(DepartmentDTO DepartmentDTO);
+    UpdateDepartmentDTO departmentToUpdateDepartmentDTO(Department Department);
 
-    DepartmentDTO updateDepartmentDTOToDepartmentDTO(UpdateDepartmentDTO updateDepartmentDTO);
+    Department updateDepartmentDTOToDepartment(UpdateDepartmentDTO updateDepartmentDTO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateDepartmentDTO(UpdateDepartmentDTO updateData, @MappingTarget UpdateDepartmentDTO updateDepartmentDTO);
+    void updateDepartmentData(UpdateDepartmentDTO updateData, @MappingTarget UpdateDepartmentDTO updateDepartmentDTO);
 }

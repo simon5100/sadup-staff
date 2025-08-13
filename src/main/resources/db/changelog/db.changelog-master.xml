@@ -4,10 +4,9 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="init-1-create-schema" author="you">
-        <sql>CREATE SCHEMA IF NOT EXISTS sudstaff;</sql>
-    </changeSet>
 
-    <include file="v.1.0.0/changelog.xml" relativeToChangelogFile="true"/>
+    <include file="v.1.0.0/changelog-0.0.1.xml" relativeToChangelogFile="true"/>
+    <include file="v.1.0.0/changelog-0.0.2.xml" relativeToChangelogFile="true"/>
+    <include file="v.1.0.0/changelog-0.0.3.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

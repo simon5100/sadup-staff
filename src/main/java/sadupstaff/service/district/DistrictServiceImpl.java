@@ -3,14 +3,12 @@ package sadupstaff.service.district;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sadupstaff.dto.district.DistrictDTO;
 import sadupstaff.dto.district.UpdateDistrictDTO;
-import sadupstaff.dto.request.district.CreateRequestDistrict;
-import sadupstaff.dto.request.district.UpdateRequestDistrict;
-import sadupstaff.dto.response.ResponseDistrict;
+import sadupstaff.dto.request.district.CreateDistrictRequest;
+import sadupstaff.dto.request.district.UpdateDistrictRequest;
+import sadupstaff.dto.response.DistrictResponse;
 import sadupstaff.entity.district.District;
 import sadupstaff.mapper.district.MapperCreateDistrict;
-import sadupstaff.mapper.district.MapperDistrict;
 import sadupstaff.mapper.district.MapperFindDistrict;
 import sadupstaff.mapper.district.MapperUpdateDistrict;
 import sadupstaff.repository.DistrictRepository;
@@ -25,34 +23,33 @@ import java.util.stream.Collectors;
 public class DistrictServiceImpl implements DistrictService{
 
     private final DistrictRepository districtRepository;
-    private final MapperDistrict mapperDistrict;
     private final MapperUpdateDistrict mapperUpdateDistrict;
     private final MapperFindDistrict mapperFindDistrict;
     private final MapperCreateDistrict mapperCreateDistrict;
 
     @Override
     @Transactional
-    public List<ResponseDistrict> getAllDistrict() {
+    public List<DistrictResponse> getAllDistrict() {
         return  districtRepository.findAll().stream()
-                .map(district -> mapperFindDistrict.entityToResponseDistrict(district))
+                .map(district -> mapperFindDistrict.entityToResponse(district))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public ResponseDistrict getDistrictById(UUID id) {
+    public DistrictResponse getDistrictById(UUID id) {
         Optional<District> districtOptional = districtRepository.findById(id);
         if (districtOptional.isPresent()) {
-            return mapperFindDistrict.entityToResponseDistrict(districtOptional.get());
+            return mapperFindDistrict.entityToResponse(districtOptional.get());
         }
         return null;
     }
 
     @Override
-    public DistrictDTO getDistrictByIdForUpdate(UUID id) {
+    public District getDistrictByIdForUpdate(UUID id) {
         Optional<District> districtOptional = districtRepository.findById(id);
         if (districtOptional.isPresent()) {
-            return mapperDistrict.toDTO(districtOptional.get());
+            return districtOptional.get();
         }
         return null;
     }
@@ -68,7 +65,7 @@ public class DistrictServiceImpl implements DistrictService{
 
     @Override
     @Transactional
-    public ResponseDistrict saveNewDistrict(CreateRequestDistrict createRequest) {
+    public DistrictResponse saveDistrict(CreateDistrictRequest createRequest) {
         District district = mapperCreateDistrict.toEntity(createRequest);
         district.setCreatedAt(LocalDateTime.now());
         district.setUpdatedAt(LocalDateTime.now());
@@ -79,13 +76,13 @@ public class DistrictServiceImpl implements DistrictService{
 
     @Override
     @Transactional
-    public ResponseDistrict updateDistrict(UUID id, UpdateRequestDistrict updateReques) {
-        UpdateDistrictDTO updateData = mapperUpdateDistrict.updateRequestToDTO(updateReques);
-        DistrictDTO districtDTO = getDistrictByIdForUpdate(id);
-        UpdateDistrictDTO updateDistrictDTO = mapperUpdateDistrict.toDTO(districtDTO);
-        mapperUpdateDistrict.updateDistrictDTO(updateData, updateDistrictDTO);
-        districtDTO = mapperUpdateDistrict.updateDTOToDTO(updateDistrictDTO);
-        District district = mapperDistrict.toDistrict(districtDTO);
+    public DistrictResponse updateDistrict(UUID id, UpdateDistrictRequest updateRequest) {
+        UpdateDistrictDTO updateData = mapperUpdateDistrict.updateRequestToDTO(updateRequest);
+        UpdateDistrictDTO updateDistrictOld =
+                mapperUpdateDistrict.entityToUpdateDistrictDTO(getDistrictByIdForUpdate(id));
+        mapperUpdateDistrict.updateDistrictData(updateData, updateDistrictOld);
+        District district = mapperUpdateDistrict.updateDTOToEntity(updateDistrictOld);
+        district.setUpdatedAt(LocalDateTime.now());
         districtRepository.save(district);
 
         return getDistrictById(id);

@@ -1,20 +1,17 @@
-package sadupstaff.dto.department;
+package sadupstaff.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import sadupstaff.dto.employee.EmployeeDTO;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-@Schema(name = "Сущность DTO отдела")
-public class DepartmentDTO {
-
-    @Schema(description = "Идентификатор района", example = "175fa2d0-b608-4ee1-b50e-02f5d51ee9cc", required = true)
-    private UUID id;
+@NoArgsConstructor
+@Schema(name = "Сущность DTO для отображения отдела")
+public class DepartmentResponse {
 
     @Schema(description = "Имя отдела", example = "Центральный район")
     private String name;
@@ -29,5 +26,5 @@ public class DepartmentDTO {
     private LocalDateTime updatedAt;
 
     @Schema(description = "Список сущностей сотрудников, которые работают в отделе")
-    private List<EmployeeDTO> emps;
+    private List<EmployeeResponse> emps;
 }

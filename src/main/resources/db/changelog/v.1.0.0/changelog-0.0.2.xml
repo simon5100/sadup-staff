@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="30.07.2025-create-table-departments" author="Polikarpov-Semen">
+        <sqlFile path="department/create/SQL/create-table-departments.sql"
+                 relativeToChangelogFile="true"
+                 encoding="UTF-8"
+        />
+    </changeSet>
+
+    <changeSet id="30.07.2025-create-table-districts" author="Polikarpov-Semen">
+        <sqlFile path="district/create/SQL/create-table-districts.sql"
+                 relativeToChangelogFile="true"
+                 encoding="UTF-8"
+        />
+    </changeSet>
+
+    <changeSet id="30.07.2025-create-table-sections" author="Polikarpov-Semen">
+        <sqlFile path="section/create/SQL/create-table-sections.sql"
+                 relativeToChangelogFile="true"
+                 encoding="UTF-8"
+        />
+    </changeSet>
+
+    <changeSet id="30.07.2025-create-table-employees" author="Polikarpov-Semen">
+        <sqlFile path="employee/create/SQL/create-table-employees.sql"
+                 relativeToChangelogFile="true"
+                 encoding="UTF-8"
+        />
+    </changeSet>
+
+    <changeSet id="30.07.2025-create-table-sectionemployees" author="Polikarpov-Semen">
+        <sqlFile path="sectionemployee/create/SQL/create-table-sectionemployees.sql"
+                 relativeToChangelogFile="true"
+                 encoding="UTF-8"
+        />
+    </changeSet>
+
+</databaseChangeLog>

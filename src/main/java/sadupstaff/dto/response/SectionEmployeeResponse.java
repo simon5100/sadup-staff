@@ -1,18 +1,15 @@
-package sadupstaff.dto.sectionemployee;
+package sadupstaff.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import sadupstaff.entity.district.Section;
-import sadupstaff.enums.SectionEmployeeEnum;
-import java.time.LocalDateTime;
-import java.util.UUID;
+import lombok.NoArgsConstructor;
 
 @Data
-@Schema(name = "Сущность DTO для обновления работника участка")
-public class UpdateSectionEmployeeDTO {
-
-    @Schema(description = "Идентификатор сотрудника", example = "175fa2d0-b608-4ee1-b50e-02f5d51ee9cc", required = true)
-    private UUID id;
+@AllArgsConstructor
+@NoArgsConstructor
+@Schema(name = "Сущность DTO отображения работника участка")
+public class SectionEmployeeResponse {
 
     @Schema(description = "Персональный номер сотрудника", example = "ЦЕН-1", required = true)
     private String personelNumber;
@@ -33,16 +30,8 @@ public class UpdateSectionEmployeeDTO {
                     "Секретарь судебного участка",
                     "Специалист"},
             required = true)
-    private SectionEmployeeEnum position;
-
-    @Schema(description = "Дата и время создания сотрудника")
-    private LocalDateTime createdAt;
-
-    @Schema(description = "Дата и время изменения сотрудника")
-    private LocalDateTime updatedAt;
+    private String position;
 
     @Schema(description = "Участок на котором работает сотрудник", example = "1-участок центрального района", required = true)
-    private Section section;
-
-
+    private String sectionName;
 }

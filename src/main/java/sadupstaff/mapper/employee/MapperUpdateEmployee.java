@@ -2,20 +2,20 @@ package sadupstaff.mapper.employee;
 
 import org.mapstruct.*;
 import org.springframework.stereotype.Component;
-import sadupstaff.dto.employee.EmployeeDTO;
 import sadupstaff.dto.employee.UpdateEmployeeDTO;
-import sadupstaff.dto.request.employee.UpdateRequestEmployee;
+import sadupstaff.dto.request.employee.UpdateEmployeeRequest;
+import sadupstaff.entity.management.Employee;
 
 @Component
 @Mapper(componentModel = "spring")
 public interface MapperUpdateEmployee {
 
-    UpdateEmployeeDTO updateRequestEmployeetoUpdateEmployeeDTO(UpdateRequestEmployee updateRequestEmployee);
+    UpdateEmployeeDTO updateRequestEmployeeToUpdateEmployeeDTO(UpdateEmployeeRequest updateEmployeeRequest);
 
-    UpdateEmployeeDTO EmployeeDTOToUpdateEmployeeDTO(EmployeeDTO employeeDTO);
+    UpdateEmployeeDTO entityToUpdateEmployeeDTO(Employee employee);
 
-    EmployeeDTO updateEmployeeDTOToEmployeeDTO(UpdateEmployeeDTO updateEmployeeDTO);
+    Employee updateEmployeeDTOToEntity(UpdateEmployeeDTO updateEmployeeDTO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEmployeeDTO(UpdateEmployeeDTO updateData, @MappingTarget UpdateEmployeeDTO updateEmployeeDTO);
+    void updateEmployeeData(UpdateEmployeeDTO updateData, @MappingTarget UpdateEmployeeDTO updateEmployeeDTO);
 }

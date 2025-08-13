@@ -1,19 +1,17 @@
-package sadupstaff.dto.district;
+package sadupstaff.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-import sadupstaff.dto.section.SectionDTO;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-@Schema(name = "Сущность DTO района")
-public class DistrictDTO {
-
-    @Schema(description = "Идентификатор района", example = "175fa2d0-b608-4ee1-b50e-02f5d51ee9cc", required = true)
-    private UUID id;
+@NoArgsConstructor
+@Schema(name = "Сущность DTO отображения района")
+public class DistrictResponse {
 
     @Schema(description = "Имя района", example = "Центральный район")
     private String name;
@@ -28,5 +26,5 @@ public class DistrictDTO {
     private LocalDateTime updatedAt;
 
     @Schema(description = "Список сущностей участков, которые находятся в районе")
-    private List<SectionDTO> sections;
+    private List<SectionResponse> sections;
 }

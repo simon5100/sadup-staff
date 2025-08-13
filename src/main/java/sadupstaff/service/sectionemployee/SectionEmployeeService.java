@@ -1,23 +1,23 @@
 package sadupstaff.service.sectionemployee;
 
-import sadupstaff.dto.request.sectionemployee.CreateRequestSectionEmployee;
-import sadupstaff.dto.request.sectionemployee.UpdateRequestSectionEmployee;
-import sadupstaff.dto.response.ResponseSectionEmployee;
-import sadupstaff.dto.sectionemployee.SectionEmployeeDTO;
+import sadupstaff.dto.request.sectionemployee.CreateSectionEmployeeRequest;
+import sadupstaff.dto.request.sectionemployee.UpdateSectionEmployeeRequest;
+import sadupstaff.dto.response.SectionEmployeeResponse;
+import sadupstaff.entity.district.SectionEmployee;
 import java.util.List;
 import java.util.UUID;
 
 public interface SectionEmployeeService {
 
-    List<ResponseSectionEmployee> getAllSectionEmployee();
+    List<SectionEmployeeResponse> getAllSectionEmployee();
 
-    ResponseSectionEmployee getSectionEmployee(UUID id);
+    SectionEmployeeResponse getSectionEmployee(UUID id);
 
-    SectionEmployeeDTO getSectionEmployeeForUpdate(UUID id);
+    SectionEmployee getSectionEmployeeForUpdate(UUID id);
 
-    ResponseSectionEmployee saveNewSectionEmployee(CreateRequestSectionEmployee createRequest);
+    SectionEmployeeResponse saveNewSectionEmployee(CreateSectionEmployeeRequest createRequest);
 
-    ResponseSectionEmployee updateSectionEmployee(UUID id, UpdateRequestSectionEmployee updateRequest);
+    SectionEmployeeResponse updateSectionEmployee(UUID id, UpdateSectionEmployeeRequest updateRequest);
 
     void deleteSectionEmployee(UUID id);
 }

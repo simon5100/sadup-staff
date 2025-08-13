@@ -2,9 +2,9 @@ package sadupstaff.controller.sectionemployee;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import sadupstaff.dto.request.sectionemployee.CreateRequestSectionEmployee;
-import sadupstaff.dto.response.ResponseSectionEmployee;
-import sadupstaff.dto.request.sectionemployee.UpdateRequestSectionEmployee;
+import sadupstaff.dto.request.sectionemployee.CreateSectionEmployeeRequest;
+import sadupstaff.dto.response.SectionEmployeeResponse;
+import sadupstaff.dto.request.sectionemployee.UpdateSectionEmployeeRequest;
 import sadupstaff.service.sectionemployee.SectionEmployeeService;
 import java.util.List;
 import java.util.UUID;
@@ -15,20 +15,20 @@ public class SectionEmployeeRESTControllerImpl implements SectionEmployeeRESTCon
 
     private final SectionEmployeeService sectionEmployeeService;
 
-    public List<ResponseSectionEmployee> showSectionEmployees() {
+    public List<SectionEmployeeResponse> showSectionEmployees() {
         return sectionEmployeeService.getAllSectionEmployee();
     }
 
-    public ResponseSectionEmployee showSectionEmployee(@PathVariable UUID id) {
+    public SectionEmployeeResponse showSectionEmployee(@PathVariable UUID id) {
         return sectionEmployeeService.getSectionEmployee(id);
     }
 
-    public ResponseSectionEmployee addSectionEmployee (@RequestBody CreateRequestSectionEmployee createRequest) {
+    public SectionEmployeeResponse addSectionEmployee (@RequestBody CreateSectionEmployeeRequest createRequest) {
 
         return sectionEmployeeService.saveNewSectionEmployee(createRequest);
     }
 
-    public ResponseSectionEmployee updateSectionEmployee(@PathVariable UUID id, @RequestBody UpdateRequestSectionEmployee updateRequest) {
+    public SectionEmployeeResponse updateSectionEmployee(@PathVariable UUID id, @RequestBody UpdateSectionEmployeeRequest updateRequest) {
 
         return sectionEmployeeService.updateSectionEmployee(id, updateRequest);
     }

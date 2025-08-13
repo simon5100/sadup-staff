@@ -1,17 +1,15 @@
-package sadupstaff.dto.employee;
+package sadupstaff.dto.request.employee;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-import java.time.LocalDateTime;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@Schema(name = "Сущность DTO работника управления")
-public class EmployeeDTO {
-
-    @Schema(description = "Идентификатор сотрудника", example = "175fa2d0-b608-4ee1-b50e-02f5d51ee9cc", required = true)
-    private UUID id;
+@NoArgsConstructor
+@Schema(name = "Сущность DTO для запроса на обновление работника управления")
+public class UpdateEmployeeRequest {
 
     @Schema(description = "Персональный номер сотрудника", example = "ПН-1", required = true)
     private String personelNumber;
@@ -30,10 +28,4 @@ public class EmployeeDTO {
 
     @Schema(description = "Отдел в котором работает сотрудник", example = "Отдел правового обеспечения ", required = true)
     private String departmentName;
-
-    @Schema(description = "Дата и время создания сотрудника")
-    private LocalDateTime createdAt;
-
-    @Schema(description = "Дата и время изменения сотрудника")
-    private LocalDateTime updatedAt;
 }
