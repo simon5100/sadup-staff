@@ -8,9 +8,8 @@ import sadupstaff.dto.district.UpdateDistrictDTO;
 import sadupstaff.dto.request.district.UpdateDistrictRequest;
 import sadupstaff.entity.district.District;
 import sadupstaff.mapper.section.MapperFindSection;
-import sadupstaff.mapper.section.MapperSection;
 
-@Mapper(componentModel = "spring", uses = {MapperSection .class, MapperFindSection .class})
+@Mapper(componentModel = "spring", uses = {MapperFindSection .class})
 public interface MapperUpdateDistrict {
 
     UpdateDistrictDTO updateRequestToDTO(UpdateDistrictRequest updateRequest);
