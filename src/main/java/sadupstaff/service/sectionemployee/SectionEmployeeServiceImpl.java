@@ -3,15 +3,14 @@ package sadupstaff.service.sectionemployee;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sadupstaff.dto.request.sectionemployee.CreateSectionEmployeeRequest;
-import sadupstaff.dto.request.sectionemployee.UpdateSectionEmployeeRequest;
+import sadupstaff.dto.request.create.CreateSectionEmployeeRequest;
+import sadupstaff.dto.request.update.UpdateSectionEmployeeRequest;
 import sadupstaff.dto.response.SectionEmployeeResponse;
-import sadupstaff.dto.sectionemployee.UpdateSectionEmployeeDTO;
 import sadupstaff.entity.district.Section;
 import sadupstaff.entity.district.SectionEmployee;
-import sadupstaff.mapper.sectionemployee.MapperCreateSectionEmployee;
-import sadupstaff.mapper.sectionemployee.MapperFindSectionEmployee;
-import sadupstaff.mapper.sectionemployee.MapperUpdateSectionEmployee;
+import sadupstaff.mapper.sectionemployee.CreateSectionEmployeeMapper;
+import sadupstaff.mapper.sectionemployee.FindSectionEmployeeMapper;
+import sadupstaff.mapper.sectionemployee.UpdateSectionEmployeeMapper;
 import sadupstaff.repository.SectionEmployeeRepository;
 import sadupstaff.service.section.SectionServiceImpl;
 import java.time.LocalDateTime;
@@ -24,18 +23,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SectionEmployeeServiceImpl implements SectionEmployeeService {
 
-    private final MapperUpdateSectionEmployee mapperUpdateSectionEmployee;
+    private final UpdateSectionEmployeeMapper updateSectionEmployeeMapper;
     private final SectionEmployeeRepository sectionEmployeeRepository;
     private final SectionServiceImpl sectionService;
-    private final MapperFindSectionEmployee mapperFindSectionEmployee;
-    private final MapperCreateSectionEmployee mapperCreateSectionEmployee;
+    private final FindSectionEmployeeMapper findSectionEmployeeMapper;
+    private final CreateSectionEmployeeMapper createSectionEmployeeMapper;
 
     @Override
     @Transactional
     public List<SectionEmployeeResponse> getAllSectionEmployee() {
 
         return sectionEmployeeRepository.findAll().stream()
-                .map(sectionEmployee -> mapperFindSectionEmployee.entityToResponse(sectionEmployee))
+                .map(sectionEmployee -> findSectionEmployeeMapper.entityToResponse(sectionEmployee))
                 .collect(Collectors.toList());
     }
 
@@ -44,7 +43,7 @@ public class SectionEmployeeServiceImpl implements SectionEmployeeService {
     public SectionEmployeeResponse getSectionEmployee(UUID id) {
         Optional<SectionEmployee> optionalSectionEmployee = sectionEmployeeRepository.findById(id);
         if (optionalSectionEmployee.isPresent()) {
-            return mapperFindSectionEmployee.entityToResponse(optionalSectionEmployee.get());
+            return findSectionEmployeeMapper.entityToResponse(optionalSectionEmployee.get());
         }
         return null;
     }
@@ -61,7 +60,7 @@ public class SectionEmployeeServiceImpl implements SectionEmployeeService {
     @Override
     @Transactional
     public SectionEmployeeResponse saveNewSectionEmployee(CreateSectionEmployeeRequest createRequest) {
-        SectionEmployee sectionEmployee = mapperCreateSectionEmployee.toEntity(createRequest);
+        SectionEmployee sectionEmployee = createSectionEmployeeMapper.toEntity(createRequest);
         Section section = sectionService.getSectionByName(createRequest.getSectionName());
         sectionEmployee.setSection(section);
         sectionEmployee.setCreatedAt(LocalDateTime.now());
@@ -73,16 +72,13 @@ public class SectionEmployeeServiceImpl implements SectionEmployeeService {
 
     @Override
     @Transactional
-    public SectionEmployeeResponse updateSectionEmployee(UUID id, UpdateSectionEmployeeRequest updateRequest) {
-        UpdateSectionEmployeeDTO updateData = mapperUpdateSectionEmployee.updateRequestToUpdateDTO(updateRequest);
-        UpdateSectionEmployeeDTO updateSectionEmployeeOld = mapperUpdateSectionEmployee
-                .entityToUpdateDTO(getSectionEmployeeForUpdate(id));
-        mapperUpdateSectionEmployee.updateSectionEmployeeData(updateData, updateSectionEmployeeOld);
-        SectionEmployee sectionEmployee = mapperUpdateSectionEmployee.updateDTOToEntity(updateSectionEmployeeOld);
-        sectionEmployee.setUpdatedAt(LocalDateTime.now());
-        sectionEmployeeRepository.save(sectionEmployee);
+    public SectionEmployeeResponse updateSectionEmployee(UUID id, UpdateSectionEmployeeRequest updateData) {
+        SectionEmployee sectionEmployeeOld = getSectionEmployeeForUpdate(id);
+        updateSectionEmployeeMapper.updateSectionEmployeeData(updateData, sectionEmployeeOld);
+        sectionEmployeeOld.setUpdatedAt(LocalDateTime.now());
+        sectionEmployeeRepository.save(sectionEmployeeOld);
 
-        return getSectionEmployee(id);
+        return findSectionEmployeeMapper.entityToResponse(sectionEmployeeOld);
     }
 
     @Override

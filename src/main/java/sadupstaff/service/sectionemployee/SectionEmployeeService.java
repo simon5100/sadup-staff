@@ -1,7 +1,7 @@
 package sadupstaff.service.sectionemployee;
 
-import sadupstaff.dto.request.sectionemployee.CreateSectionEmployeeRequest;
-import sadupstaff.dto.request.sectionemployee.UpdateSectionEmployeeRequest;
+import sadupstaff.dto.request.create.CreateSectionEmployeeRequest;
+import sadupstaff.dto.request.update.UpdateSectionEmployeeRequest;
 import sadupstaff.dto.response.SectionEmployeeResponse;
 import sadupstaff.entity.district.SectionEmployee;
 import java.util.List;

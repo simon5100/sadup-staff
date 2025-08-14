@@ -1,7 +1,7 @@
 package sadupstaff.service.employee;
 
-import sadupstaff.dto.request.employee.CreateEmployeeRequest;
-import sadupstaff.dto.request.employee.UpdateEmployeeRequest;
+import sadupstaff.dto.request.create.CreateEmployeeRequest;
+import sadupstaff.dto.request.update.UpdateEmployeeRequest;
 import sadupstaff.dto.response.EmployeeResponse;
 import sadupstaff.entity.management.Employee;
 import java.util.List;

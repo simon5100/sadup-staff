@@ -3,14 +3,13 @@ package sadupstaff.service.employee;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sadupstaff.dto.employee.UpdateEmployeeDTO;
-import sadupstaff.dto.request.employee.CreateEmployeeRequest;
-import sadupstaff.dto.request.employee.UpdateEmployeeRequest;
+import sadupstaff.dto.request.create.CreateEmployeeRequest;
+import sadupstaff.dto.request.update.UpdateEmployeeRequest;
 import sadupstaff.dto.response.EmployeeResponse;
 import sadupstaff.entity.management.Department;
-import sadupstaff.mapper.employee.MapperCreateEmployee;
-import sadupstaff.mapper.employee.MapperFindEmployee;
-import sadupstaff.mapper.employee.MapperUpdateEmployee;
+import sadupstaff.mapper.employee.CreateEmployeeMapper;
+import sadupstaff.mapper.employee.FindEmployeeMapper;
+import sadupstaff.mapper.employee.UpdateEmployeeMapper;
 import sadupstaff.repository.EmploeeyRepository;
 import sadupstaff.entity.management.Employee;
 import sadupstaff.service.department.DepartmentServiceImpl;
@@ -26,15 +25,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmploeeyRepository emploeeyRepository;
     private final DepartmentServiceImpl departmentService;
-    private final MapperUpdateEmployee mapperUpdateEmployee;
-    private final MapperFindEmployee mapperFindEmployee;
-    private final MapperCreateEmployee mapperCreateEmployee;
+    private final UpdateEmployeeMapper updateEmployeeMapper;
+    private final FindEmployeeMapper findEmployeeMapper;
+    private final CreateEmployeeMapper createEmployeeMapper;
 
     @Override
     @Transactional
     public List<EmployeeResponse> getAllEmployees() {
         return emploeeyRepository.findAll().stream()
-                .map(employee -> mapperFindEmployee.entityToResponse(employee))
+                .map(employee -> findEmployeeMapper.entityToResponse(employee))
                 .collect(Collectors.toList());
     }
 
@@ -43,7 +42,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeResponse getEmployee(UUID id) {
         Optional<Employee> employeeOptional = emploeeyRepository.findById(id);
         if (employeeOptional.isPresent()) {
-            return mapperFindEmployee.entityToResponse(employeeOptional.get());
+            return findEmployeeMapper.entityToResponse(employeeOptional.get());
         }
         return null;
     }
@@ -60,7 +59,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeResponse saveEmployee(CreateEmployeeRequest createEmployeeRequest) {
-        Employee employee = mapperCreateEmployee.toEntity(createEmployeeRequest);
+        Employee employee = createEmployeeMapper.toEntity(createEmployeeRequest);
         Department department = departmentService.getDepartmentByName(createEmployeeRequest.getDepartmentName());
         employee.setDepartment(department);
         employee.setCreatedAt(LocalDateTime.now());
@@ -72,17 +71,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public EmployeeResponse updateEmployee(UUID id, UpdateEmployeeRequest updateRequest) {
-        UpdateEmployeeDTO updateData = mapperUpdateEmployee
-                .updateRequestEmployeeToUpdateEmployeeDTO(updateRequest);
-        UpdateEmployeeDTO updateEmployeeOld = mapperUpdateEmployee
-                .entityToUpdateEmployeeDTO(getEmployeeByIdForUpdate(id));
-        mapperUpdateEmployee.updateEmployeeData(updateData, updateEmployeeOld);
-        Employee employee = mapperUpdateEmployee.updateEmployeeDTOToEntity(updateEmployeeOld);
-        employee.setUpdatedAt(LocalDateTime.now());
-        emploeeyRepository.save(employee);
+    public EmployeeResponse updateEmployee(UUID id, UpdateEmployeeRequest updateData) {
+        Employee employeeOld = getEmployeeByIdForUpdate(id);
+        updateEmployeeMapper.updateEmployeeData(updateData, employeeOld);
+        employeeOld.setUpdatedAt(LocalDateTime.now());
+        emploeeyRepository.save(employeeOld);
 
-        return getEmployee(id);
+        return findEmployeeMapper.entityToResponse(employeeOld);
     }
 
     @Override

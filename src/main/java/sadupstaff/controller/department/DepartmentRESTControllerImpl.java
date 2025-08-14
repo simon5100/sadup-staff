@@ -2,9 +2,9 @@ package sadupstaff.controller.department;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import sadupstaff.dto.request.department.CreateDepartmentRequest;
+import sadupstaff.dto.request.create.CreateDepartmentRequest;
 import sadupstaff.dto.response.DepartmentResponse;
-import sadupstaff.dto.request.department.UpdateDepartmentRequest;
+import sadupstaff.dto.request.update.UpdateDepartmentRequest;
 import sadupstaff.service.department.DepartmentService;
 import java.util.List;
 import java.util.UUID;

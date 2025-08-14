@@ -3,13 +3,12 @@ package sadupstaff.service.department;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sadupstaff.dto.department.UpdateDepartmentDTO;
-import sadupstaff.dto.request.department.CreateDepartmentRequest;
-import sadupstaff.dto.request.department.UpdateDepartmentRequest;
+import sadupstaff.dto.request.create.CreateDepartmentRequest;
+import sadupstaff.dto.request.update.UpdateDepartmentRequest;
 import sadupstaff.dto.response.DepartmentResponse;
-import sadupstaff.mapper.department.MapperCreateDepartment;
-import sadupstaff.mapper.department.MapperFindDepartment;
-import sadupstaff.mapper.department.MapperUpdateDepartment;
+import sadupstaff.mapper.department.CreateDepartmentMapper;
+import sadupstaff.mapper.department.FindDepartmentMapper;
+import sadupstaff.mapper.department.UpdateDepartmentMapper;
 import sadupstaff.repository.DepartmentRepository;
 import sadupstaff.entity.management.Department;
 import java.time.LocalDateTime;
@@ -23,15 +22,15 @@ import java.util.stream.Collectors;
 public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
-    private final MapperUpdateDepartment mapperUpdateDepartment;
-    private final MapperFindDepartment mapperFindDepartment;
-    private final MapperCreateDepartment mapperCreateDepartment;
+    private final UpdateDepartmentMapper updateDepartmentMapper;
+    private final FindDepartmentMapper findDepartmentMapper;
+    private final CreateDepartmentMapper createDepartmentMapper;
 
     @Override
     @Transactional
     public List<DepartmentResponse> getAllDepartments() {
         return departmentRepository.findAll().stream()
-                .map(department -> mapperFindDepartment.entityToResponse(department))
+                .map(department -> findDepartmentMapper.entityToResponse(department))
                 .collect(Collectors.toList());
     }
 
@@ -40,7 +39,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public DepartmentResponse getDepartmentById(UUID id) {
         Optional<Department> departmentOptional = departmentRepository.findById(id);
         if (departmentOptional.isPresent()) {
-            return mapperFindDepartment.entityToResponse(departmentOptional.get());
+            return findDepartmentMapper.entityToResponse(departmentOptional.get());
         }
         return null;
     }
@@ -66,7 +65,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     @Transactional
     public DepartmentResponse saveDepartment(CreateDepartmentRequest createRequest) {
-        Department department = mapperCreateDepartment.toEntity(createRequest);
+        Department department = createDepartmentMapper.toEntity(createRequest);
         department.setCreatedAt(LocalDateTime.now());
         department.setUpdatedAt(LocalDateTime.now());
         department = departmentRepository.save(department);
@@ -76,16 +75,13 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     @Transactional
-    public DepartmentResponse updateDepartment(UUID id, UpdateDepartmentRequest updateRequest) {
-        UpdateDepartmentDTO updateData = mapperUpdateDepartment.updateRequestToDTO(updateRequest);
-        UpdateDepartmentDTO updateDepartmentOld =
-                mapperUpdateDepartment.departmentToUpdateDepartmentDTO(getDepartmentByIdForUpdate(id));
-        mapperUpdateDepartment.updateDepartmentData(updateData, updateDepartmentOld);
-        Department department = mapperUpdateDepartment.updateDepartmentDTOToDepartment(updateDepartmentOld);
-        department.setUpdatedAt(LocalDateTime.now());
-        departmentRepository.save(department);
+    public DepartmentResponse updateDepartment(UUID id, UpdateDepartmentRequest updateData) {
+        Department departmentOld = getDepartmentByIdForUpdate(id);
+        updateDepartmentMapper.updateDepartmentData(updateData, departmentOld);
+        departmentOld.setUpdatedAt(LocalDateTime.now());
+        departmentRepository.save(departmentOld);
 
-        return getDepartmentById(id);
+        return findDepartmentMapper.entityToResponse(departmentOld);
     }
 
     @Override

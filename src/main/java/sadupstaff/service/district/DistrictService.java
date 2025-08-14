@@ -1,7 +1,7 @@
 package sadupstaff.service.district;
 
-import sadupstaff.dto.request.district.CreateDistrictRequest;
-import sadupstaff.dto.request.district.UpdateDistrictRequest;
+import sadupstaff.dto.request.create.CreateDistrictRequest;
+import sadupstaff.dto.request.update.UpdateDistrictRequest;
 import sadupstaff.dto.response.DistrictResponse;
 import sadupstaff.entity.district.District;
 import java.util.List;

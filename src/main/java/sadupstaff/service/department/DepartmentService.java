@@ -1,7 +1,7 @@
 package sadupstaff.service.department;
 
-import sadupstaff.dto.request.department.CreateDepartmentRequest;
-import sadupstaff.dto.request.department.UpdateDepartmentRequest;
+import sadupstaff.dto.request.create.CreateDepartmentRequest;
+import sadupstaff.dto.request.update.UpdateDepartmentRequest;
 import sadupstaff.dto.response.DepartmentResponse;
 import sadupstaff.entity.management.Department;
 import java.util.List;

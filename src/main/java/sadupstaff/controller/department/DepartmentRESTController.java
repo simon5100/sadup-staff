@@ -3,8 +3,8 @@ package sadupstaff.controller.department;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import sadupstaff.dto.request.department.CreateDepartmentRequest;
-import sadupstaff.dto.request.department.UpdateDepartmentRequest;
+import sadupstaff.dto.request.create.CreateDepartmentRequest;
+import sadupstaff.dto.request.update.UpdateDepartmentRequest;
 import sadupstaff.dto.response.DepartmentResponse;
 
 import java.util.List;

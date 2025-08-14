@@ -2,8 +2,8 @@ package sadupstaff.controller.section;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import sadupstaff.dto.request.section.CreateSectionRequest;
-import sadupstaff.dto.request.section.UpdateSectionRequest;
+import sadupstaff.dto.request.create.CreateSectionRequest;
+import sadupstaff.dto.request.update.UpdateSectionRequest;
 import sadupstaff.dto.response.SectionResponse;
 import sadupstaff.service.section.SectionService;
 import java.util.List;

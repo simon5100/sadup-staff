@@ -2,9 +2,9 @@ package sadupstaff.controller.sectionemployee;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import sadupstaff.dto.request.sectionemployee.CreateSectionEmployeeRequest;
+import sadupstaff.dto.request.create.CreateSectionEmployeeRequest;
 import sadupstaff.dto.response.SectionEmployeeResponse;
-import sadupstaff.dto.request.sectionemployee.UpdateSectionEmployeeRequest;
+import sadupstaff.dto.request.update.UpdateSectionEmployeeRequest;
 import sadupstaff.service.sectionemployee.SectionEmployeeService;
 import java.util.List;
 import java.util.UUID;

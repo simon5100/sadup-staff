@@ -2,9 +2,9 @@ package sadupstaff.controller.district;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import sadupstaff.dto.request.district.CreateDistrictRequest;
+import sadupstaff.dto.request.create.CreateDistrictRequest;
 import sadupstaff.dto.response.DistrictResponse;
-import sadupstaff.dto.request.district.UpdateDistrictRequest;
+import sadupstaff.dto.request.update.UpdateDistrictRequest;
 import sadupstaff.service.district.DistrictService;
 import java.util.List;
 import java.util.UUID;
