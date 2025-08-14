@@ -1,18 +1,23 @@
 package sadupstaff.service.employee;
 
+import sadupstaff.dto.request.create.CreateEmployeeRequest;
+import sadupstaff.dto.request.update.UpdateEmployeeRequest;
+import sadupstaff.dto.response.EmployeeResponse;
 import sadupstaff.entity.management.Employee;
 import java.util.List;
 import java.util.UUID;
 
 public interface EmployeeService {
 
-    public List<Employee> getAllEmployees();
+    List<EmployeeResponse> getAllEmployees();
 
-    public Employee getEmployee(UUID id);
+    EmployeeResponse getEmployee(UUID id);
 
-    public void saveEmployee(Employee employee);
+    Employee getEmployeeByIdForUpdate(UUID id);
 
-    public void updateEmployee(UUID id, Employee employeeNew);
+    EmployeeResponse saveEmployee(CreateEmployeeRequest createEmployeeRequest);
 
-    public void deleteEmployee(UUID id);
+    EmployeeResponse updateEmployee(UUID id, UpdateEmployeeRequest updateEmployeeRequest);
+
+    void deleteEmployee(UUID id);
 }

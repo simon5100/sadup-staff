@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="30.07.2025-insert" author="Polikarpov-Semen">
+        <sql>
+            insert into sudstaff.departments (id, name, description, created_at, updated_at)
+            values (
+                '2d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                'Отдел правового обеспечения',
+                'обеспечивает правами',
+                '2025.07.30 15:17:00',
+                '2025.07.30 15:17:00'
+                   );
+
+            insert into sudstaff.district (id, name, description, created_at, updated_at)
+            values (
+                '1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                'Центральный район',
+                'Находитсясо мной в здании',
+                '2025.07.30 15:17:00',
+                '2025.07.30 15:17:00'
+                   );
+
+            insert into sudstaff.section (id, personel_number, name, created_at, updated_at, district_id)
+            values (
+                '3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                'M540000',
+                '1й участок центрального района',
+                '2025.07.30 15:17:00',
+                '2025.07.30 15:17:00',
+                '1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04'
+                   );
+
+            insert into sudstaff.employees (id, personel_number, first_name, last_name, patronymic, position, created_at, updated_at, department_id)
+            values (
+                '6d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                'EMP12345',
+                'Иван',
+                'Иванов',
+                'Иванович',
+                'Консультант',
+                '2025.07.30 15:17:00',
+                '2025.07.30 15:17:00',
+                '2d30f1c3-e70d-42a0-a3d3-58a5c2d50d04'
+                    );
+
+            insert into sudstaff.section_employee (id, personel_number, first_name, last_name, patronymic, position, created_at, updated_at, section_id)
+            values (
+                '4d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                'EMP12345',
+                'Иван',
+                'Иванов',
+                'Иванович',
+                'JUDGE',
+                '2025.07.30 15:17:00',
+                '2025.07.30 15:17:00',
+                '3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04'
+                    );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

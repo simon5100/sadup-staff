@@ -37,6 +37,6 @@ public class District {
     private LocalDateTime updatedAt;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL},
-            mappedBy = "sectDistrict")
+            mappedBy = "district")
     private List<Section> sections = new ArrayList<>();
 }

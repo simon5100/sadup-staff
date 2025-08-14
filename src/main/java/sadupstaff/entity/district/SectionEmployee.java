@@ -50,5 +50,5 @@ public class SectionEmployee {
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
     @JoinColumn(name = "section_id")
-    private Section empSection;
+    private Section section;
 }

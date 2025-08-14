@@ -35,6 +35,10 @@ public class Department {
     private LocalDateTime updatedAt;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL},
-            mappedBy = "empDepartment")
+            mappedBy = "department")
     private List<Employee> emps = new ArrayList<>();
+
+    public void addEmployee(Employee emp) {
+        emps.add(emp);
+    }
 }

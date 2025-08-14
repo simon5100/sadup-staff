@@ -38,9 +38,9 @@ public class Section {
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
     @JoinColumn(name = "district_id")
-    private District sectDistrict;
+    private District district;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL},
-            mappedBy = "empSection")
+            mappedBy = "section")
     private List<SectionEmployee> empsSect = new ArrayList<>();
 }

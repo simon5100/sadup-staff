@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="30.07.2025-create-tables" author="Polikarpov-Semen">
+        <sql>
+            CREATE TABLE sudstaff.departments (
+                id UUID     PRIMARY KEY,
+                name        VARCHAR(255)    not null,
+                description TEXT,
+                created_at  TIMESTAMP       not null,
+                updated_at  TIMESTAMP       not null
+            );
+
+            CREATE TABLE sudstaff.district (
+                id UUID         PRIMARY KEY,
+                name            VARCHAR(255)    NOT NULL,
+                description     TEXT,
+                created_at      TIMESTAMP       NOT NULL,
+                updated_at      TIMESTAMP       NOT NULL
+            );
+
+            CREATE TABLE sudstaff.section (
+                id UUID PRIMARY KEY,
+                personel_number VARCHAR(255)    NOT NULL,
+                name VARCHAR(255)               NOT NULL,
+                created_at TIMESTAMP            NOT NULL,
+                updated_at TIMESTAMP            NOT NULL,
+                district_id UUID                NOT NULL,
+
+                CONSTRAINT fk_district
+                FOREIGN KEY (district_id)
+                   REFERENCES sudstaff.district(id)
+                   ON DELETE CASCADE
+            );
+
+            CREATE TABLE sudstaff.employees (
+                id              UUID            PRIMARY KEY,
+                personel_number VARCHAR(255)    NOT NULL,
+                first_name      VARCHAR(255)    NOT NULL,
+                last_name       VARCHAR(255)    NOT NULL,
+                patronymic      VARCHAR(255),
+                position        VARCHAR(255)    NOT NULL,
+                created_at      TIMESTAMP       NOT NULL,
+                updated_at      TIMESTAMP       NOT NULL,
+                department_id   UUID            NOT NULL,
+
+                CONSTRAINT fk_department
+                FOREIGN KEY (department_id)
+                    REFERENCES sudstaff.departments(id)
+                    ON DELETE CASCADE
+            );
+
+            CREATE TABLE sudstaff.section_employee (
+                id UUID PRIMARY KEY,
+                personel_number VARCHAR(255) NOT NULL,
+                first_name VARCHAR(255) NOT NULL,
+                last_name VARCHAR(255) NOT NULL,
+                patronymic VARCHAR(255),
+                position VARCHAR(255),
+                created_at TIMESTAMP,
+                updated_at TIMESTAMP,
+                section_id UUID,
+
+                CONSTRAINT fk_section
+                FOREIGN KEY (section_id)
+                    REFERENCES sudstaff.section(id)
+                    ON DELETE CASCADE
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
