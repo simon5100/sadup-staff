@@ -7,6 +7,9 @@ import sadupstaff.dto.request.create.CreateEmployeeRequest;
 import sadupstaff.dto.request.update.UpdateEmployeeRequest;
 import sadupstaff.dto.response.EmployeeResponse;
 import sadupstaff.entity.management.Department;
+import sadupstaff.exception.IdNotFoundException;
+import sadupstaff.exception.employee.MaxEmployeeInDepartmentException;
+import sadupstaff.exception.PositionOccupiedException;
 import sadupstaff.mapper.employee.CreateEmployeeMapper;
 import sadupstaff.mapper.employee.FindEmployeeMapper;
 import sadupstaff.mapper.employee.UpdateEmployeeMapper;
@@ -15,7 +18,6 @@ import sadupstaff.entity.management.Employee;
 import sadupstaff.service.department.DepartmentServiceImpl;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -40,20 +42,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeResponse getEmployee(UUID id) {
-        Optional<Employee> employeeOptional = emploeeyRepository.findById(id);
-        if (employeeOptional.isPresent()) {
-            return findEmployeeMapper.entityToResponse(employeeOptional.get());
-        }
-        return null;
+        Employee employee = emploeeyRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
+
+        return findEmployeeMapper.entityToResponse(employee);
+
     }
 
     @Override
     public Employee getEmployeeByIdForUpdate(UUID id) {
-        Optional<Employee> employeeOptional = emploeeyRepository.findById(id);
-        if (employeeOptional.isPresent()) {
-            return employeeOptional.get();
-        }
-        return null;
+        return emploeeyRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
     }
 
     @Override
@@ -61,6 +60,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeResponse saveEmployee(CreateEmployeeRequest createEmployeeRequest) {
         Employee employee = createEmployeeMapper.toEntity(createEmployeeRequest);
         Department department = departmentService.getDepartmentByName(createEmployeeRequest.getDepartmentName());
+
+        if (department.getMaxNumberEmployees() == department.getEmps().size()) {
+            throw new MaxEmployeeInDepartmentException(createEmployeeRequest.getDepartmentName());
+        }
+
+        for (Employee emp: department.getEmps()) {
+            if (emp.getPosition().equals(employee.getPosition())) {
+                throw new PositionOccupiedException(createEmployeeRequest.getPosition());
+            }
+        }
+
         employee.setDepartment(department);
         employee.setCreatedAt(LocalDateTime.now());
         employee.setUpdatedAt(LocalDateTime.now());

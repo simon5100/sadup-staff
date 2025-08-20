@@ -12,8 +12,6 @@ public interface DepartmentService {
 
     DepartmentResponse getDepartmentById(UUID id);
 
-    Department getDepartmentByIdForUpdate(UUID id);
-
     Department getDepartmentByName(String name);
 
     DepartmentResponse saveDepartment(CreateDepartmentRequest createRequest);

@@ -2,10 +2,11 @@ package sadupstaff.mapper.sectionemployee;
 
 import org.mapstruct.*;
 import sadupstaff.entity.district.SectionEmployee;
-import sadupstaff.enums.SectionEmployeeEnum;
+import sadupstaff.enums.PositionSectionEmployeeEnum;
 import sadupstaff.dto.request.create.CreateSectionEmployeeRequest;
+import sadupstaff.exception.PositionNotFoundException;
 
-@Mapper(componentModel = "spring", uses = {SectionEmployeeEnum.class})
+@Mapper(componentModel = "spring", uses = {PositionSectionEmployeeEnum.class})
 public interface CreateSectionEmployeeMapper {
 
     @Mapping(target = "position", ignore = true)
@@ -13,13 +14,13 @@ public interface CreateSectionEmployeeMapper {
 
     @AfterMapping
     default void stringInEnum(CreateSectionEmployeeRequest createSectionEmployeeRequest, @MappingTarget SectionEmployee sectionEmployee) {
-        String position = createSectionEmployeeRequest.getPosition();
-        for (SectionEmployeeEnum value : SectionEmployeeEnum.values()) {
+        String position = createSectionEmployeeRequest.getPosition().trim();
+        for (PositionSectionEmployeeEnum value : PositionSectionEmployeeEnum.values()) {
             if(position.equalsIgnoreCase(value.getStringConvert())) {
                 sectionEmployee.setPosition(value);
-                break;
+                return;
             }
         }
-        new RuntimeException("Неверная позиция сотрудника");
+        throw new PositionNotFoundException(position);
     }
 }

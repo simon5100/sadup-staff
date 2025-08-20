@@ -8,6 +8,10 @@ import sadupstaff.dto.request.update.UpdateSectionEmployeeRequest;
 import sadupstaff.dto.response.SectionEmployeeResponse;
 import sadupstaff.entity.district.Section;
 import sadupstaff.entity.district.SectionEmployee;
+import sadupstaff.exception.IdNotFoundException;
+import sadupstaff.exception.employee.MaxEmployeeInDepartmentException;
+import sadupstaff.exception.PositionOccupiedException;
+import sadupstaff.exception.sectionemployee.MaxEmployeeInSectionException;
 import sadupstaff.mapper.sectionemployee.CreateSectionEmployeeMapper;
 import sadupstaff.mapper.sectionemployee.FindSectionEmployeeMapper;
 import sadupstaff.mapper.sectionemployee.UpdateSectionEmployeeMapper;
@@ -15,7 +19,6 @@ import sadupstaff.repository.SectionEmployeeRepository;
 import sadupstaff.service.section.SectionServiceImpl;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -41,20 +44,16 @@ public class SectionEmployeeServiceImpl implements SectionEmployeeService {
     @Override
     @Transactional
     public SectionEmployeeResponse getSectionEmployee(UUID id) {
-        Optional<SectionEmployee> optionalSectionEmployee = sectionEmployeeRepository.findById(id);
-        if (optionalSectionEmployee.isPresent()) {
-            return findSectionEmployeeMapper.entityToResponse(optionalSectionEmployee.get());
-        }
-        return null;
+        SectionEmployee sectionEmployee = sectionEmployeeRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
+
+        return findSectionEmployeeMapper.entityToResponse(sectionEmployee);
     }
 
     @Override
     public SectionEmployee getSectionEmployeeForUpdate(UUID id) {
-        Optional<SectionEmployee> optionalSectionEmployee = sectionEmployeeRepository.findById(id);
-        if (optionalSectionEmployee.isPresent()) {
-            return optionalSectionEmployee.get();
-        }
-        return null;
+        return sectionEmployeeRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
     }
 
     @Override
@@ -62,6 +61,15 @@ public class SectionEmployeeServiceImpl implements SectionEmployeeService {
     public SectionEmployeeResponse saveNewSectionEmployee(CreateSectionEmployeeRequest createRequest) {
         SectionEmployee sectionEmployee = createSectionEmployeeMapper.toEntity(createRequest);
         Section section = sectionService.getSectionByName(createRequest.getSectionName());
+
+        if (section.getMaxNumberEmployeeSection() == section.getEmpsSect().size()) {
+            throw new MaxEmployeeInSectionException(createRequest.getSectionName());
+        }
+        for (SectionEmployee sctemps: section.getEmpsSect()) {
+            if (sectionEmployee.getPosition().equals(sctemps.getPosition())) {
+                throw new PositionOccupiedException(createRequest.getPosition());
+            }
+        }
         sectionEmployee.setSection(section);
         sectionEmployee.setCreatedAt(LocalDateTime.now());
         sectionEmployee.setUpdatedAt(LocalDateTime.now());

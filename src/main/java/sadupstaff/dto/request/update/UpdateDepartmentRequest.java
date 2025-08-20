@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Schema(name = "Сущность DTO для запроса на обновления отдела")
 public class UpdateDepartmentRequest {
 
-    @Schema(description = "Имя отдела", example = "Центральный район")
+    @Schema(description = "Имя отдела", example = "Отдел правового обеспечения")
     private String name;
 
     @Schema(description = "Описание отдела")

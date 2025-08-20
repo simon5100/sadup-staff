@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: spring_course_springboot
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
+server:
+  port: 8081

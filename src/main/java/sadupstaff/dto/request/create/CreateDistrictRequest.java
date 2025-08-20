@@ -11,8 +11,12 @@ import lombok.Data;
 public class CreateDistrictRequest {
 
     @NotBlank
-    @Schema(description = "Имя района", example = "Центральный район")
+    @Schema(description = "Имя района", example = "Центральный")
     final private String name;
+
+    @NotBlank
+    @Schema(description = "максимальное число участков в района района", example = "5")
+    private Integer maxNumberSection;
 
     @NotBlank
     @Schema(description = "Описание района")

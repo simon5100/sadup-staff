@@ -1,7 +1,9 @@
 package sadupstaff.entity.management;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.*;
+import sadupstaff.enums.DepartmentNameEnum;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,13 @@ public class Department {
     private UUID id;
 
     @Column(name = "name")
-    private String name;
+    @Enumerated(EnumType.STRING)
+    @Nonnull
+    private DepartmentNameEnum name;
+
+    @Column(name = "max_number_employees")
+    @Nonnull
+    private Integer maxNumberEmployees;
 
     @Column(name = "description")
     private String description;
@@ -38,7 +46,4 @@ public class Department {
             mappedBy = "department")
     private List<Employee> emps = new ArrayList<>();
 
-    public void addEmployee(Employee emp) {
-        emps.add(emp);
-    }
 }

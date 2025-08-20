@@ -7,13 +7,19 @@ import sadupstaff.dto.request.create.CreateDistrictRequest;
 import sadupstaff.dto.request.update.UpdateDistrictRequest;
 import sadupstaff.dto.response.DistrictResponse;
 import sadupstaff.entity.district.District;
+import sadupstaff.entity.management.Department;
+import sadupstaff.enums.DistrictNameEnum;
+import sadupstaff.exception.DistrictNotFoundException;
+import sadupstaff.exception.IdNotFoundException;
+import sadupstaff.exception.PositionOccupiedException;
+import sadupstaff.exception.district.DeleteDistrictException;
 import sadupstaff.mapper.district.CreateDistrictMapper;
 import sadupstaff.mapper.district.FindDistrictMapper;
 import sadupstaff.mapper.district.UpdateDistrictMapper;
 import sadupstaff.repository.DistrictRepository;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -37,34 +43,37 @@ public class DistrictServiceImpl implements DistrictService{
     @Override
     @Transactional
     public DistrictResponse getDistrictById(UUID id) {
-        Optional<District> districtOptional = districtRepository.findById(id);
-        if (districtOptional.isPresent()) {
-            return findDistrictMapper.entityToResponse(districtOptional.get());
-        }
-        return null;
+        District district = districtRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
+
+        return findDistrictMapper.entityToResponse(district);
+
     }
 
     @Override
     public District getDistrictByIdForUpdate(UUID id) {
-        Optional<District> districtOptional = districtRepository.findById(id);
-        if (districtOptional.isPresent()) {
-            return districtOptional.get();
-        }
-        return null;
+        return districtRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
     }
 
     @Override
     public District getDistrictByName(String name) {
-        Optional<District> districtOptional = Optional.ofNullable(districtRepository.findDistrictByName(name));
-        if (districtOptional.isPresent()) {
-            return districtOptional.get();
-        }
-        return null;
+        return Arrays.stream(DistrictNameEnum.values())
+                .filter(value -> value.getStringConvert().equalsIgnoreCase(name))
+                .findFirst()
+                .map(value -> districtRepository.findDistrictByName(value))
+                .orElseThrow(() -> new DistrictNotFoundException(name));
     }
 
     @Override
     @Transactional
     public DistrictResponse saveDistrict(CreateDistrictRequest createRequest) {
+        for (District districtCheck: districtRepository.findAll()) {
+            if (districtCheck.getName().getStringConvert().equalsIgnoreCase(createRequest.getName().trim())) {
+                throw new PositionOccupiedException(createRequest.getName().trim());
+            }
+        }
+
         District district = createDistrictMapper.toEntity(createRequest);
         district.setCreatedAt(LocalDateTime.now());
         district.setUpdatedAt(LocalDateTime.now());
@@ -87,6 +96,11 @@ public class DistrictServiceImpl implements DistrictService{
     @Override
     @Transactional
     public void deleteDistrict(UUID id) {
+        DistrictResponse response = getDistrictById(id);
+        if (!response.getSections().isEmpty()) {
+            throw new DeleteDistrictException(response.getName());
+        }
+
         districtRepository.deleteById(id);
     }
 }

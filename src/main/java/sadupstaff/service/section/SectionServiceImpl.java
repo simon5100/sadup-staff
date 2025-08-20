@@ -5,9 +5,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sadupstaff.dto.request.create.CreateSectionRequest;
 import sadupstaff.dto.request.update.UpdateSectionRequest;
+import sadupstaff.dto.response.DepartmentResponse;
 import sadupstaff.dto.response.SectionResponse;
 import sadupstaff.entity.district.District;
 import sadupstaff.entity.district.Section;
+import sadupstaff.entity.management.Department;
+import sadupstaff.entity.management.Employee;
+import sadupstaff.exception.IdNotFoundException;
+import sadupstaff.exception.PositionOccupiedException;
+import sadupstaff.exception.department.DeleteDepartmentException;
+import sadupstaff.exception.employee.MaxEmployeeInDepartmentException;
+import sadupstaff.exception.section.DeleteSectionException;
+import sadupstaff.exception.section.MaxSectionInDistrictException;
 import sadupstaff.mapper.section.CreateSectionMapper;
 import sadupstaff.mapper.section.FindSectionMapper;
 import sadupstaff.mapper.section.UpdateSectionMapper;
@@ -41,20 +50,16 @@ public class SectionServiceImpl implements SectionService{
     @Override
     @Transactional
     public SectionResponse getSectionById(UUID id) {
-        Optional<Section> optionalSection = sectionRepository.findById(id);
-        if(optionalSection.isPresent()) {
-            return findSectionMapper.entityToResponse(optionalSection.get());
-        }
-        return null;
+        Section section = sectionRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
+
+        return findSectionMapper.entityToResponse(section);
     }
 
     @Override
     public Section getSectionByIdForUpdate(UUID id) {
-        Optional<Section> optionalSection = sectionRepository.findById(id);
-        if(optionalSection.isPresent()) {
-            return optionalSection.get();
-        }
-        return null;
+        return sectionRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
     }
 
     @Override
@@ -71,6 +76,17 @@ public class SectionServiceImpl implements SectionService{
     public SectionResponse saveSection(CreateSectionRequest createRequest) {
         Section section = createSectionMapper.toEntity(createRequest);
         District district = districtService.getDistrictByName(createRequest.getDistrictName());
+
+        if (district.getMaxNumberSection() == district.getSections().size()) {
+            throw new MaxSectionInDistrictException(createRequest.getDistrictName());
+        }
+
+        for (Section sect: district.getSections()) {
+            if (sect.getName().equals(section.getName())) {
+                throw new PositionOccupiedException(createRequest.getName());
+            }
+        }
+
         section.setDistrict(district);
         section.setCreatedAt(LocalDateTime.now());
         section.setUpdatedAt(LocalDateTime.now());
@@ -93,6 +109,11 @@ public class SectionServiceImpl implements SectionService{
     @Override
     @Transactional
     public void deleteSection(UUID id) {
+        SectionResponse response = getSectionById(id);
+        if (!response.getEmpsSect().isEmpty()) {
+            throw new DeleteSectionException(response.getName());
+        }
+
         sectionRepository.deleteById(id);
     }
 }

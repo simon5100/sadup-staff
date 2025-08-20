@@ -5,7 +5,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum SectionEmployeeEnum {
+public enum PositionSectionEmployeeEnum {
+    JUDGE_ORGANIZER("Судья организатор"),
     JUDGE("Судья"),
     JUDGE_ASSISTANT("Помощник мирового судьи"),
     SECRETARY_SESSION("Секретарь судебного заседания"),

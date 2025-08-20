@@ -9,6 +9,6 @@ import sadupstaff.mapper.sectionemployee.FindSectionEmployeeMapper;
 @Mapper(componentModel = "spring", uses = FindSectionEmployeeMapper.class)
 public interface FindSectionMapper {
 
-    @Mapping(target = "districtName", source = "district.name")
+    @Mapping(target = "districtName", source = "district.name.stringConvert")
     SectionResponse entityToResponse(Section section);
 }

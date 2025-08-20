@@ -3,6 +3,8 @@ package sadupstaff.entity.management;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.*;
+import sadupstaff.enums.PositionEmployeeEnum;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -37,7 +39,9 @@ public class Employee {
     private String patronymic;
 
     @Column(name = "position")
-    private String position;
+    @Enumerated(EnumType.STRING)
+    @Nonnull
+    private PositionEmployeeEnum position;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

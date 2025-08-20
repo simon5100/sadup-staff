@@ -13,8 +13,12 @@ import lombok.NoArgsConstructor;
 public class CreateDepartmentRequest {
 
     @NotBlank
-    @Schema(description = "Имя отдела", example = "Центральный район")
+    @Schema(description = "Имя отдела", example = "Отдел правового обеспечения")
     private String name;
+
+    @NotBlank
+    @Schema(description = "Максимальное число сотрудников в отделе", example = "5")
+    private Integer maxNumberEmployees;
 
     @Schema(description = "Описание отдела")
     private String description;

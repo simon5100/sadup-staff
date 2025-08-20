@@ -21,6 +21,10 @@ public class CreateSectionRequest {
     private String name;
 
     @NotBlank
+    @Schema(description = "Максимальое число работников закрепленных за участком", example = "3")
+    private Integer maxNumberEmployeeSection;
+
+    @NotBlank
     @Schema(description = "Имя района в котором находится участок", example = "Центральный район")
     private String districtName;
 }
