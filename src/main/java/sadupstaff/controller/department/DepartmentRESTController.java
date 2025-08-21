@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import sadupstaff.dto.request.create.CreateDepartmentRequest;
 import sadupstaff.dto.request.update.UpdateDepartmentRequest;
 import sadupstaff.dto.response.DepartmentResponse;
-
 import java.util.List;
 import java.util.UUID;
 

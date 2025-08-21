@@ -61,11 +61,18 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     @Transactional
     public DepartmentResponse saveDepartment(CreateDepartmentRequest createRequest) {
-        Department department = createDepartmentMapper.toEntity(createRequest);
-
-        if (departmentRepository.existsDistinctByName(department.getName())) {
-            throw new PositionOccupiedException(createRequest.getName().trim());
+        DepartmentNameEnum nameEnum;
+        try {
+            nameEnum = DepartmentNameEnum.valueOf(createRequest.getName());
+        } catch (RuntimeException e) {
+            throw new DepartmentNotFoundException(createRequest.getName());
         }
+
+        if (departmentRepository.existsDistinctByName(nameEnum)) {
+            throw new PositionOccupiedException(createRequest.getName());
+        }
+
+        Department department = createDepartmentMapper.toEntity(createRequest);
 
         department.setCreatedAt(LocalDateTime.now());
         department.setUpdatedAt(LocalDateTime.now());
@@ -80,7 +87,11 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department departmentOld = departmentRepository.findById(id)
                 .orElseThrow(() -> new IdNotFoundException(id.toString()));
 
-        updateDepartmentMapper.updateDepartmentData(updateData, departmentOld);
+        try {
+            updateDepartmentMapper.updateDepartmentData(updateData, departmentOld);
+        } catch (RuntimeException e) {
+            throw new DepartmentNotFoundException(updateData.getName());
+        }
 
         if (departmentRepository.existsDistinctByName(departmentOld.getName())) {
             throw new PositionOccupiedException(departmentOld.getName().getStringConvert());
