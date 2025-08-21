@@ -2,12 +2,20 @@ spring:
   application:
     name: spring_course_springboot
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=PostgreSQL
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS sudstaff
     username: sa
     password:
     driver-class-name: org.h2.Driver
   liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.xml
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
 
 server:
   port: 8081
