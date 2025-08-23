@@ -14,7 +14,6 @@ import sadupstaff.dto.response.DepartmentResponse;
 import sadupstaff.entity.management.Department;
 import sadupstaff.entity.management.Employee;
 import sadupstaff.enums.DepartmentNameEnum;
-import sadupstaff.exception.DepartmentNotFoundException;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
 import sadupstaff.exception.department.DeleteDepartmentException;
@@ -30,7 +29,7 @@ import static org.mockito.Mockito.*;
 import static sadupstaff.enums.DepartmentNameEnum.LEGAL_SUPPORT;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Тесты методов сервиса отделов")
+@DisplayName("Unit тесты методов DepartmentServiceImpl")
 public class DepartmentServiceImplTest {
 
     @Mock
@@ -71,7 +70,7 @@ public class DepartmentServiceImplTest {
         badId = UUID.fromString("2d30f1c3-e70d-42a0-a3d3-58a5c2d50d05");
 
         createDepartmentRequest = new CreateDepartmentRequest(
-                "LEGAL_SUPPORT",
+                LEGAL_SUPPORT,
                 5,
                 "обеспечивает правами"
         );
@@ -157,24 +156,9 @@ public class DepartmentServiceImplTest {
 
             when(departmentRepository.findDepartmentByName(name)).thenReturn(department);
 
-            Department result = departmentService.getDepartmentByName(name.getStringConvert());
+            Department result = departmentService.getDepartmentByName(name);
 
             assertEquals(result, department);
-        }
-
-        @ParameterizedTest
-        @EnumSource(DepartmentNameEnum.class)
-        @Tag("unit")
-        @DisplayName("Тест на выброс DepartmentNotFoundException из-за неверного имени")
-        void getDepartmentByNameNotFoundBadNameTest(DepartmentNameEnum name) {
-
-            String badName = name.getStringConvert() + "я";
-            department.setName(name);
-
-            DepartmentNotFoundException exception = assertThrows(DepartmentNotFoundException.class,
-                    () -> departmentService.getDepartmentByName(badName));
-
-            assertEquals("Отдела '" + badName + "' не существует", exception.getMessage());
         }
     }
 
@@ -188,7 +172,7 @@ public class DepartmentServiceImplTest {
         @DisplayName("Тест с позитивным исходом")
         void saveDepartmentTest(DepartmentNameEnum name) {
 
-            createDepartmentRequest.setName(name.toString());
+            createDepartmentRequest.setName(name);
             department.setName(name);
             response.setName(name.getStringConvert());
 
@@ -202,29 +186,11 @@ public class DepartmentServiceImplTest {
 
             assertEquals(result, response);
 
-            verify(departmentRepository, times(1)).save(department);
+
             verify(createDepartmentMapper, times(1)).toEntity(createDepartmentRequest);
+            verify(departmentRepository, times(1)).existsDistinctByName(department.getName());
+            verify(departmentRepository, times(1)).save(department);
             verify(findDepartmentMapper, times(1)).entityToResponse(department);
-        }
-
-        @ParameterizedTest
-        @EnumSource(DepartmentNameEnum.class)
-        @Tag("unit")
-        @DisplayName("Тест на выброс DepartmentNotFoundException")
-        void saveDepartmentNotFoundTest(DepartmentNameEnum name) {
-
-            createDepartmentRequest.setName(name.toString() + "z");
-
-            DepartmentNotFoundException exception = assertThrows(
-                    DepartmentNotFoundException.class,
-                    () -> departmentService.saveDepartment(createDepartmentRequest));
-
-            assertEquals("Отдела '" + createDepartmentRequest.getName() + "' не существует", exception.getMessage());
-
-            verify(createDepartmentMapper, never()).toEntity(createDepartmentRequest);
-            verify(departmentRepository,never()).existsDistinctByName(department.getName());
-            verify(departmentRepository, never()).save(department);
-            verify(findDepartmentMapper, never()).entityToResponse(department);
         }
 
         @ParameterizedTest
@@ -233,7 +199,7 @@ public class DepartmentServiceImplTest {
         @DisplayName("Тест на выброс PositionOccupiedException")
         void saveDepartmentPositionOccupiedTest(DepartmentNameEnum name) {
 
-            createDepartmentRequest.setName(name.toString());
+            createDepartmentRequest.setName(name);
             department.setName(name);
 
             when(departmentRepository.existsDistinctByName(department.getName())).thenReturn(true);
@@ -242,7 +208,7 @@ public class DepartmentServiceImplTest {
                     PositionOccupiedException.class,
                     () -> departmentService.saveDepartment(createDepartmentRequest));
 
-            assertEquals("Позиция '" + name + "' уже занята", exception.getMessage());
+            assertEquals("Позиция '" + name.getStringConvert() + "' уже занята", exception.getMessage());
 
             verify(createDepartmentMapper, never()).toEntity(createDepartmentRequest);
             verify(departmentRepository,times(1)).existsDistinctByName(department.getName());
@@ -265,18 +231,18 @@ public class DepartmentServiceImplTest {
         @DisplayName("Тест с позитивным исходом")
         void updateDepartmentTest(DepartmentNameEnum name, String description) {
 
-            updateDepartmentRequest.setName(name.toString());
+            updateDepartmentRequest.setName(name);
             updateDepartmentRequest.setDescription(description);
             response.setName(name.getStringConvert());
             response.setDescription(description);
 
             when(departmentRepository.findById(id)).thenReturn(Optional.of(department));
+            when(departmentRepository.existsDistinctByName(name)).thenReturn(false);
             doAnswer(invocation  -> {
                 department.setName(name);
                 department.setDescription(updateDepartmentRequest.getDescription());
                 return null;
             }).when(updateDepartmentMapper).updateDepartmentData(updateDepartmentRequest,department);
-            when(departmentRepository.existsDistinctByName(name)).thenReturn(false);
             when(departmentRepository.save(department)).thenReturn(department);
             when(findDepartmentMapper.entityToResponse(department)).thenReturn(response);
 
@@ -289,8 +255,6 @@ public class DepartmentServiceImplTest {
             verify(departmentRepository, times(1)).save(department);
             verify(findDepartmentMapper, times(1)).entityToResponse(department);
         }
-
-
 
         @Test
         @Tag("unit")
@@ -316,53 +280,17 @@ public class DepartmentServiceImplTest {
                 "CIVIL_SERVICE_AND_HR, кадры",
                 "FINANCE_AND_PLANNING, деньги",
                 "LOGISTICS_SUPPORT, два степлера",
-                "LOGISTICS_SUPPORT, права"
-        })
-        @Tag("unit")
-        @DisplayName("Тест на выброс DepartmentNotFoundException")
-        void updateDepartmentNotFoundTest(DepartmentNameEnum name, String description) {
-
-            updateDepartmentRequest.setName(name.toString() + "z");
-            updateDepartmentRequest.setDescription(description);
-
-            when(departmentRepository.findById(id)).thenReturn(Optional.of(department));
-            doAnswer(invocation  -> {
-                throw new DepartmentNotFoundException(updateDepartmentRequest.getName());
-            }).when(updateDepartmentMapper).updateDepartmentData(updateDepartmentRequest,department);
-            DepartmentNotFoundException exception = assertThrows(DepartmentNotFoundException.class,
-                    () -> departmentService.updateDepartment(id, updateDepartmentRequest));
-
-            assertEquals("Отдела '" + updateDepartmentRequest.getName() + "' не существует", exception.getMessage());
-
-            verify(departmentRepository, times(1)).findById(id);
-            verify(updateDepartmentMapper, times(1)).updateDepartmentData(updateDepartmentRequest,department);
-            verify(departmentRepository, never()).existsDistinctByName(name);
-            verify(departmentRepository, never()).save(department);
-            verify(findDepartmentMapper, never()).entityToResponse(department);
-        }
-
-
-        @ParameterizedTest
-        @CsvSource({
-                "CIVIL_SERVICE_AND_HR, кадры",
-                "FINANCE_AND_PLANNING, деньги",
-                "LOGISTICS_SUPPORT, два степлера",
-                "LOGISTICS_SUPPORT, права"
+                "LEGAL_SUPPORT, права"
         })
         @Tag("unit")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void updateDepartmentPositionOccupiedTest(DepartmentNameEnum name, String description) {
 
-            updateDepartmentRequest.setName(name.getStringConvert());
+            updateDepartmentRequest.setName(name);
             updateDepartmentRequest.setDescription(description);
             department.setName(name);
 
             when(departmentRepository.findById(id)).thenReturn(Optional.of(department));
-            doAnswer(invocation  -> {
-                department.setName(name);
-                department.setDescription(updateDepartmentRequest.getDescription());
-                return null;
-            }).when(updateDepartmentMapper).updateDepartmentData(updateDepartmentRequest,department);
             when(departmentRepository.existsDistinctByName(department.getName())).thenReturn(true);
 
             PositionOccupiedException exception = assertThrows(PositionOccupiedException.class,
@@ -371,8 +299,8 @@ public class DepartmentServiceImplTest {
             assertEquals("Позиция '" + name.getStringConvert() + "' уже занята", exception.getMessage());
 
             verify(departmentRepository, times(1)).findById(id);
-            verify(updateDepartmentMapper, times(1)).updateDepartmentData(updateDepartmentRequest,department);
             verify(departmentRepository, times(1)).existsDistinctByName(name);
+            verify(updateDepartmentMapper, never()).updateDepartmentData(updateDepartmentRequest,department);
             verify(departmentRepository, never()).save(department);
             verify(findDepartmentMapper, never()).entityToResponse(department);
         }

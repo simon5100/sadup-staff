@@ -3,6 +3,7 @@ package sadupstaff.dto.request.update;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import sadupstaff.enums.DistrictNameEnum;
 
 @Data
 @AllArgsConstructor
@@ -10,7 +11,7 @@ import lombok.Data;
 public class UpdateDistrictRequest {
 
     @Schema(description = "Имя района", example = "Центральный район")
-    final private String name;
+    final private DistrictNameEnum name;
 
     @Schema(description = "Описание района")
     final private String description;

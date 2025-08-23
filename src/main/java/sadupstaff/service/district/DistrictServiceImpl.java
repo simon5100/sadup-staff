@@ -7,7 +7,6 @@ import sadupstaff.dto.request.create.CreateDistrictRequest;
 import sadupstaff.dto.request.update.UpdateDistrictRequest;
 import sadupstaff.dto.response.DistrictResponse;
 import sadupstaff.entity.district.District;
-import sadupstaff.entity.management.Department;
 import sadupstaff.enums.DistrictNameEnum;
 import sadupstaff.exception.DistrictNotFoundException;
 import sadupstaff.exception.IdNotFoundException;
@@ -51,27 +50,19 @@ public class DistrictServiceImpl implements DistrictService{
     }
 
     @Override
-    public District getDistrictByIdForUpdate(UUID id) {
-        return districtRepository.findById(id)
-                .orElseThrow(() -> new IdNotFoundException(id.toString()));
-    }
-
-    @Override
-    public District getDistrictByName(String name) {
+    public District getDistrictByName(DistrictNameEnum name) {
         return Arrays.stream(DistrictNameEnum.values())
-                .filter(value -> value.getStringConvert().equalsIgnoreCase(name))
+                .filter(value -> value.equals(name))
                 .findFirst()
                 .map(value -> districtRepository.findDistrictByName(value))
-                .orElseThrow(() -> new DistrictNotFoundException(name));
+                .orElseThrow(() -> new DistrictNotFoundException(name.getStringConvert()));
     }
 
     @Override
     @Transactional
     public DistrictResponse saveDistrict(CreateDistrictRequest createRequest) {
-        for (District districtCheck: districtRepository.findAll()) {
-            if (districtCheck.getName().getStringConvert().equalsIgnoreCase(createRequest.getName().trim())) {
-                throw new PositionOccupiedException(createRequest.getName().trim());
-            }
+        if (districtRepository.existsDistinctByName(createRequest.getName())) {
+            throw new PositionOccupiedException(createRequest.getName().getStringConvert());
         }
 
         District district = createDistrictMapper.toEntity(createRequest);
@@ -85,7 +76,13 @@ public class DistrictServiceImpl implements DistrictService{
     @Override
     @Transactional
     public DistrictResponse updateDistrict(UUID id, UpdateDistrictRequest updateData) {
-        District districtOld = getDistrictByIdForUpdate(id);
+        District districtOld = districtRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
+
+        if (updateData.getName() != null && districtRepository.existsDistinctByName(updateData.getName())) {
+            throw new PositionOccupiedException(updateData.getName().getStringConvert());
+        }
+
         updateDistrictMapper.updateDistrictData(updateData, districtOld);
         districtOld.setUpdatedAt(LocalDateTime.now());
         districtRepository.save(districtOld);
@@ -96,9 +93,10 @@ public class DistrictServiceImpl implements DistrictService{
     @Override
     @Transactional
     public void deleteDistrict(UUID id) {
-        DistrictResponse response = getDistrictById(id);
-        if (!response.getSections().isEmpty()) {
-            throw new DeleteDistrictException(response.getName());
+        District district = districtRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
+        if (!district.getSections().isEmpty()) {
+            throw new DeleteDistrictException(district.getName().getStringConvert());
         }
 
         districtRepository.deleteById(id);

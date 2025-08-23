@@ -8,4 +8,6 @@ import java.util.UUID;
 public interface DistrictRepository extends JpaRepository<District, UUID> {
 
     District findDistrictByName(DistrictNameEnum name);
+
+    boolean existsDistinctByName(DistrictNameEnum name);
 }

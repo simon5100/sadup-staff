@@ -46,30 +46,23 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .orElseThrow(() -> new IdNotFoundException(id.toString()));
 
         return findDepartmentMapper.entityToResponse(department);
-
     }
 
     @Override
-    public Department getDepartmentByName(String name) {
+    public Department getDepartmentByName(DepartmentNameEnum name) {
         return Arrays.stream(DepartmentNameEnum.values())
-                .filter(value -> value.getStringConvert().equalsIgnoreCase(name))
+                .filter(value -> name.equals(value))
                 .findFirst()
                 .map(value -> departmentRepository.findDepartmentByName(value))
-                .orElseThrow(() -> new DepartmentNotFoundException(name));
+                .orElseThrow(() -> new DepartmentNotFoundException(name.getStringConvert()));
     }
 
     @Override
     @Transactional
     public DepartmentResponse saveDepartment(CreateDepartmentRequest createRequest) {
-        DepartmentNameEnum nameEnum;
-        try {
-            nameEnum = DepartmentNameEnum.valueOf(createRequest.getName());
-        } catch (RuntimeException e) {
-            throw new DepartmentNotFoundException(createRequest.getName());
-        }
 
-        if (departmentRepository.existsDistinctByName(nameEnum)) {
-            throw new PositionOccupiedException(createRequest.getName());
+        if (departmentRepository.existsDistinctByName(createRequest.getName())) {
+            throw new PositionOccupiedException(createRequest.getName().getStringConvert());
         }
 
         Department department = createDepartmentMapper.toEntity(createRequest);
@@ -87,15 +80,11 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department departmentOld = departmentRepository.findById(id)
                 .orElseThrow(() -> new IdNotFoundException(id.toString()));
 
-        try {
-            updateDepartmentMapper.updateDepartmentData(updateData, departmentOld);
-        } catch (RuntimeException e) {
-            throw new DepartmentNotFoundException(updateData.getName());
+        if (updateData.getName() != null && departmentRepository.existsDistinctByName(updateData.getName())) {
+            throw new PositionOccupiedException(updateData.getName().getStringConvert());
         }
 
-        if (departmentRepository.existsDistinctByName(departmentOld.getName())) {
-            throw new PositionOccupiedException(departmentOld.getName().getStringConvert());
-        }
+        updateDepartmentMapper.updateDepartmentData(updateData, departmentOld);
 
         departmentOld.setUpdatedAt(LocalDateTime.now());
         departmentRepository.save(departmentOld);

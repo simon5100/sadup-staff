@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sadupstaff.enums.DistrictNameEnum;
 
 @Data
 @AllArgsConstructor
@@ -26,5 +27,5 @@ public class CreateSectionRequest {
 
     @NotBlank
     @Schema(description = "Имя района в котором находится участок", example = "Центральный район")
-    private String districtName;
+    private DistrictNameEnum districtName;
 }

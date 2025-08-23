@@ -78,7 +78,7 @@ public class SectionServiceImpl implements SectionService{
         District district = districtService.getDistrictByName(createRequest.getDistrictName());
 
         if (district.getMaxNumberSection() == district.getSections().size()) {
-            throw new MaxSectionInDistrictException(createRequest.getDistrictName());
+            throw new MaxSectionInDistrictException(createRequest.getDistrictName().getStringConvert());
         }
 
         for (Section sect: district.getSections()) {
@@ -109,9 +109,10 @@ public class SectionServiceImpl implements SectionService{
     @Override
     @Transactional
     public void deleteSection(UUID id) {
-        SectionResponse response = getSectionById(id);
-        if (!response.getEmpsSect().isEmpty()) {
-            throw new DeleteSectionException(response.getName());
+        Section section = sectionRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
+        if (!section.getEmpsSect().isEmpty()) {
+            throw new DeleteSectionException(section.getName());
         }
 
         sectionRepository.deleteById(id);

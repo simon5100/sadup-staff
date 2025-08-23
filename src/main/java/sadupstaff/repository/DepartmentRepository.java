@@ -10,7 +10,5 @@ public interface DepartmentRepository extends JpaRepository<Department, UUID> {
 
     Department findDepartmentByName(DepartmentNameEnum name);
 
-    Boolean existsDistinctByIdAndName(UUID id, DepartmentNameEnum name);
-
     Boolean existsDistinctByName(DepartmentNameEnum name);
 }
