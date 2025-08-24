@@ -1,45 +1,37 @@
 package sadupstaff.department;
 
-import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.jupiter.params.provider.ValueSources;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import sadupstaff.dto.request.create.CreateDepartmentRequest;
 import sadupstaff.dto.request.update.UpdateDepartmentRequest;
 import sadupstaff.dto.response.DepartmentResponse;
 import sadupstaff.entity.management.Department;
 import sadupstaff.enums.DepartmentNameEnum;
 import sadupstaff.exception.ErrorResponse;
-import sadupstaff.exception.IdNotFoundException;
-import sadupstaff.exception.PositionOccupiedException;
-import sadupstaff.exception.department.DeleteDepartmentException;
 import sadupstaff.mapper.department.CreateDepartmentMapper;
 import sadupstaff.mapper.department.FindDepartmentMapper;
 import sadupstaff.mapper.department.UpdateDepartmentMapper;
 import sadupstaff.repository.DepartmentRepository;
 import sadupstaff.service.department.DepartmentService;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -49,8 +41,8 @@ import static sadupstaff.enums.DepartmentNameEnum.LEGAL_SUPPORT;
 
 @Log4j2
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
 @Testcontainers
+@TestClassOrder(ClassOrderer.OrderAnnotation.class)
 @DisplayName("E2E тесты методов DepartmentRESTControllerImpl")
 public class DepartmentRESTControllerE2ETest {
 
@@ -70,7 +62,6 @@ public class DepartmentRESTControllerE2ETest {
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "none");
     }
 
-
     @Autowired
     private TestRestTemplate restTemplate;
 
@@ -88,8 +79,6 @@ public class DepartmentRESTControllerE2ETest {
 
     @MockitoSpyBean
     private CreateDepartmentMapper createDepartmentMapper;
-
-    private ObjectMapper objectMapper;
 
     private Department department;
 
@@ -111,14 +100,12 @@ public class DepartmentRESTControllerE2ETest {
 
     private ResponseEntity<ErrorResponse> responseError;
 
-
-
     @BeforeEach
     void setUp(){
+
+
         responseEntity = null;
         responseError = null;
-
-        objectMapper = new ObjectMapper();
 
         department = new Department(
                 UUID.fromString("2d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
@@ -152,14 +139,12 @@ public class DepartmentRESTControllerE2ETest {
         log.info("create db and data");
     }
 
-    @AfterEach
-    @Transactional
     void tearDown(){
         log.info("clean db");
     }
 
     @Nested
-    @Transactional
+    @Order(1)
     @DisplayName("Тесты на метод showAllDepartments поиска всех отделов")
     class ShowAllDepartmentsTests {
 
@@ -188,7 +173,7 @@ public class DepartmentRESTControllerE2ETest {
     }
 
     @Nested
-    @Transactional
+    @Order(2)
     @DisplayName("Тесты на метод getDepartment поиска отдела по id")
     class GetDepartmentTests {
 
@@ -231,14 +216,14 @@ public class DepartmentRESTControllerE2ETest {
     }
 
     @Nested
-    @Transactional
+    @Order(4)
     @DisplayName("Тесты на метод addDepartment сохранения отдела")
     class AddDepartmentTests {
-        @SneakyThrows
+
         @ParameterizedTest
         @CsvSource({
                 "CIVIL_SERVICE_AND_HR, Отдел государственной гражданской службы и кадров",
-                "LOGISTICS_SUPPORT, Отдел материально-технического обеспечения"
+                "FINANCE_AND_PLANNING, Отдел финансирования и планирования"
         })
         @Tag("E2E")
         @DisplayName("Тест с позитивным исходом")
@@ -264,7 +249,7 @@ public class DepartmentRESTControllerE2ETest {
         @ParameterizedTest
         @EnumSource(value = DepartmentNameEnum.class,
                 mode = EnumSource.Mode.INCLUDE,
-                names = {"LEGAL_SUPPORT", "FINANCE_AND_PLANNING"})
+                names = {"LEGAL_SUPPORT", "LOGISTICS_SUPPORT"})
         @Tag("E2E")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void addDepartmentPositionOccupiedTest(DepartmentNameEnum name){
@@ -286,19 +271,40 @@ public class DepartmentRESTControllerE2ETest {
     }
 
     @Nested
-    @Transactional
+    @Order(3)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     @DisplayName("Тесты на метод updateDepartment обновления данных отдела")
     class UpdateDepartmentTests {
+
         @ParameterizedTest
         @CsvSource({
-                "CIVIL_SERVICE_AND_HR, кадры",
-                "LOGISTICS_SUPPORT, два степлера"
+                "CIVIL_SERVICE_AND_HR, кадры, 2d30f1c3-e70d-42a0-a3d3-58a5c2d50d04",
+                "LOGISTICS_SUPPORT, два степлера, 2d30f1c3-e70d-42a0-a3d3-58a5c2d50d04",
+                "CIVIL_SERVICE_AND_HR, кадры, 3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04",
+                "LEGAL_SUPPORT, права, 3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"
         })
         @Tag("E2E")
         @DisplayName("Тест с позитивным исходом")
-        void updateDepartmentTest(DepartmentNameEnum name, String description) {
+        void updateDepartmentTest(DepartmentNameEnum name, String description, UUID id) {
 
+            updateDepartmentRequest.setName(name);
+            updateDepartmentRequest.setDescription(description);
 
+            responseEntity = restTemplate.exchange(URL + "/" + id,
+                    HttpMethod.PUT,
+                    new HttpEntity<>(updateDepartmentRequest),  DepartmentResponse.class);
+
+            DepartmentResponse responseCheck = responseEntity.getBody();
+
+            assertNotNull(responseCheck);
+            assertTrue(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.OK));
+            assertEquals(name.getStringConvert(), responseCheck.getName());
+
+            verify(departmentService, times(1)).updateDepartment(id, updateDepartmentRequest);
+            verify(departmentRepository, times(1)).existsDistinctByName(name);
+            verify(updateDepartmentMapper, times(1)).updateDepartmentData(any(UpdateDepartmentRequest.class), any(Department.class));
+            verify(departmentRepository, times(1)).save(any(Department.class));
+            verify(findDepartmentMapper, times(1)).entityToResponse(any(Department.class));
         }
 
         @Test
@@ -306,6 +312,22 @@ public class DepartmentRESTControllerE2ETest {
         @DisplayName("Тест на выброс IdNotFoundException")
         void updateDepartmentIdNotFoundTest() {
 
+            ResponseEntity<ErrorResponse> responseError = restTemplate.exchange(
+                    URL + "/" + badId,
+                    HttpMethod.PUT,
+                    new HttpEntity<>(updateDepartmentRequest),
+                    ErrorResponse.class);
+
+
+            assertTrue(responseError.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND));
+            assertEquals("Id '" + badId + "' не найден", responseError.getBody().getMessage());
+
+            verify(departmentService, times(1)).updateDepartment(badId, updateDepartmentRequest);
+            verify(departmentRepository, times(1)).findById(badId);
+            verify(updateDepartmentMapper, never()).updateDepartmentData(any(UpdateDepartmentRequest.class), any(Department.class));
+            verify(departmentRepository, never()).existsDistinctByName(department.getName());
+            verify(departmentRepository, never()).save(any(Department.class));
+            verify(findDepartmentMapper, never()).entityToResponse(any(Department.class));
 
         }
 
@@ -314,23 +336,51 @@ public class DepartmentRESTControllerE2ETest {
                 mode = EnumSource.Mode.INCLUDE,
                 names = {"LEGAL_SUPPORT", "FINANCE_AND_PLANNING"})
         @Tag("E2E")
+        @Order(1)
         @DisplayName("Тест на выброс PositionOccupiedException")
         void updateDepartmentPositionOccupiedTest(DepartmentNameEnum name) {
 
+            updateDepartmentRequest.setName(name);
 
+            ResponseEntity<ErrorResponse> responseError = restTemplate.exchange(
+                    URL + "/" + id1,
+                    HttpMethod.PUT,
+                    new HttpEntity<>(updateDepartmentRequest),
+                    ErrorResponse.class);
+
+            assertTrue(responseError.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT));
+            assertEquals("Позиция '" + name.getStringConvert() + "' уже занята", responseError.getBody().getMessage());
+
+            verify(departmentService, times(1)).updateDepartment(id1, updateDepartmentRequest);
+            verify(departmentRepository, times(1)).findById(id1);
+            verify(departmentRepository, times(1)).existsDistinctByName(name);
+            verify(updateDepartmentMapper, never()).updateDepartmentData(any(UpdateDepartmentRequest.class), any(Department.class));
+            verify(departmentRepository, never()).save(any(Department.class));
+            verify(findDepartmentMapper, never()).entityToResponse(any(Department.class));
         }
     }
 
     @Nested
-    @Transactional
+    @Order(5)
     @DisplayName("Тесты на метод deleteDepartment удаления отделя по id1")
     class DeleteDepartmentByIdTests {
+
         @Test
         @Tag("E2E")
         @DisplayName("Тест с позитивным исходом")
         void deleteDepartmentByIdTest() {
 
+            ResponseEntity<Void> status = restTemplate.exchange(
+                    URL + "/" + id2,
+                    HttpMethod.DELETE,
+                    new HttpEntity<>(Void.class),
+                    Void.class);
 
+            assertTrue(status.getStatusCode().isSameCodeAs(HttpStatus.OK));
+
+            verify(departmentService, times(1)).deleteDepartment(id2);
+            verify(departmentRepository, times(1)).findById(id2);
+            verify(departmentRepository, times(1)).deleteById(id2);
         }
 
         @Test
@@ -338,7 +388,18 @@ public class DepartmentRESTControllerE2ETest {
         @DisplayName("Тест на выброс IdNotFoundException")
         void deleteDepartmentIdNotFoundTest() {
 
+            ResponseEntity<ErrorResponse> status = restTemplate.exchange(
+                    URL + "/" + badId,
+                    HttpMethod.DELETE,
+                    new HttpEntity<>(ErrorResponse.class),
+                    ErrorResponse.class);
 
+            assertTrue(status.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND));
+            assertEquals("Id '" + badId + "' не найден", status.getBody().getMessage());
+
+            verify(departmentService, times(1)).deleteDepartment(badId);
+            verify(departmentRepository, times(1)).findById(badId);
+            verify(departmentRepository, never()).deleteById(badId);
         }
 
         @Test
@@ -346,17 +407,22 @@ public class DepartmentRESTControllerE2ETest {
         @DisplayName("Тест на выброс DeleteDepartmentException")
         void deleteDepartmentByIdDeleteDepartmentExceptionTest() {
 
+            ResponseEntity<ErrorResponse> status = restTemplate.exchange(
+                    URL + "/" + id1,
+                    HttpMethod.DELETE,
+                    new HttpEntity<>(ErrorResponse.class),
+                    ErrorResponse.class);
 
+            assertTrue(status.getStatusCode().isSameCodeAs(HttpStatus.UNPROCESSABLE_ENTITY));
+            assertEquals(DepartmentNameEnum.LOGISTICS_SUPPORT.getStringConvert() + " имеет сотрудников", status.getBody().getMessage());
+
+            verify(departmentService, times(1)).deleteDepartment(id1);
+            verify(departmentRepository, times(1)).findById(id1);
+            verify(departmentRepository, never()).deleteById(id1);
         }
     }
-
-
-
-
-
-
-
 }
+
 
 
 

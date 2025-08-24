@@ -13,7 +13,7 @@ public class CreateDistrictRequest {
 
     @NotBlank
     @Schema(description = "Имя района", example = "Центральный")
-    final private DistrictNameEnum name;
+    private DistrictNameEnum name;
 
     @NotBlank
     @Schema(description = "максимальное число участков в района района", example = "5")
@@ -21,5 +21,5 @@ public class CreateDistrictRequest {
 
     @NotBlank
     @Schema(description = "Описание района")
-    final private String description;
+    private String description;
 }

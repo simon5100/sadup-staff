@@ -30,7 +30,7 @@ import static sadupstaff.enums.DepartmentNameEnum.LEGAL_SUPPORT;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Unit тесты методов DepartmentServiceImpl")
-public class DepartmentServiceImplTest {
+public class DepartmentServiceImplUnitTest {
 
     @Mock
     private DepartmentRepository departmentRepository;
@@ -186,7 +186,6 @@ public class DepartmentServiceImplTest {
 
             assertEquals(result, response);
 
-
             verify(createDepartmentMapper, times(1)).toEntity(createDepartmentRequest);
             verify(departmentRepository, times(1)).existsDistinctByName(department.getName());
             verify(departmentRepository, times(1)).save(department);
@@ -307,7 +306,7 @@ public class DepartmentServiceImplTest {
     }
 
     @Nested
-    @DisplayName("Тесты на метод deleteDepartment удаления отделя по id")
+    @DisplayName("Тесты на метод deleteDepartment удаления отдела по id")
     class DeleteDepartmentByIdTests {
 
         @Test
