@@ -9,30 +9,24 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sadupstaff.dto.request.create.CreateEmployeeRequest;
 import sadupstaff.dto.request.update.UpdateEmployeeRequest;
-import sadupstaff.dto.response.DistrictResponse;
 import sadupstaff.dto.response.EmployeeResponse;
-import sadupstaff.entity.district.District;
-import sadupstaff.entity.district.Section;
 import sadupstaff.entity.management.Department;
 import sadupstaff.entity.management.Employee;
 import sadupstaff.enums.DepartmentNameEnum;
-import sadupstaff.enums.DistrictNameEnum;
 import sadupstaff.enums.PositionEmployeeEnum;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
-import sadupstaff.exception.district.DeleteDistrictException;
+import sadupstaff.exception.employee.MaxEmployeeInDepartmentException;
 import sadupstaff.mapper.employee.CreateEmployeeMapper;
 import sadupstaff.mapper.employee.FindEmployeeMapper;
 import sadupstaff.mapper.employee.UpdateEmployeeMapper;
 import sadupstaff.repository.EmployeeRepository;
 import sadupstaff.service.department.DepartmentServiceImpl;
 import sadupstaff.service.employee.EmployeeServiceImpl;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -249,6 +243,43 @@ public class EmployeeServiceImplUnitTest {
             verify(employeeRepository, never()).save(employee);
             verify(findEmployeeMapper, never()).entityToResponse(employee);
         }
+
+        @ParameterizedTest
+        @EnumSource(PositionEmployeeEnum.class)
+        @Tag("unit")
+        @DisplayName("Тест на выброс MaxEmployeeInDepartmentException")
+        void saveEmployeeMaxEmployeeInDepartmentTest(PositionEmployeeEnum position) {
+
+            employee.setPosition(position);
+            createRequest.setPosition(position);
+
+            Department department = new Department(
+                    UUID.fromString("2d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
+                    LEGAL_SUPPORT,
+                    1,
+                    "обеспечивает правами",
+                    LocalDateTime.now(),
+                    LocalDateTime.now(),
+                    List.of(employee)
+            );
+
+            when(createEmployeeMapper.toEntity(createRequest)).thenReturn(employee);
+            when(departmentService.getDepartmentByName(createRequest.getDepartmentName())).thenReturn(department);
+
+            MaxEmployeeInDepartmentException exception = assertThrows(
+                    MaxEmployeeInDepartmentException.class,
+                    () -> employeeService.saveEmployee(createRequest)
+            );
+
+            assertNotNull(exception);
+            assertEquals("В '" + department.getName().getStringConvert() + "' максимальное количество сотрудников", exception.getMessage());
+
+            verify(createEmployeeMapper, times(1)).toEntity(createRequest);
+            verify(departmentService, times(1)).getDepartmentByName(createRequest.getDepartmentName());
+            verify(employeeRepository, never()).findById(id);
+            verify(employeeRepository, never()).save(employee);
+            verify(findEmployeeMapper, never()).entityToResponse(employee);
+        }
     }
 
     @Nested
@@ -256,12 +287,33 @@ public class EmployeeServiceImplUnitTest {
     class UpdateEmployeeTests {
 
         @ParameterizedTest
-        @EnumSource(DistrictNameEnum.class)
+        @EnumSource(PositionEmployeeEnum.class)
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
-        void updateEmployeeTest(DistrictNameEnum name) {
+        void updateEmployeeTest(PositionEmployeeEnum position) {
 
+            updateRequest.setPosition(position);
+            response.setPosition(position.getStringConvert());
 
+            when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
+            when(employeeRepository.existsEmployeeByPosition(position)).thenReturn(false);
+            doAnswer(invocation -> {
+                employee.setPosition(position);
+                return null;
+            }).when(updateEmployeeMapper).updateEmployeeData(updateRequest, employee);
+            when(employeeRepository.save(employee)).thenReturn(employee);
+            when(findEmployeeMapper.entityToResponse(employee)).thenReturn(response);
+
+            EmployeeResponse result = employeeService.updateEmployee(id, updateRequest);
+
+            assertNotNull(result);
+            assertEquals(response, result);
+
+            verify(employeeRepository, times(1)).findById(id);
+            verify(employeeRepository, times(1)).existsEmployeeByPosition(position);
+            verify(updateEmployeeMapper, times(1)).updateEmployeeData(updateRequest, employee);
+            verify(employeeRepository, times(1)).save(employee);
+            verify(findEmployeeMapper, times(1)).entityToResponse(employee);
         }
 
         @Test
@@ -269,17 +321,45 @@ public class EmployeeServiceImplUnitTest {
         @DisplayName("Тест на выброс IdNotFoundException")
         void updateEmployeeIdNotFoundTest() {
 
+            when(employeeRepository.findById(badId)).thenReturn(Optional.empty());
 
+            IdNotFoundException exception = assertThrows(
+                    IdNotFoundException.class,
+                    () -> employeeService.updateEmployee(badId, updateRequest)
+            );
 
+            assertEquals("Id '" + badId + "' не найден", exception.getMessage());
+
+            verify(employeeRepository, times(1)).findById(badId);
+            verify(employeeRepository, never()).existsEmployeeByPosition(any(PositionEmployeeEnum.class));
+            verify(updateEmployeeMapper, never()).updateEmployeeData(updateRequest, employee);
+            verify(employeeRepository, never()).save(employee);
+            verify(findEmployeeMapper, never()).entityToResponse(employee);
         }
 
         @ParameterizedTest
-        @EnumSource(DistrictNameEnum.class)
+        @EnumSource(PositionEmployeeEnum.class)
         @Tag("unit")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void updateEmployeePositionOccupiedTest(DistrictNameEnum name) {
+        void updateEmployeePositionOccupiedTest(PositionEmployeeEnum position) {
 
+            updateRequest.setPosition(position);
 
+            when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
+            when(employeeRepository.existsEmployeeByPosition(position)).thenReturn(true);
+
+            PositionOccupiedException exception = assertThrows(
+                    PositionOccupiedException.class,
+                    () -> employeeService.updateEmployee(id, updateRequest)
+            );
+
+            assertEquals("Позиция '" + position.getStringConvert() + "' уже занята", exception.getMessage());
+
+            verify(employeeRepository, times(1)).findById(id);
+            verify(employeeRepository, times(1)).existsEmployeeByPosition(any(PositionEmployeeEnum.class));
+            verify(updateEmployeeMapper, never()).updateEmployeeData(updateRequest, employee);
+            verify(employeeRepository, never()).save(employee);
+            verify(findEmployeeMapper, never()).entityToResponse(employee);
         }
     }
 
@@ -292,7 +372,15 @@ public class EmployeeServiceImplUnitTest {
         @DisplayName("Тест с позитивным исходом")
         void deleteEmployeeByIdTest() {
 
+            when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
+            doAnswer(invocation -> {
+                return null;
+            }).when(employeeRepository).deleteById(id);
 
+            employeeService.deleteEmployee(id);
+
+            verify(employeeRepository, times(1)).findById(id);
+            verify(employeeRepository, times(1)).deleteById(id);
         }
 
         @Test
@@ -300,7 +388,17 @@ public class EmployeeServiceImplUnitTest {
         @DisplayName("Тест на выброс IdNotFoundException")
         void deleteEmployeeIdNotFoundTest() {
 
+            when(employeeRepository.findById(badId)).thenReturn(Optional.empty());
 
+            IdNotFoundException exception = assertThrows(
+                    IdNotFoundException.class,
+                    () -> employeeService.updateEmployee(badId, updateRequest)
+            );
+
+            assertEquals("Id '" + badId + "' не найден", exception.getMessage());
+
+            verify(employeeRepository, times(1)).findById(badId);
+            verify(employeeRepository, never()).deleteById(badId);
         }
     }
 }
