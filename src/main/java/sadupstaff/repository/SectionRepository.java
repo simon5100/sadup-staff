@@ -7,4 +7,6 @@ import java.util.UUID;
 public interface SectionRepository extends JpaRepository<Section, UUID> {
 
     Section findSectionByName(String name);
+
+    boolean existsSectionByName(String name);
 }

@@ -64,11 +64,12 @@ public class SectionServiceImpl implements SectionService{
 
     @Override
     public Section getSectionByName(String name) {
+
         Optional<Section> optionalSection = Optional.ofNullable(sectionRepository.findSectionByName(name));
         if(optionalSection.isPresent()) {
             return optionalSection.get();
         }
-        return null;
+        throw new RuntimeException("Section not found");
     }
 
     @Override
@@ -98,7 +99,13 @@ public class SectionServiceImpl implements SectionService{
     @Override
     @Transactional
     public SectionResponse updateSection(UUID id, UpdateSectionRequest updateData) {
-        Section sectionOld = getSectionByIdForUpdate(id);
+        Section sectionOld = sectionRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
+
+        if (updateData.getName() != null && sectionRepository.existsSectionByName((updateData.getName()))) {
+            throw new PositionOccupiedException(updateData.getName());
+        }
+
         updateSectionMapper.update(updateData, sectionOld);
         sectionOld.setUpdatedAt(LocalDateTime.now());
         sectionRepository.save(sectionOld);

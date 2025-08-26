@@ -1,6 +1,5 @@
 package sadupstaff.department;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import sadupstaff.SadupStaffApplication;
 import sadupstaff.dto.request.create.CreateDepartmentRequest;
 import sadupstaff.dto.request.update.UpdateDepartmentRequest;
 import sadupstaff.dto.response.DepartmentResponse;
@@ -40,7 +38,7 @@ import static sadupstaff.enums.DepartmentNameEnum.FINANCE_AND_PLANNING;
 import static sadupstaff.enums.DepartmentNameEnum.LEGAL_SUPPORT;
 
 @Log4j2
-@SpringBootTest(classes = SadupStaffApplication.class)
+@SpringBootTest()
 @Testcontainers
 @Transactional
 @DisplayName("Integration тесты методов DepartmentServiceImpl")
