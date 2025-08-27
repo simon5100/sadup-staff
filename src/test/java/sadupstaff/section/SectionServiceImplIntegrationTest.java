@@ -123,55 +123,50 @@ public class SectionServiceImplIntegrationTest {
     }
 
     @Nested
+    @Testcontainers
     @DisplayName("Тесты на метод getAllSection поиска всех районов")
     class GetAllSectionsTests {
 
         @Test
-        @Tag("unit")
+        @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
         void getAllSectionsTest() {
-
-            when(sectionRepository.findAll()).thenReturn(List.of(section));
-            when(findSectionMapper.entityToResponse(section)).thenReturn(response);
 
             List<SectionResponse> result = sectionService.getAllSection();
 
             assertNotNull(result);
             assertEquals(1, result.size());
-            assertEquals(response, result.get(0));
+            assertEquals(result.get(0).getName(), "1й участок центрального района");
 
             verify(sectionRepository).findAll();
-            verify(findSectionMapper, times(1)).entityToResponse(section);
+            verify(findSectionMapper, times(1)).entityToResponse(any(Section.class));
         }
     }
 
     @Nested
+    @Testcontainers
     @DisplayName("Тесты на метод getDistrictById поиска района по id")
     class GetSectionByIdTests {
 
         @Test
-        @Tag("unit")
+        @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
         void getSectionByIdTest() {
-
-            when(sectionRepository.findById(id)).thenReturn(Optional.of(section));
-            when(findSectionMapper.entityToResponse(section)).thenReturn(response);
 
             SectionResponse result = sectionService.getSectionById(id);
 
             assertNotNull(result);
-            assertEquals(response, result);
+            assertEquals(result.getName(), "1й участок центрального района");
+            assertFalse(result.getEmpsSect().isEmpty());
 
             verify(sectionRepository).findById(id);
-            verify(findSectionMapper, times(1)).entityToResponse(section);
+            verify(findSectionMapper, times(1)).entityToResponse(any(Section.class));
         }
 
         @Test
-        @Tag("unit")
+        @Tag("integration")
         @DisplayName("Тест с выбросом IdNotFoundException")
         void getSectionByIdNotFoundIdTest() {
-
-            when(sectionRepository.findById(badId)).thenReturn(Optional.empty());
 
             IdNotFoundException exception = assertThrows(
                     IdNotFoundException.class,
@@ -182,40 +177,37 @@ public class SectionServiceImplIntegrationTest {
             assertEquals("Id '" + badId + "' не найден", exception.getMessage());
 
             verify(sectionRepository).findById(badId);
-            verify(findSectionMapper, never()).entityToResponse(section);
+            verify(findSectionMapper, never()).entityToResponse(any(Section.class));
         }
     }
 
     @Nested
+    @Testcontainers
     @DisplayName("Тесты на метод getDistrictByName поиска района по имени")
     class GetSectionByNameTests {
 
-        @ParameterizedTest
-        @ValueSource(strings = {"1", "2", "3"})
-        @Tag("unit")
+        @Test
+        @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
-        void getSectionByNameTest(String name) {
+        void getSectionByNameTest() {
 
-            section.setName(name);
-
-            when(sectionRepository.findSectionByName(name)).thenReturn(section);
-
-            Section result = sectionService.getSectionByName(name);
+            Section result = sectionService.getSectionByName("1й участок центрального района");
 
             assertNotNull(result);
-            assertEquals(section, result);
+            assertEquals(result.getName(), "1й участок центрального района");
 
-            verify(sectionRepository, times(1)).findSectionByName(name);
+            verify(sectionRepository, times(1)).findSectionByName("1й участок центрального района");
         }
     }
 
     @Nested
+    @Testcontainers
     @DisplayName("Тесты на метод saveSection сохранения района")
     class SaveSectionTests {
 
         @ParameterizedTest
         @ValueSource(strings = {"1", "2", "3"})
-        @Tag("unit")
+        @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
         void saveSectionTest(String name) {
 
@@ -253,7 +245,7 @@ public class SectionServiceImplIntegrationTest {
 
         @ParameterizedTest
         @ValueSource(strings = {"1", "2", "3"})
-        @Tag("unit")
+        @Tag("integration")
         @DisplayName("Тест на выброс MaxSectionInDistrictException")
         void saveMaxSectionInDistrictTest(String name) {
 
@@ -289,7 +281,7 @@ public class SectionServiceImplIntegrationTest {
 
         @ParameterizedTest
         @ValueSource(strings = {"1", "2", "3"})
-        @Tag("unit")
+        @Tag("integration")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void saveSectionPositionOccupiedTest(String name) {
 
@@ -325,12 +317,13 @@ public class SectionServiceImplIntegrationTest {
     }
 
     @Nested
+    @Testcontainers
     @DisplayName("Тесты на метод updateSection обновления данных района")
     class UpdateSectionTests {
 
         @ParameterizedTest
         @ValueSource(strings = {"1", "2", "3"})
-        @Tag("unit")
+        @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
         void updateSectionTest(String name) {
 
@@ -361,7 +354,7 @@ public class SectionServiceImplIntegrationTest {
         }
 
         @Test
-        @Tag("unit")
+        @Tag("integration")
         @DisplayName("Тест на выброс IdNotFoundException")
         void updateSectionIdNotFoundTest() {
             updateRequest.setName("1");
@@ -385,7 +378,7 @@ public class SectionServiceImplIntegrationTest {
 
         @ParameterizedTest
         @ValueSource(strings = {"1", "2", "3"})
-        @Tag("unit")
+        @Tag("integration")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void updateSectionPositionOccupiedTest(String name) {
 
@@ -411,11 +404,12 @@ public class SectionServiceImplIntegrationTest {
     }
 
     @Nested
+    @Testcontainers
     @DisplayName("Тесты на метод deleteSection удаления района по id")
     class DeleteSectionByIdTests {
 
         @Test
-        @Tag("unit")
+        @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
         void deleteSectionByIdTest() {
 
@@ -427,7 +421,7 @@ public class SectionServiceImplIntegrationTest {
         }
 
         @Test
-        @Tag("unit")
+        @Tag("integration")
         @DisplayName("Тест на выброс IdNotFoundException")
         void deleteSectionIdNotFoundTest() {
 
@@ -445,7 +439,7 @@ public class SectionServiceImplIntegrationTest {
         }
 
         @Test
-        @Tag("unit")
+        @Tag("integration")
         @DisplayName("Тест на выброс DeleteSectionException")
         void deleteSectionByIdDeleteSectionExceptionTest() {
 
@@ -465,10 +459,4 @@ public class SectionServiceImplIntegrationTest {
             verify(sectionRepository, times(1)).findById(id);
         }
     }
-
-
-
-
-
-
 }
