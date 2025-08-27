@@ -6,7 +6,7 @@ import sadupstaff.dto.response.SectionResponse;
 import sadupstaff.entity.district.Section;
 import sadupstaff.mapper.sectionemployee.FindSectionEmployeeMapper;
 
-@Mapper(componentModel = "spring", uses = FindSectionEmployeeMapper.class)
+@Mapper(componentModel = "spring", uses = {FindSectionEmployeeMapper.class})
 public interface FindSectionMapper {
 
     @Mapping(target = "districtName", source = "district.name.stringConvert")

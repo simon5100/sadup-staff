@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -29,7 +30,6 @@ import sadupstaff.repository.DistrictRepository;
 import sadupstaff.service.district.DistrictServiceImpl;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -77,10 +77,10 @@ public class DistrictServiceImplIntegrationTest {
     private DistrictServiceImpl districtService;
 
     private District district;
-    private DistrictResponse response;
     private CreateDistrictRequest createRequest;
     private UpdateDistrictRequest updateRequest;
-    private UUID id;
+    private UUID id1;
+    private UUID id2;
     private UUID badId;
 
     @BeforeEach
@@ -96,7 +96,8 @@ public class DistrictServiceImplIntegrationTest {
                 List.of()
         );
 
-        id = district.getId();
+        id1 = district.getId();
+        id2 = UUID.fromString("2d30f1c3-e70d-42a0-a3d3-58a5c2d50d04");
         badId = UUID.fromString("2d30f1c3-e70d-42a0-a3d3-58a5c2d50d05");
 
         createRequest = new CreateDistrictRequest(
@@ -104,14 +105,6 @@ public class DistrictServiceImplIntegrationTest {
                 2,
                 "Находитсясо мной в здании"
 
-        );
-
-        response = new DistrictResponse(
-                CENTRALNY.getStringConvert(),
-                "Находится со мной в здании",
-                LocalDateTime.of(2025,07,30, 15,17,00,000),
-                LocalDateTime.of(2025,07,30, 15,17,00,000),
-                List.of()
         );
 
         updateRequest = new UpdateDistrictRequest();
@@ -127,17 +120,16 @@ public class DistrictServiceImplIntegrationTest {
         @DisplayName("Тест с позитивным исходом")
         void getAllDistrictsTest() {
 
-            when(districtRepository.findAll()).thenReturn(List.of(district));
-            when(findDistrictMapper.entityToResponse(district)).thenReturn(response);
-
             List<DistrictResponse> result = districtService.getAllDistrict();
 
-            assertEquals(1, result.size());
-            assertEquals(response, result.get(0));
+            log.info(result.get(0));
+
+            assertEquals(2, result.size());
+            assertFalse(result.get(0).getSections().isEmpty());
+            assertTrue(result.get(1).getSections().isEmpty());
 
             verify(districtRepository).findAll();
-            verify(findDistrictMapper, times(1)).entityToResponse(district);
-
+            verify(findDistrictMapper, times(2)).entityToResponse(any(District.class));
         }
     }
 
@@ -146,28 +138,27 @@ public class DistrictServiceImplIntegrationTest {
     @DisplayName("Тесты на метод getDistrictById поиска района по id")
     class GetDistrictByIdTests {
 
-        @Test
+        @ParameterizedTest
+        @ValueSource(strings = {
+                "1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04",
+                "2d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"
+        })
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
-        void getDistrictByIdTest() {
+        void getDistrictByIdTest(String id) {
 
-            when(districtRepository.findById(id)).thenReturn(Optional.of(district));
-            when(findDistrictMapper.entityToResponse(district)).thenReturn(response);
+            DistrictResponse result = districtService.getDistrictById(UUID.fromString(id));
 
-            DistrictResponse result = districtService.getDistrictById(id);
+            assertNotNull(result);
 
-            assertEquals(result, response);
-
-            verify(districtRepository, times(1)).findById(id);
-            verify(findDistrictMapper, times(1)).entityToResponse(district);
+            verify(districtRepository, times(1)).findById(any(UUID.class));
+            verify(findDistrictMapper, times(1)).entityToResponse(any(District.class));
         }
 
         @Test
         @Tag("integration")
         @DisplayName("Тест с выбросом IdNotFoundException")
         void getDistrictByIdNotFoundIdTest() {
-
-            when(districtRepository.findById(badId)).thenReturn(Optional.empty());
 
             IdNotFoundException exception = assertThrows(
                     IdNotFoundException.class,
@@ -176,8 +167,8 @@ public class DistrictServiceImplIntegrationTest {
 
             assertEquals("Id '" + badId + "' не найден", exception.getMessage());
 
-            verify(districtRepository, times(1)).findById(badId);
-            verify(findDistrictMapper, never()).entityToResponse(district);
+            verify(districtRepository, times(1)).findById(any(UUID.class));
+            verify(findDistrictMapper, never()).entityToResponse(any(District.class));
         }
     }
 
@@ -187,18 +178,22 @@ public class DistrictServiceImplIntegrationTest {
     class GetDistrictByNameTests {
 
         @ParameterizedTest
-        @EnumSource(DistrictNameEnum.class)
+        @EnumSource(
+                value = DistrictNameEnum.class,
+                mode = EnumSource.Mode.INCLUDE,
+                names = {"CENTRALNY", "ZHELEZNODOROZHHNY"}
+        )
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
         void getDistrictByNameTest(DistrictNameEnum name) {
 
-            district.setName(name);
-
-            when(districtRepository.findDistrictByName(name)).thenReturn(district);
-
             District result = districtService.getDistrictByName(name);
 
-            assertEquals(result, district);
+            assertNotNull(result);
+            assertNotNull(result.getId());
+            assertEquals(name, result.getName());
+
+            verify(districtRepository, times(1)).findDistrictByName(name);
         }
     }
 
@@ -208,42 +203,41 @@ public class DistrictServiceImplIntegrationTest {
     class SaveDistrictTests {
 
         @ParameterizedTest
-        @EnumSource(DistrictNameEnum.class)
+        @EnumSource(
+                value = DistrictNameEnum.class,
+                mode = EnumSource.Mode.EXCLUDE,
+                names = {"CENTRALNY", "ZHELEZNODOROZHHNY"}
+        )
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
         void saveDistrictTest(DistrictNameEnum name) {
 
             createRequest.setName(name);
-            district.setName(name);
-            response.setName(name.getStringConvert());
-
-            when(districtRepository.existsDistinctByName(district.getName())).thenReturn(false);
-            when(createDistrictMapper.toEntity(createRequest)).thenReturn(district);
-            when(districtRepository.save(district)).thenReturn(district);
-            when(districtRepository.findById(district.getId())).thenReturn(Optional.of(district));
-            when(findDistrictMapper.entityToResponse(district)).thenReturn(response);
 
             DistrictResponse result = districtService.saveDistrict(createRequest);
 
-            assertEquals(result, response);
+            assertNotNull(result);
+            assertEquals(name.getStringConvert(), result.getName());
 
+            verify(districtRepository, times(1)).existsDistinctByName(name);
             verify(createDistrictMapper, times(1)).toEntity(createRequest);
-            verify(districtRepository, times(1)).existsDistinctByName(district.getName());
-            verify(districtRepository, times(1)).save(district);
-            verify(districtRepository, times(1)).findById(district.getId());
-            verify(findDistrictMapper, times(1)).entityToResponse(district);
+            verify(districtRepository, times(1)).existsDistinctByName(any(DistrictNameEnum.class));
+            verify(districtRepository, times(1)).save(any(District.class));
+            verify(districtRepository, times(1)).findById(any(UUID.class));
+            verify(findDistrictMapper, times(1)).entityToResponse(any(District.class));
         }
 
         @ParameterizedTest
-        @EnumSource(DistrictNameEnum.class)
+        @EnumSource(
+                value = DistrictNameEnum.class,
+                mode = EnumSource.Mode.INCLUDE,
+                names = {"CENTRALNY", "ZHELEZNODOROZHHNY"}
+        )
         @Tag("integration")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void saveDistrictPositionOccupiedTest(DistrictNameEnum name) {
 
             createRequest.setName(name);
-            district.setName(name);
-
-            when(districtRepository.existsDistinctByName(createRequest.getName())).thenReturn(true);
 
             PositionOccupiedException exception = assertThrows(
                     PositionOccupiedException.class,
@@ -252,11 +246,11 @@ public class DistrictServiceImplIntegrationTest {
 
             assertEquals("Позиция '" + name.getStringConvert() + "' уже занята", exception.getMessage());
 
-            verify(districtRepository, times(1)).existsDistinctByName(district.getName());
-            verify(createDistrictMapper, never()).toEntity(createRequest);
-            verify(districtRepository, never()).save(district);
-            verify(districtRepository, never()).findById(district.getId());
-            verify(findDistrictMapper, never()).entityToResponse(district);
+            verify(districtRepository, times(1)).existsDistinctByName(name);
+            verify(createDistrictMapper, never()).toEntity(any(CreateDistrictRequest.class));
+            verify(districtRepository, never()).save(any(District.class));
+            verify(districtRepository, never()).findById(any(UUID.class));
+            verify(findDistrictMapper, never()).entityToResponse(any(District.class));
         }
     }
 
@@ -266,46 +260,34 @@ public class DistrictServiceImplIntegrationTest {
     class UpdateDistrictTests {
 
         @ParameterizedTest
-        @EnumSource(DistrictNameEnum.class)
+        @EnumSource(
+                value = DistrictNameEnum.class,
+                mode = EnumSource.Mode.EXCLUDE,
+                names = {"CENTRALNY", "ZHELEZNODOROZHHNY"}
+        )
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
         void updateDistrictTest(DistrictNameEnum name) {
 
             updateRequest.setName(name);
             updateRequest.setDescription(name.getStringConvert());
-            response.setName(name.getStringConvert());
-            response.setDescription(name.getStringConvert());
 
-            when(districtRepository.findById(id)).thenReturn(Optional.of(district));
-            when(districtRepository.existsDistinctByName(name)).thenReturn(false);
-            doAnswer(invocation -> {
-                district.setName(name);
-                district.setDescription(name.getStringConvert());
-                return null;
-            }).when(updateDistrictMapper).updateDistrictData(updateRequest, district);
-            when(districtRepository.save(district)).thenReturn(district);
-            when(findDistrictMapper.entityToResponse(district)).thenReturn(response);
+            DistrictResponse result = districtService.updateDistrict(id1, updateRequest);
 
-            DistrictResponse result = districtService.updateDistrict(id, updateRequest);
-
-            log.info(result.getName());
-
+            assertNotNull(result);
             assertEquals(result.getName(), name.getStringConvert());
-            assertEquals(result, response);
 
-            verify(districtRepository, times(1)).findById(id);
+            verify(districtRepository, times(1)).findById(any(UUID.class));
             verify(districtRepository, times(1)).existsDistinctByName(name);
-            verify(updateDistrictMapper, times(1)).updateDistrictData(updateRequest, district);
-            verify(districtRepository, times(1)).save(district);
-            verify(findDistrictMapper, times(1)).entityToResponse(district);
+            verify(updateDistrictMapper, times(1)).updateDistrictData(any(UpdateDistrictRequest.class), any(District.class));
+            verify(districtRepository, times(1)).save(any(District.class));
+            verify(findDistrictMapper, times(1)).entityToResponse(any(District.class));
         }
 
         @Test
         @Tag("integration")
         @DisplayName("Тест на выброс IdNotFoundException")
         void updateDistrictIdNotFoundTest() {
-
-            when(districtRepository.findById(badId)).thenReturn(Optional.empty());
 
             IdNotFoundException exception = assertThrows(
                     IdNotFoundException.class,
@@ -314,37 +296,38 @@ public class DistrictServiceImplIntegrationTest {
 
             assertEquals("Id '" + badId + "' не найден", exception.getMessage());
 
-            verify(districtRepository, times(1)).findById(badId);
+            verify(districtRepository, times(1)).findById(any(UUID.class));
             verify(districtRepository, never()).existsDistinctByName(any(DistrictNameEnum.class));
-            verify(updateDistrictMapper, never()).updateDistrictData(updateRequest, district);
-            verify(districtRepository, never()).save(district);
-            verify(findDistrictMapper, never()).entityToResponse(district);
+            verify(updateDistrictMapper, never()).updateDistrictData(any(UpdateDistrictRequest.class), any(District.class));
+            verify(districtRepository, never()).save(any(District.class));
+            verify(findDistrictMapper, never()).entityToResponse(any(District.class));
 
         }
 
         @ParameterizedTest
-        @EnumSource(DistrictNameEnum.class)
+        @EnumSource(
+                value = DistrictNameEnum.class,
+                mode = EnumSource.Mode.INCLUDE,
+                names = {"CENTRALNY", "ZHELEZNODOROZHHNY"}
+        )
         @Tag("integration")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void updateDistrictPositionOccupiedTest(DistrictNameEnum name) {
 
             updateRequest.setName(name);
 
-            when(districtRepository.findById(id)).thenReturn(Optional.of(district));
-            when(districtRepository.existsDistinctByName(name)).thenReturn(true);
-
             PositionOccupiedException exception = assertThrows(
                     PositionOccupiedException.class,
-                    () -> districtService.updateDistrict(id, updateRequest)
+                    () -> districtService.updateDistrict(id1, updateRequest)
             );
 
             assertEquals("Позиция '" + name.getStringConvert() + "' уже занята", exception.getMessage());
 
-            verify(districtRepository, times(1)).findById(id);
+            verify(districtRepository, times(1)).findById(any(UUID.class));
             verify(districtRepository, times(1)).existsDistinctByName(name);
-            verify(updateDistrictMapper, never()).updateDistrictData(updateRequest, district);
-            verify(districtRepository, never()).save(district);
-            verify(findDistrictMapper, never()).entityToResponse(district);
+            verify(updateDistrictMapper, never()).updateDistrictData(any(UpdateDistrictRequest.class), any(District.class));
+            verify(districtRepository, never()).save(any(District.class));
+            verify(findDistrictMapper, never()).entityToResponse(any(District.class));
         }
     }
 
@@ -354,28 +337,22 @@ public class DistrictServiceImplIntegrationTest {
     class DeleteDistrictByIdTests {
 
         @Test
+        @Transactional
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
         void deleteDistrictByIdTest() {
 
-            when(districtRepository.findById(id)).thenReturn(Optional.of(district));
-            doAnswer(invocation -> {
-                return null;}).when(districtRepository).deleteById(id);
+            districtService.deleteDistrict(id2);
 
-            districtService.deleteDistrict(id);
-
-            assertTrue(district.getSections().isEmpty());
-
-            verify(districtRepository, times(1)).findById(id);
-            verify(districtRepository, times(1)).deleteById(id);
+            verify(districtRepository, times(1)).findById(any(UUID.class));
+            verify(districtRepository, times(1)).deleteById(any(UUID.class));
         }
 
         @Test
+        @Transactional
         @Tag("integration")
         @DisplayName("Тест на выброс IdNotFoundException")
         void deleteDistrictIdNotFoundTest() {
-
-            when(districtRepository.findById(badId)).thenReturn(Optional.empty());
 
             IdNotFoundException exception = assertThrows(
                     IdNotFoundException.class,
@@ -384,28 +361,28 @@ public class DistrictServiceImplIntegrationTest {
 
             assertEquals("Id '" + badId + "' не найден", exception.getMessage());
 
-            verify(districtRepository, times(1)).findById(badId);
-            verify(districtRepository, never()).deleteById(badId);
+            verify(districtRepository, times(1)).findById(any(UUID.class));
+            verify(districtRepository, never()).deleteById(any(UUID.class));
         }
 
         @Test
+        @Transactional
         @Tag("integration")
         @DisplayName("Тест на выброс DeleteDistrictException")
         void deleteDistrictByIdDeleteDistrictExceptionTest() {
 
             district.setSections(List.of(new Section()));
 
-            when(districtRepository.findById(id)).thenReturn(Optional.of(district));
             DeleteDistrictException exception = assertThrows(
                     DeleteDistrictException.class,
-                    () -> districtService.deleteDistrict(id)
+                    () -> districtService.deleteDistrict(id1)
             );
 
             assertFalse(district.getSections().isEmpty());
             assertEquals(district.getName().getStringConvert() + " содержит участки, удаление запрещено",exception.getMessage());
 
-            verify(districtRepository, times(1)).findById(id);
-            verify(districtRepository, never()).deleteById(id);
+            verify(districtRepository, times(1)).findById(any(UUID.class));
+            verify(districtRepository, never()).deleteById(any(UUID.class));
         }
     }
 }
