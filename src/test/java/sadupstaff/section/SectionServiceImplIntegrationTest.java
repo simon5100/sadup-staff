@@ -9,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
-import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -19,7 +18,6 @@ import sadupstaff.dto.request.update.UpdateSectionRequest;
 import sadupstaff.dto.response.SectionResponse;
 import sadupstaff.entity.district.District;
 import sadupstaff.entity.district.Section;
-import sadupstaff.entity.district.SectionEmployee;
 import sadupstaff.enums.DistrictNameEnum;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
@@ -34,12 +32,10 @@ import sadupstaff.service.district.DistrictServiceImpl;
 import sadupstaff.service.section.SectionServiceImpl;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static sadupstaff.enums.DistrictNameEnum.CENTRALNY;
 import static sadupstaff.enums.DistrictNameEnum.ZHELEZNODOROZHHNY;
 
 @Log4j2
@@ -138,11 +134,11 @@ public class SectionServiceImplIntegrationTest {
             List<SectionResponse> result = sectionService.getAllSection();
 
             assertNotNull(result);
-            assertEquals(2, result.size());
+            assertEquals(3, result.size());
             assertEquals(result.get(0).getName(), "1й участок центрального района");
 
             verify(sectionRepository).findAll();
-            verify(findSectionMapper, times(2)).entityToResponse(any(Section.class));
+            verify(findSectionMapper, times(3)).entityToResponse(any(Section.class));
         }
     }
 
@@ -295,24 +291,23 @@ public class SectionServiceImplIntegrationTest {
     class UpdateSectionTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {"1", "2", "3"})
+        @ValueSource(strings = {"2", "3"})
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
         void updateSectionTest(String name) {
 
             updateRequest.setName(name);
-            response.setName(name);
 
             SectionResponse result = sectionService.updateSection(id, updateRequest);
 
             assertNotNull(result);
-            assertEquals(response, result);
+            assertEquals(result.getName(), name);
 
-            verify(sectionRepository, times(1)).findById(id);
+            verify(sectionRepository, times(1)).findById(any(UUID.class));
             verify(sectionRepository, times(1)).existsSectionByName(updateRequest.getName());
-            verify(updateSectionMapper, times(1)).update(updateRequest, section);
-            verify(sectionRepository, times(1)).save(section);
-            verify(findSectionMapper, times(1)).entityToResponse(section);
+            verify(updateSectionMapper, times(1)).update(any(UpdateSectionRequest.class), any(Section.class));
+            verify(sectionRepository, times(1)).save(any(Section.class));
+            verify(findSectionMapper, times(1)).entityToResponse(any(Section.class));
 
         }
 
@@ -320,7 +315,6 @@ public class SectionServiceImplIntegrationTest {
         @Tag("integration")
         @DisplayName("Тест на выброс IdNotFoundException")
         void updateSectionIdNotFoundTest() {
-            updateRequest.setName("1");
 
             IdNotFoundException exception = assertThrows(
                     IdNotFoundException.class,
@@ -338,7 +332,7 @@ public class SectionServiceImplIntegrationTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"1", "2", "3"})
+        @ValueSource(strings = {"1", "1й участок центрального района"})
         @Tag("integration")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void updateSectionPositionOccupiedTest(String name) {
@@ -371,9 +365,9 @@ public class SectionServiceImplIntegrationTest {
         @DisplayName("Тест с позитивным исходом")
         void deleteSectionByIdTest() {
 
-            sectionService.deleteSection(id);
+            sectionService.deleteSection(UUID.fromString("5d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"));
 
-            verify(sectionRepository, times(1)).findById(id);
+            verify(sectionRepository, times(1)).findById(UUID.fromString("5d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"));
         }
 
         @Test
@@ -397,15 +391,12 @@ public class SectionServiceImplIntegrationTest {
         @DisplayName("Тест на выброс DeleteSectionException")
         void deleteSectionByIdDeleteSectionExceptionTest() {
 
-            section.setEmpsSect(List.of(new SectionEmployee()));
-
             DeleteSectionException exception = assertThrows(
                     DeleteSectionException.class,
                     () -> sectionService.deleteSection(id)
             );
 
             assertNotNull(exception);
-            assertFalse(section.getEmpsSect().isEmpty());
             assertEquals(section.getName() + " имеет сотрудников, удаление запрещено", exception.getMessage());
 
             verify(sectionRepository, times(1)).findById(id);

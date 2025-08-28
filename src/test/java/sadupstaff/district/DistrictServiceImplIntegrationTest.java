@@ -98,7 +98,7 @@ public class DistrictServiceImplIntegrationTest {
 
         id1 = district.getId();
         id2 = UUID.fromString("2d30f1c3-e70d-42a0-a3d3-58a5c2d50d04");
-        badId = UUID.fromString("2d30f1c3-e70d-42a0-a3d3-58a5c2d50d05");
+        badId = UUID.randomUUID();
 
         createRequest = new CreateDistrictRequest(
                 CENTRALNY,
@@ -124,12 +124,13 @@ public class DistrictServiceImplIntegrationTest {
 
             log.info(result.get(0));
 
-            assertEquals(2, result.size());
+            assertEquals(3, result.size());
             assertFalse(result.get(0).getSections().isEmpty());
-            assertTrue(result.get(1).getSections().isEmpty());
+            assertFalse(result.get(1).getSections().isEmpty());
+            assertTrue(result.get(2).getSections().isEmpty());
 
             verify(districtRepository).findAll();
-            verify(findDistrictMapper, times(2)).entityToResponse(any(District.class));
+            verify(findDistrictMapper, times(3)).entityToResponse(any(District.class));
         }
     }
 
@@ -206,7 +207,7 @@ public class DistrictServiceImplIntegrationTest {
         @EnumSource(
                 value = DistrictNameEnum.class,
                 mode = EnumSource.Mode.EXCLUDE,
-                names = {"CENTRALNY", "ZHELEZNODOROZHHNY"}
+                names = {"CENTRALNY", "ZHELEZNODOROZHHNY", "ZAELTSOVSKY"}
         )
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
@@ -263,7 +264,7 @@ public class DistrictServiceImplIntegrationTest {
         @EnumSource(
                 value = DistrictNameEnum.class,
                 mode = EnumSource.Mode.EXCLUDE,
-                names = {"CENTRALNY", "ZHELEZNODOROZHHNY"}
+                names = {"CENTRALNY", "ZHELEZNODOROZHHNY", "ZAELTSOVSKY"}
         )
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
@@ -342,7 +343,7 @@ public class DistrictServiceImplIntegrationTest {
         @DisplayName("Тест с позитивным исходом")
         void deleteDistrictByIdTest() {
 
-            districtService.deleteDistrict(id2);
+            districtService.deleteDistrict(UUID.fromString("3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"));
 
             verify(districtRepository, times(1)).findById(any(UUID.class));
             verify(districtRepository, times(1)).deleteById(any(UUID.class));

@@ -94,4 +94,68 @@
         </sql>
     </changeSet>
 
+    <changeSet id="28.08.2025-insert-in-district" author="Polikarpov-Semen">
+        <sql>
+            insert into sudstaff.district (id, name, description, created_at, updated_at, max_number_sections)
+            values (
+                    '3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                    'ZAELTSOVSKY',
+                    'Заельцовский',
+                    '2025.07.30 15:17:00',
+                    '2025.07.30 15:17:00',
+                    2
+                   );
+        </sql>
+    </changeSet>
+
+    <changeSet id="28.08.2025-insert-in-SectionEmployee1" author="Polikarpov-Semen">
+        <sql>
+    insert into sudstaff.section_employee (id, personel_number, first_name, last_name, patronymic, position, created_at, updated_at, section_id)
+    values (
+            '5d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+            'EMP12345',
+            'Иван',
+            'Иванов',
+            'Иванович',
+            'JUDGE_ASSISTANT',
+            '2025.07.30 15:17:00',
+            '2025.07.30 15:17:00',
+            '3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04'
+           );
+        </sql>
+    </changeSet>
+
+    <changeSet id="28.08.2025-insert-in-SectionEmployee2" author="Polikarpov-Semen">
+        <sql>
+            insert into sudstaff.section_employee (id, personel_number, first_name, last_name, patronymic, position, created_at, updated_at, section_id)
+            values (
+                    '6d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                       'EMP12345',
+                       'Иван',
+                       'Иванов',
+                       'Иванович',
+                       'SECRETARY_SESSION',
+                       '2025.07.30 15:17:00',
+                       '2025.07.30 15:17:00',
+                       '3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04'
+                   );
+        </sql>
+    </changeSet>
+
+    <changeSet id="28.08.2025-insert-in-SectionEmployee3" author="Polikarpov-Semen">
+        <sql>
+            insert into sudstaff.section_employee (id, personel_number, first_name, last_name, patronymic, position, created_at, updated_at, section_id)
+            values (
+                       '7d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                       'EMP12345',
+                       'Иван',
+                       'Иванов',
+                       'Иванович',
+                       'JUDGE',
+                       '2025.07.30 15:17:00',
+                       '2025.07.30 15:17:00',
+                       '4d30f1c3-e70d-42a0-a3d3-58a5c2d50d04'
+                   );
+        </sql>
+    </changeSet>
 </databaseChangeLog>
