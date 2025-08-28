@@ -96,7 +96,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
+            <version>26.0.2</version>
             <scope>compile</scope>
         </dependency>
 
@@ -127,6 +127,23 @@
             <version>1.21.3</version>
             <scope>test</scope>
         </dependency>
+
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.jacoco</groupId>-->
+<!--            <artifactId>jacoco-maven-plugin</artifactId>-->
+<!--            <version>0.8.13</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.jacoco/org.jacoco.agent &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.jacoco</groupId>-->
+<!--            <artifactId>org.jacoco.agent</artifactId>-->
+<!--            <version>0.8.13</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
+
     </dependencies>
 
     <build>
@@ -185,7 +202,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.11</version>
+                <version>0.8.13</version>
                 <executions>
                     <execution>
                         <goals>

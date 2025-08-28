@@ -4,8 +4,6 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -31,12 +29,9 @@ import sadupstaff.mapper.employee.UpdateEmployeeMapper;
 import sadupstaff.repository.EmployeeRepository;
 import sadupstaff.service.department.DepartmentServiceImpl;
 import sadupstaff.service.employee.EmployeeServiceImpl;
-
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

@@ -13,6 +13,7 @@ import sadupstaff.entity.management.Department;
 import sadupstaff.entity.management.Employee;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
+import sadupstaff.exception.SectionNotFoundByNameException;
 import sadupstaff.exception.department.DeleteDepartmentException;
 import sadupstaff.exception.employee.MaxEmployeeInDepartmentException;
 import sadupstaff.exception.section.DeleteSectionException;
@@ -57,19 +58,13 @@ public class SectionServiceImpl implements SectionService{
     }
 
     @Override
-    public Section getSectionByIdForUpdate(UUID id) {
-        return sectionRepository.findById(id)
-                .orElseThrow(() -> new IdNotFoundException(id.toString()));
-    }
-
-    @Override
     public Section getSectionByName(String name) {
 
         Optional<Section> optionalSection = Optional.ofNullable(sectionRepository.findSectionByName(name));
         if(optionalSection.isPresent()) {
             return optionalSection.get();
         }
-        throw new RuntimeException("Section not found");
+        throw new SectionNotFoundByNameException(name);
     }
 
     @Override

@@ -37,4 +37,10 @@ public class GlobalRestApiExceptionHandler {
     public ErrorResponse handlerPositionOccupiedException(PositionOccupiedException exception) {
         return new ErrorResponse(exception.getMessage());
     }
+
+    @ExceptionHandler(SectionNotFoundByNameException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handlerSectionNotFoundByNameException(SectionNotFoundByNameException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
 }
