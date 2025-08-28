@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -222,7 +223,7 @@ public class SectionServiceImplIntegrationTest {
     class SaveSectionTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {"1", "2"})
+        @ValueSource(strings = {"2"})
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
         void saveSectionTest(String name) {
@@ -268,8 +269,9 @@ public class SectionServiceImplIntegrationTest {
         @Tag("integration")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void saveSectionPositionOccupiedTest() {
+
             createRequest.setDistrictName(ZHELEZNODOROZHHNY);
-            createRequest.setName("1й участок центрального района");
+            createRequest.setName("1");
 
             PositionOccupiedException exception = assertThrows(
                     PositionOccupiedException.class,
@@ -301,16 +303,6 @@ public class SectionServiceImplIntegrationTest {
             updateRequest.setName(name);
             response.setName(name);
 
-            when(sectionRepository.findById(id)).thenReturn(Optional.of(section));
-            when(sectionRepository.existsSectionByName(updateRequest.getName())).thenReturn(false);
-            doAnswer(invocationOnMock -> {
-                section.setName(updateRequest.getName());
-                return null;
-            }).when(updateSectionMapper).update(updateRequest, section);
-            when(sectionRepository.save(section)).thenReturn(section);
-            when(sectionRepository.findById(id)).thenReturn(Optional.of(section));
-            when(findSectionMapper.entityToResponse(section)).thenReturn(response);
-
             SectionResponse result = sectionService.updateSection(id, updateRequest);
 
             assertNotNull(result);
@@ -329,8 +321,6 @@ public class SectionServiceImplIntegrationTest {
         @DisplayName("Тест на выброс IdNotFoundException")
         void updateSectionIdNotFoundTest() {
             updateRequest.setName("1");
-
-            when(sectionRepository.findById(badId)).thenReturn(Optional.empty());
 
             IdNotFoundException exception = assertThrows(
                     IdNotFoundException.class,
@@ -354,9 +344,6 @@ public class SectionServiceImplIntegrationTest {
         void updateSectionPositionOccupiedTest(String name) {
 
             updateRequest.setName(name);
-
-            when(sectionRepository.findById(id)).thenReturn(Optional.of(section));
-            when(sectionRepository.existsSectionByName(updateRequest.getName())).thenReturn(true);
 
             PositionOccupiedException exception = assertThrows(
                     PositionOccupiedException.class,
@@ -384,8 +371,6 @@ public class SectionServiceImplIntegrationTest {
         @DisplayName("Тест с позитивным исходом")
         void deleteSectionByIdTest() {
 
-            when(sectionRepository.findById(id)).thenReturn(Optional.of(section));
-
             sectionService.deleteSection(id);
 
             verify(sectionRepository, times(1)).findById(id);
@@ -395,8 +380,6 @@ public class SectionServiceImplIntegrationTest {
         @Tag("integration")
         @DisplayName("Тест на выброс IdNotFoundException")
         void deleteSectionIdNotFoundTest() {
-
-            when(sectionRepository.findById(badId)).thenReturn(Optional.empty());
 
             IdNotFoundException exception = assertThrows(
                     IdNotFoundException.class,
@@ -415,8 +398,6 @@ public class SectionServiceImplIntegrationTest {
         void deleteSectionByIdDeleteSectionExceptionTest() {
 
             section.setEmpsSect(List.of(new SectionEmployee()));
-
-            when(sectionRepository.findById(id)).thenReturn(Optional.of(section));
 
             DeleteSectionException exception = assertThrows(
                     DeleteSectionException.class,

@@ -79,4 +79,19 @@
         </sql>
     </changeSet>
 
+    <changeSet id="28.08.2025-insert-in-section" author="Polikarpov-Semen">
+        <sql>
+            insert into sudstaff.section (id, personel_number, name, created_at, updated_at, district_id, max_number_employees_section)
+            values (
+                       '5d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                       'rehrt',
+                       '1',
+                       '2025.07.30 15:17:00',
+                       '2025.07.30 15:17:00',
+                       '2d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                       3
+                   );
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
