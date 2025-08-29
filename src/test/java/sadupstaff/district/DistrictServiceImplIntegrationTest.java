@@ -41,7 +41,6 @@ import static sadupstaff.enums.DistrictNameEnum.CENTRALNY;
 @Log4j2
 @SpringBootTest()
 @Testcontainers
-@Transactional
 @DisplayName("Integration тесты методов DistrictServiceImpl")
 public class DistrictServiceImplIntegrationTest {
 
