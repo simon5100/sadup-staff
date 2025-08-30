@@ -8,22 +8,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sadupstaff.dto.request.create.CreateSectionEmployeeRequest;
-import sadupstaff.dto.request.create.CreateSectionRequest;
 import sadupstaff.dto.request.update.UpdateSectionEmployeeRequest;
-import sadupstaff.dto.request.update.UpdateSectionRequest;
-import sadupstaff.dto.response.EmployeeResponse;
 import sadupstaff.dto.response.SectionEmployeeResponse;
-import sadupstaff.dto.response.SectionResponse;
 import sadupstaff.entity.district.District;
 import sadupstaff.entity.district.Section;
 import sadupstaff.entity.district.SectionEmployee;
-import sadupstaff.entity.management.Department;
-import sadupstaff.enums.DistrictNameEnum;
-import sadupstaff.enums.PositionEmployeeEnum;
 import sadupstaff.enums.PositionSectionEmployeeEnum;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
-import sadupstaff.exception.employee.MaxEmployeeInDepartmentException;
 import sadupstaff.exception.sectionemployee.MaxEmployeeInSectionException;
 import sadupstaff.mapper.sectionemployee.CreateSectionEmployeeMapper;
 import sadupstaff.mapper.sectionemployee.FindSectionEmployeeMapper;
@@ -31,15 +23,12 @@ import sadupstaff.mapper.sectionemployee.UpdateSectionEmployeeMapper;
 import sadupstaff.repository.SectionEmployeeRepository;
 import sadupstaff.service.section.SectionServiceImpl;
 import sadupstaff.service.sectionemployee.SectionEmployeeServiceImpl;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static sadupstaff.enums.DepartmentNameEnum.LEGAL_SUPPORT;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Unit тесты методов SectionEmployeeServiceImpl")

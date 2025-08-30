@@ -82,7 +82,6 @@ public class EmployeeServiceImplIntegrationTest {
     private Employee employee;
     private CreateEmployeeRequest createRequest;
     private UpdateEmployeeRequest updateRequest;
-    private EmployeeResponse response;
     private UUID id;
     private UUID badId;
 
@@ -111,17 +110,6 @@ public class EmployeeServiceImplIntegrationTest {
                 "Иванович",
                 CONSULTANT,
                 DepartmentNameEnum.LEGAL_SUPPORT
-        );
-
-        response = new EmployeeResponse(
-                "EMP12345",
-                "Иван",
-                "Иванов",
-                "Иванович",
-                CONSULTANT.getStringConvert(),
-                DepartmentNameEnum.LEGAL_SUPPORT.getStringConvert(),
-                LocalDateTime.of(2025,07,30, 15,17,00,000),
-                LocalDateTime.of(2025,07,30, 15,17,00,000)
         );
 
         updateRequest = new UpdateEmployeeRequest();

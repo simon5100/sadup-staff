@@ -4,7 +4,6 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -17,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -25,21 +23,14 @@ import sadupstaff.dto.request.create.CreateDistrictRequest;
 import sadupstaff.dto.request.update.UpdateDistrictRequest;
 import sadupstaff.dto.response.DistrictResponse;
 import sadupstaff.entity.district.District;
-import sadupstaff.entity.district.Section;
 import sadupstaff.enums.DistrictNameEnum;
 import sadupstaff.exception.ErrorResponse;
-import sadupstaff.exception.IdNotFoundException;
-import sadupstaff.exception.PositionOccupiedException;
-import sadupstaff.exception.district.DeleteDistrictException;
 import sadupstaff.mapper.district.CreateDistrictMapper;
 import sadupstaff.mapper.district.FindDistrictMapper;
 import sadupstaff.mapper.district.UpdateDistrictMapper;
 import sadupstaff.repository.DistrictRepository;
 import sadupstaff.service.district.DistrictServiceImpl;
-
-import java.util.List;
 import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -93,8 +84,6 @@ public class DistrictServiceImplE2ETest {
 
     private static String URL = "/api/v1/districts";
 
-    private District district;
-
     private CreateDistrictRequest createRequest;
 
     private DistrictResponse districtResponse;
@@ -102,8 +91,6 @@ public class DistrictServiceImplE2ETest {
     private UpdateDistrictRequest updateRequest;
 
     private UUID id1 = UUID.fromString("1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04");
-
-    private UUID id2;
 
     private UUID badId = UUID.randomUUID();
 
@@ -241,8 +228,6 @@ public class DistrictServiceImplE2ETest {
             responseError = restTemplate.getForEntity(URL + "/" +  badId, ErrorResponse.class);
 
             assertTrue(responseError.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND));
-
-
             assertEquals("Id '" + badId + "' не найден", responseError.getBody().getMessage());
 
             verify(districtRepository, times(1)).findById(any(UUID.class));
@@ -399,12 +384,18 @@ public class DistrictServiceImplE2ETest {
     class DeleteDistrictByIdTests {
 
         @Test
-        @Transactional
         @Tag("E2E")
         @DisplayName("Тест с позитивным исходом")
         void deleteDistrictByIdTest() {
 
-            districtService.deleteDistrict(UUID.fromString("3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"));
+            ResponseEntity<Void> status = restTemplate.exchange(
+                    URL + "/" + id1,
+                    HttpMethod.DELETE,
+                    new HttpEntity<>(Void.class),
+                    Void.class
+            );
+
+            assertTrue(status.getStatusCode().isSameCodeAs(HttpStatus.OK));
 
             verify(districtRepository, times(1)).findById(any(UUID.class));
             verify(districtRepository, times(1)).deleteById(any(UUID.class));
@@ -415,12 +406,14 @@ public class DistrictServiceImplE2ETest {
         @DisplayName("Тест на выброс IdNotFoundException")
         void deleteDistrictIdNotFoundTest() {
 
-            IdNotFoundException exception = assertThrows(
-                    IdNotFoundException.class,
-                    () -> districtService.deleteDistrict(badId)
-            );
+            ResponseEntity<ErrorResponse> status = restTemplate.exchange(
+                    URL + "/" + badId,
+                    HttpMethod.DELETE,
+                    new HttpEntity<>(ErrorResponse.class),
+                    ErrorResponse.class);
 
-            assertEquals("Id '" + badId + "' не найден", exception.getMessage());
+            assertTrue(status.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND));
+            assertEquals("Id '" + badId + "' не найден", status.getBody().getMessage());
 
             verify(districtRepository, times(1)).findById(any(UUID.class));
             verify(districtRepository, never()).deleteById(any(UUID.class));
@@ -431,15 +424,27 @@ public class DistrictServiceImplE2ETest {
         @DisplayName("Тест на выброс DeleteDistrictException")
         void deleteDistrictByIdDeleteDistrictExceptionTest() {
 
-            district.setSections(List.of(new Section()));
-
-            DeleteDistrictException exception = assertThrows(
-                    DeleteDistrictException.class,
-                    () -> districtService.deleteDistrict(id1)
+            jdbcTemplate.execute("insert into sudstaff.section (id, personel_number, name, created_at, updated_at, district_id, max_number_employees_section)\n" +
+                    "values (\n" +
+                    "'3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
+                    "'M540000',\n" +
+                    "'1й участок центрального района',\n" +
+                    "'2025.07.30 15:17:00',\n" +
+                    "'2025.07.30 15:17:00',\n" +
+                    "'1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
+                    "3" +
+                    ");"
             );
 
-            assertFalse(district.getSections().isEmpty());
-            assertEquals(district.getName().getStringConvert() + " содержит участки, удаление запрещено",exception.getMessage());
+
+            ResponseEntity<ErrorResponse> status = restTemplate.exchange(
+                    URL + "/" + id1,
+                    HttpMethod.DELETE,
+                    new HttpEntity<>(ErrorResponse.class),
+                    ErrorResponse.class);
+
+            assertTrue(status.getStatusCode().isSameCodeAs(HttpStatus.UNPROCESSABLE_ENTITY));
+            assertEquals(CENTRALNY.getStringConvert() + " содержит участки, удаление запрещено",status.getBody().getMessage());
 
             verify(districtRepository, times(1)).findById(any(UUID.class));
             verify(districtRepository, never()).deleteById(any(UUID.class));

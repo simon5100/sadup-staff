@@ -81,7 +81,6 @@ public class SectionEmployeeServiceImplIntegrationTest {
     private SectionEmployee sectionEmployee;
     private CreateSectionEmployeeRequest createRequest;
     private UpdateSectionEmployeeRequest updateRequest;
-    private SectionEmployeeResponse response;
     private UUID id;
     private UUID badId;
 
@@ -110,15 +109,6 @@ public class SectionEmployeeServiceImplIntegrationTest {
                 "Иванович",
                 JUDGE,
                 "1й участок центрального района"
-        );
-
-        response = new SectionEmployeeResponse(
-                "EMP12345",
-                "Иван",
-                "Иванов",
-                "Иванович",
-                JUDGE.getStringConvert(),
-                "1"
         );
 
         updateRequest = new UpdateSectionEmployeeRequest();

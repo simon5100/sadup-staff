@@ -139,10 +139,6 @@ public class DepartmentRESTControllerE2ETest {
         log.info("create db and data");
     }
 
-    void tearDown(){
-        log.info("clean db");
-    }
-
     @Nested
     @Order(1)
     @DisplayName("Тесты на метод showAllDepartments поиска всех отделов")
@@ -422,7 +418,3 @@ public class DepartmentRESTControllerE2ETest {
         }
     }
 }
-
-
-
-

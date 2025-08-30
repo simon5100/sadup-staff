@@ -79,7 +79,6 @@ public class DistrictServiceImplIntegrationTest {
     private CreateDistrictRequest createRequest;
     private UpdateDistrictRequest updateRequest;
     private UUID id1;
-    private UUID id2;
     private UUID badId;
 
     @BeforeEach
@@ -96,7 +95,6 @@ public class DistrictServiceImplIntegrationTest {
         );
 
         id1 = district.getId();
-        id2 = UUID.fromString("2d30f1c3-e70d-42a0-a3d3-58a5c2d50d04");
         badId = UUID.randomUUID();
 
         createRequest = new CreateDistrictRequest(

@@ -82,7 +82,6 @@ public class SectionServiceImplIntegrationTest {
     private Section section;
     private CreateSectionRequest createRequest;
     private UpdateSectionRequest updateRequest;
-    private SectionResponse response;
     private UUID id;
     private UUID badId;
 
@@ -109,13 +108,6 @@ public class SectionServiceImplIntegrationTest {
                 "1й участок центрального района",
                 3,
                 DistrictNameEnum.CENTRALNY
-        );
-
-        response = new SectionResponse(
-                "M540000",
-                "1й участок центрального района",
-                DistrictNameEnum.CENTRALNY.getStringConvert(),
-                List.of()
         );
 
         updateRequest = new UpdateSectionRequest();
