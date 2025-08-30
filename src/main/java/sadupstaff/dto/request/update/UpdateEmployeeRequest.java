@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sadupstaff.enums.PositionEmployeeEnum;
 
 @Data
 @AllArgsConstructor
@@ -24,5 +25,5 @@ public class UpdateEmployeeRequest {
     private String patronymic;
 
     @Schema(description = "Должность сотрудника", example = "Консультанат", required = true)
-    private String position;
+    private PositionEmployeeEnum position;
 }

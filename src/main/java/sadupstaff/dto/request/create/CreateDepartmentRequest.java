@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sadupstaff.enums.DepartmentNameEnum;
 
 @Data
 @AllArgsConstructor
@@ -13,8 +14,12 @@ import lombok.NoArgsConstructor;
 public class CreateDepartmentRequest {
 
     @NotBlank
-    @Schema(description = "Имя отдела", example = "Центральный район")
-    private String name;
+    @Schema(description = "Имя отдела", example = "Отдел правового обеспечения")
+    private DepartmentNameEnum name;
+
+    @NotBlank
+    @Schema(description = "Максимальное число сотрудников в отделе", example = "5")
+    private Integer maxNumberEmployees;
 
     @Schema(description = "Описание отдела")
     private String description;

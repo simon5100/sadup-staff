@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sadupstaff.enums.SectionEmployeeEnum;
+import sadupstaff.enums.PositionSectionEmployeeEnum;
 
 @Data
 @AllArgsConstructor
@@ -31,5 +31,5 @@ public class UpdateSectionEmployeeRequest {
                     "Секретарь судебного участка",
                     "Специалист"},
             required = true)
-    private SectionEmployeeEnum position;
+    private PositionSectionEmployeeEnum position;
 }

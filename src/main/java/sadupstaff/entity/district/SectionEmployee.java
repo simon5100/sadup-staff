@@ -3,7 +3,7 @@ package sadupstaff.entity.district;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.*;
-import sadupstaff.enums.SectionEmployeeEnum;
+import sadupstaff.enums.PositionSectionEmployeeEnum;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -37,10 +37,10 @@ public class SectionEmployee {
     @Column(name = "patronymic")
     private String patronymic;
 
-    //переделать
     @Column(name = "position")
     @Enumerated(EnumType.STRING)
-    private SectionEmployeeEnum position;
+    @Nonnull
+    private PositionSectionEmployeeEnum position;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

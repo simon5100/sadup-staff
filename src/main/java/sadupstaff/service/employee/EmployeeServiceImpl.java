@@ -7,15 +7,17 @@ import sadupstaff.dto.request.create.CreateEmployeeRequest;
 import sadupstaff.dto.request.update.UpdateEmployeeRequest;
 import sadupstaff.dto.response.EmployeeResponse;
 import sadupstaff.entity.management.Department;
+import sadupstaff.exception.IdNotFoundException;
+import sadupstaff.exception.employee.MaxEmployeeInDepartmentException;
+import sadupstaff.exception.PositionOccupiedException;
 import sadupstaff.mapper.employee.CreateEmployeeMapper;
 import sadupstaff.mapper.employee.FindEmployeeMapper;
 import sadupstaff.mapper.employee.UpdateEmployeeMapper;
-import sadupstaff.repository.EmploeeyRepository;
 import sadupstaff.entity.management.Employee;
+import sadupstaff.repository.EmployeeRepository;
 import sadupstaff.service.department.DepartmentServiceImpl;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final EmploeeyRepository emploeeyRepository;
+    private final EmployeeRepository employeeRepository;
     private final DepartmentServiceImpl departmentService;
     private final UpdateEmployeeMapper updateEmployeeMapper;
     private final FindEmployeeMapper findEmployeeMapper;
@@ -32,7 +34,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public List<EmployeeResponse> getAllEmployees() {
-        return emploeeyRepository.findAll().stream()
+        return employeeRepository.findAll().stream()
                 .map(employee -> findEmployeeMapper.entityToResponse(employee))
                 .collect(Collectors.toList());
     }
@@ -40,20 +42,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeResponse getEmployee(UUID id) {
-        Optional<Employee> employeeOptional = emploeeyRepository.findById(id);
-        if (employeeOptional.isPresent()) {
-            return findEmployeeMapper.entityToResponse(employeeOptional.get());
-        }
-        return null;
-    }
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
 
-    @Override
-    public Employee getEmployeeByIdForUpdate(UUID id) {
-        Optional<Employee> employeeOptional = emploeeyRepository.findById(id);
-        if (employeeOptional.isPresent()) {
-            return employeeOptional.get();
-        }
-        return null;
+        return findEmployeeMapper.entityToResponse(employee);
     }
 
     @Override
@@ -61,10 +53,21 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeResponse saveEmployee(CreateEmployeeRequest createEmployeeRequest) {
         Employee employee = createEmployeeMapper.toEntity(createEmployeeRequest);
         Department department = departmentService.getDepartmentByName(createEmployeeRequest.getDepartmentName());
+
+        if (department.getMaxNumberEmployees() == department.getEmps().size()) {
+            throw new MaxEmployeeInDepartmentException(createEmployeeRequest.getDepartmentName().getStringConvert());
+        }
+
+        for (Employee emp: department.getEmps()) {
+            if (emp.getPosition().equals(employee.getPosition())) {
+                throw new PositionOccupiedException(createEmployeeRequest.getPosition().getStringConvert());
+            }
+        }
+
         employee.setDepartment(department);
         employee.setCreatedAt(LocalDateTime.now());
         employee.setUpdatedAt(LocalDateTime.now());
-        employee = emploeeyRepository.save(employee);
+        employee = employeeRepository.save(employee);
 
         return getEmployee(employee.getId());
     }
@@ -72,10 +75,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeResponse updateEmployee(UUID id, UpdateEmployeeRequest updateData) {
-        Employee employeeOld = getEmployeeByIdForUpdate(id);
+        Employee employeeOld = employeeRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
+
+        if (updateData.getPosition() != null &&  employeeRepository.existsEmployeeByPosition(updateData.getPosition())) {
+            throw new PositionOccupiedException(updateData.getPosition().getStringConvert());
+        }
+
         updateEmployeeMapper.updateEmployeeData(updateData, employeeOld);
         employeeOld.setUpdatedAt(LocalDateTime.now());
-        emploeeyRepository.save(employeeOld);
+        employeeRepository.save(employeeOld);
 
         return findEmployeeMapper.entityToResponse(employeeOld);
     }
@@ -83,6 +92,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void deleteEmployee(UUID id){
-        emploeeyRepository.deleteById(id);
+        employeeRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
+
+        employeeRepository.deleteById(id);
     }
 }

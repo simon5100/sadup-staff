@@ -7,13 +7,18 @@ import sadupstaff.dto.request.create.CreateDistrictRequest;
 import sadupstaff.dto.request.update.UpdateDistrictRequest;
 import sadupstaff.dto.response.DistrictResponse;
 import sadupstaff.entity.district.District;
+import sadupstaff.enums.DistrictNameEnum;
+import sadupstaff.exception.DistrictNotFoundException;
+import sadupstaff.exception.IdNotFoundException;
+import sadupstaff.exception.PositionOccupiedException;
+import sadupstaff.exception.district.DeleteDistrictException;
 import sadupstaff.mapper.district.CreateDistrictMapper;
 import sadupstaff.mapper.district.FindDistrictMapper;
 import sadupstaff.mapper.district.UpdateDistrictMapper;
 import sadupstaff.repository.DistrictRepository;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -37,34 +42,29 @@ public class DistrictServiceImpl implements DistrictService{
     @Override
     @Transactional
     public DistrictResponse getDistrictById(UUID id) {
-        Optional<District> districtOptional = districtRepository.findById(id);
-        if (districtOptional.isPresent()) {
-            return findDistrictMapper.entityToResponse(districtOptional.get());
-        }
-        return null;
+        District district = districtRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
+
+        return findDistrictMapper.entityToResponse(district);
+
     }
 
     @Override
-    public District getDistrictByIdForUpdate(UUID id) {
-        Optional<District> districtOptional = districtRepository.findById(id);
-        if (districtOptional.isPresent()) {
-            return districtOptional.get();
-        }
-        return null;
-    }
-
-    @Override
-    public District getDistrictByName(String name) {
-        Optional<District> districtOptional = Optional.ofNullable(districtRepository.findDistrictByName(name));
-        if (districtOptional.isPresent()) {
-            return districtOptional.get();
-        }
-        return null;
+    public District getDistrictByName(DistrictNameEnum name) {
+        return Arrays.stream(DistrictNameEnum.values())
+                .filter(value -> value.equals(name))
+                .findFirst()
+                .map(value -> districtRepository.findDistrictByName(value))
+                .orElseThrow(() -> new DistrictNotFoundException(name.getStringConvert()));
     }
 
     @Override
     @Transactional
     public DistrictResponse saveDistrict(CreateDistrictRequest createRequest) {
+        if (districtRepository.existsDistinctByName(createRequest.getName())) {
+            throw new PositionOccupiedException(createRequest.getName().getStringConvert());
+        }
+
         District district = createDistrictMapper.toEntity(createRequest);
         district.setCreatedAt(LocalDateTime.now());
         district.setUpdatedAt(LocalDateTime.now());
@@ -76,7 +76,13 @@ public class DistrictServiceImpl implements DistrictService{
     @Override
     @Transactional
     public DistrictResponse updateDistrict(UUID id, UpdateDistrictRequest updateData) {
-        District districtOld = getDistrictByIdForUpdate(id);
+        District districtOld = districtRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
+
+        if (updateData.getName() != null && districtRepository.existsDistinctByName(updateData.getName())) {
+            throw new PositionOccupiedException(updateData.getName().getStringConvert());
+        }
+
         updateDistrictMapper.updateDistrictData(updateData, districtOld);
         districtOld.setUpdatedAt(LocalDateTime.now());
         districtRepository.save(districtOld);
@@ -87,6 +93,12 @@ public class DistrictServiceImpl implements DistrictService{
     @Override
     @Transactional
     public void deleteDistrict(UUID id) {
+        District district = districtRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException(id.toString()));
+        if (!district.getSections().isEmpty()) {
+            throw new DeleteDistrictException(district.getName().getStringConvert());
+        }
+
         districtRepository.deleteById(id);
     }
 }

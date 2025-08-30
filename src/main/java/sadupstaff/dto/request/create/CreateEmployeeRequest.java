@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sadupstaff.enums.DepartmentNameEnum;
+import sadupstaff.enums.PositionEmployeeEnum;
 
 @Data
 @AllArgsConstructor
@@ -29,9 +31,9 @@ public class CreateEmployeeRequest {
 
     @NotBlank
     @Schema(description = "Должность сотрудника", example = "Консультанат")
-    private String position;
+    private PositionEmployeeEnum position;
 
     @NotBlank
     @Schema(description = "Отдел в котором работает сотрудник", example = "Отдел правового обеспечения ")
-    private String departmentName;
+    private DepartmentNameEnum departmentName;
 }
