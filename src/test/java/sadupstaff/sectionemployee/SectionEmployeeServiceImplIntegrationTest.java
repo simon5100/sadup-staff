@@ -18,7 +18,7 @@ import sadupstaff.dto.request.update.UpdateSectionEmployeeRequest;
 import sadupstaff.dto.response.SectionEmployeeResponse;
 import sadupstaff.entity.district.Section;
 import sadupstaff.entity.district.SectionEmployee;
-import sadupstaff.enums.PositionSectionEmployeeEnum;
+import sadupstaff.enums.PositionSectionEmployee;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
 import sadupstaff.exception.sectionemployee.MaxEmployeeInSectionException;
@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static sadupstaff.enums.PositionSectionEmployeeEnum.JUDGE;
+import static sadupstaff.enums.PositionSectionEmployee.JUDGE;
 
 @Log4j2
 @SpringBootTest()
@@ -173,13 +173,13 @@ public class SectionEmployeeServiceImplIntegrationTest {
     class SaveSectionEmployeeTests {
 
         @ParameterizedTest
-        @EnumSource(value = PositionSectionEmployeeEnum.class,
+        @EnumSource(value = PositionSectionEmployee.class,
                 mode = EnumSource.Mode.EXCLUDE,
                 names = {"JUDGE", "JUDGE_ASSISTANT", "SECRETARY_SESSION"}
         )
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
-        void saveSectionEmployeeTest(PositionSectionEmployeeEnum position) {
+        void saveSectionEmployeeTest(PositionSectionEmployee position) {
 
             createRequest.setPosition(position);
             createRequest.setSectionName("1");
@@ -197,13 +197,13 @@ public class SectionEmployeeServiceImplIntegrationTest {
         }
 
         @ParameterizedTest
-        @EnumSource(value = PositionSectionEmployeeEnum.class,
+        @EnumSource(value = PositionSectionEmployee.class,
                 mode = EnumSource.Mode.INCLUDE,
                 names = {"JUDGE"}
         )
         @Tag("integration")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void saveSectionEmployeePositionOccupiedTest(PositionSectionEmployeeEnum position) {
+        void saveSectionEmployeePositionOccupiedTest(PositionSectionEmployee position) {
 
             createRequest.setPosition(position);
             createRequest.setSectionName("а");
@@ -224,10 +224,10 @@ public class SectionEmployeeServiceImplIntegrationTest {
         }
 
         @ParameterizedTest
-        @EnumSource(PositionSectionEmployeeEnum.class)
+        @EnumSource(PositionSectionEmployee.class)
         @Tag("integration")
         @DisplayName("Тест на выброс MaxEmployeeInSectionException")
-        void saveEmployeeMaxEmployeeInSectionTest(PositionSectionEmployeeEnum position) {
+        void saveEmployeeMaxEmployeeInSectionTest(PositionSectionEmployee position) {
 
             createRequest.setPosition(position);
 
@@ -252,7 +252,7 @@ public class SectionEmployeeServiceImplIntegrationTest {
     class UpdateSectionEmployeeTests {
 
         @ParameterizedTest
-        @EnumSource(value = PositionSectionEmployeeEnum.class,
+        @EnumSource(value = PositionSectionEmployee.class,
                     mode = EnumSource.Mode.EXCLUDE,
                     names = {"JUDGE",
                             "JUDGE_ASSISTANT",
@@ -260,7 +260,7 @@ public class SectionEmployeeServiceImplIntegrationTest {
         )
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
-        void updateSectionEmployeeTest(PositionSectionEmployeeEnum position) {
+        void updateSectionEmployeeTest(PositionSectionEmployee position) {
 
             updateRequest.setPosition(position);
 
@@ -290,14 +290,14 @@ public class SectionEmployeeServiceImplIntegrationTest {
             assertEquals("Id '" + badId + "' не найден", exception.getMessage());
 
             verify(sectionEmployeeRepository, times(1)).findById(badId);
-            verify(sectionEmployeeRepository, never()).existsSectionEmployeeByPosition(any(PositionSectionEmployeeEnum.class));
+            verify(sectionEmployeeRepository, never()).existsSectionEmployeeByPosition(any(PositionSectionEmployee.class));
             verify(updateSectionEmployeeMapper, never()).updateSectionEmployeeData(any(UpdateSectionEmployeeRequest.class), any(SectionEmployee.class));
             verify(sectionEmployeeRepository, never()).save(any(SectionEmployee.class));
             verify(findSectionEmployeeMapper, never()).entityToResponse(any(SectionEmployee.class));
         }
 
         @ParameterizedTest
-        @EnumSource(value = PositionSectionEmployeeEnum.class,
+        @EnumSource(value = PositionSectionEmployee.class,
                 mode = EnumSource.Mode.INCLUDE,
                 names = {"JUDGE",
                         "JUDGE_ASSISTANT",
@@ -305,7 +305,7 @@ public class SectionEmployeeServiceImplIntegrationTest {
         )
         @Tag("integration")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void updateSectionEmployeePositionOccupiedTest(PositionSectionEmployeeEnum position) {
+        void updateSectionEmployeePositionOccupiedTest(PositionSectionEmployee position) {
 
             updateRequest.setPosition(position);
 
@@ -318,7 +318,7 @@ public class SectionEmployeeServiceImplIntegrationTest {
             assertEquals("Позиция '" + position.getStringConvert() + "' уже занята", exception.getMessage());
 
             verify(sectionEmployeeRepository, times(1)).findById(id);
-            verify(sectionEmployeeRepository, times(1)).existsSectionEmployeeByPosition(any(PositionSectionEmployeeEnum.class));
+            verify(sectionEmployeeRepository, times(1)).existsSectionEmployeeByPosition(any(PositionSectionEmployee.class));
             verify(updateSectionEmployeeMapper, never()).updateSectionEmployeeData(any(UpdateSectionEmployeeRequest.class), any(SectionEmployee.class));
             verify(sectionEmployeeRepository, never()).save(any(SectionEmployee.class));
             verify(findSectionEmployeeMapper, never()).entityToResponse(any(SectionEmployee.class));

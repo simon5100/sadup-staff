@@ -12,8 +12,8 @@ import sadupstaff.dto.request.update.UpdateEmployeeRequest;
 import sadupstaff.dto.response.EmployeeResponse;
 import sadupstaff.entity.management.Department;
 import sadupstaff.entity.management.Employee;
-import sadupstaff.enums.DepartmentNameEnum;
-import sadupstaff.enums.PositionEmployeeEnum;
+import sadupstaff.enums.DepartmentName;
+import sadupstaff.enums.PositionEmployee;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
 import sadupstaff.exception.employee.MaxEmployeeInDepartmentException;
@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.never;
-import static sadupstaff.enums.DepartmentNameEnum.LEGAL_SUPPORT;
+import static sadupstaff.enums.DepartmentName.LEGAL_SUPPORT;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Unit тесты методов EmployeeServiceImpl")
@@ -72,7 +72,7 @@ public class EmployeeServiceImplUnitTest {
                 "Иван",
                 "Иванов",
                 "Иванович",
-                PositionEmployeeEnum.CONSULTANT,
+                PositionEmployee.CONSULTANT,
                 LocalDateTime.of(2025,07,30, 15,17,00,000),
                 LocalDateTime.of(2025,07,30, 15,17,00,000),
                 new Department()
@@ -86,8 +86,8 @@ public class EmployeeServiceImplUnitTest {
                 "Иван",
                 "Иванов",
                 "Иванович",
-                PositionEmployeeEnum.CONSULTANT,
-                DepartmentNameEnum.LEGAL_SUPPORT
+                PositionEmployee.CONSULTANT,
+                DepartmentName.LEGAL_SUPPORT
         );
 
         response = new EmployeeResponse(
@@ -95,8 +95,8 @@ public class EmployeeServiceImplUnitTest {
                 "Иван",
                 "Иванов",
                 "Иванович",
-                PositionEmployeeEnum.CONSULTANT.getStringConvert(),
-                DepartmentNameEnum.LEGAL_SUPPORT.getStringConvert(),
+                PositionEmployee.CONSULTANT.getStringConvert(),
+                DepartmentName.LEGAL_SUPPORT.getStringConvert(),
                 LocalDateTime.of(2025,07,30, 15,17,00,000),
                 LocalDateTime.of(2025,07,30, 15,17,00,000)
         );
@@ -171,10 +171,10 @@ public class EmployeeServiceImplUnitTest {
     class SaveEmployeeTests {
 
         @ParameterizedTest
-        @EnumSource(PositionEmployeeEnum.class)
+        @EnumSource(PositionEmployee.class)
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
-        void saveEmployeeTest(PositionEmployeeEnum position) {
+        void saveEmployeeTest(PositionEmployee position) {
             Department department = new Department(
                     UUID.fromString("2d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
                     LEGAL_SUPPORT,
@@ -208,10 +208,10 @@ public class EmployeeServiceImplUnitTest {
         }
 
         @ParameterizedTest
-        @EnumSource(PositionEmployeeEnum.class)
+        @EnumSource(PositionEmployee.class)
         @Tag("unit")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void saveEmployeePositionOccupiedTest(PositionEmployeeEnum position) {
+        void saveEmployeePositionOccupiedTest(PositionEmployee position) {
 
             employee.setPosition(position);
             createRequest.setPosition(position);
@@ -245,10 +245,10 @@ public class EmployeeServiceImplUnitTest {
         }
 
         @ParameterizedTest
-        @EnumSource(PositionEmployeeEnum.class)
+        @EnumSource(PositionEmployee.class)
         @Tag("unit")
         @DisplayName("Тест на выброс MaxEmployeeInDepartmentException")
-        void saveEmployeeMaxEmployeeInDepartmentTest(PositionEmployeeEnum position) {
+        void saveEmployeeMaxEmployeeInDepartmentTest(PositionEmployee position) {
 
             employee.setPosition(position);
             createRequest.setPosition(position);
@@ -287,10 +287,10 @@ public class EmployeeServiceImplUnitTest {
     class UpdateEmployeeTests {
 
         @ParameterizedTest
-        @EnumSource(PositionEmployeeEnum.class)
+        @EnumSource(PositionEmployee.class)
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
-        void updateEmployeeTest(PositionEmployeeEnum position) {
+        void updateEmployeeTest(PositionEmployee position) {
 
             updateRequest.setPosition(position);
             response.setPosition(position.getStringConvert());
@@ -331,17 +331,17 @@ public class EmployeeServiceImplUnitTest {
             assertEquals("Id '" + badId + "' не найден", exception.getMessage());
 
             verify(employeeRepository, times(1)).findById(badId);
-            verify(employeeRepository, never()).existsEmployeeByPosition(any(PositionEmployeeEnum.class));
+            verify(employeeRepository, never()).existsEmployeeByPosition(any(PositionEmployee.class));
             verify(updateEmployeeMapper, never()).updateEmployeeData(updateRequest, employee);
             verify(employeeRepository, never()).save(employee);
             verify(findEmployeeMapper, never()).entityToResponse(employee);
         }
 
         @ParameterizedTest
-        @EnumSource(PositionEmployeeEnum.class)
+        @EnumSource(PositionEmployee.class)
         @Tag("unit")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void updateEmployeePositionOccupiedTest(PositionEmployeeEnum position) {
+        void updateEmployeePositionOccupiedTest(PositionEmployee position) {
 
             updateRequest.setPosition(position);
 
@@ -356,7 +356,7 @@ public class EmployeeServiceImplUnitTest {
             assertEquals("Позиция '" + position.getStringConvert() + "' уже занята", exception.getMessage());
 
             verify(employeeRepository, times(1)).findById(id);
-            verify(employeeRepository, times(1)).existsEmployeeByPosition(any(PositionEmployeeEnum.class));
+            verify(employeeRepository, times(1)).existsEmployeeByPosition(any(PositionEmployee.class));
             verify(updateEmployeeMapper, never()).updateEmployeeData(updateRequest, employee);
             verify(employeeRepository, never()).save(employee);
             verify(findEmployeeMapper, never()).entityToResponse(employee);

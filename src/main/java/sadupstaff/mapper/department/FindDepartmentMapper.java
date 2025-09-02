@@ -6,10 +6,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import sadupstaff.dto.response.DepartmentResponse;
 import sadupstaff.entity.management.Department;
-import sadupstaff.enums.DepartmentNameEnum;
+import sadupstaff.enums.DepartmentName;
 import sadupstaff.mapper.employee.FindEmployeeMapper;
 
-@Mapper(componentModel = "spring", uses = {FindEmployeeMapper.class, DepartmentNameEnum.class})
+@Mapper(componentModel = "spring", uses = {FindEmployeeMapper.class, DepartmentName.class})
 public interface FindDepartmentMapper {
 
     @Mapping(target = "name", ignore = true)

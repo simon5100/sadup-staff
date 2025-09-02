@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sadupstaff.dto.request.create.CreateDepartmentRequest;
 import sadupstaff.dto.request.update.UpdateDepartmentRequest;
 import sadupstaff.dto.response.DepartmentResponse;
-import sadupstaff.enums.DepartmentNameEnum;
+import sadupstaff.enums.DepartmentName;
 import sadupstaff.exception.PositionOccupiedException;
 import sadupstaff.exception.department.DeleteDepartmentException;
 import sadupstaff.exception.DepartmentNotFoundException;
@@ -49,8 +49,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Department getDepartmentByName(DepartmentNameEnum name) {
-        return Arrays.stream(DepartmentNameEnum.values())
+    public Department getDepartmentByName(DepartmentName name) {
+        return Arrays.stream(DepartmentName.values())
                 .filter(value -> name.equals(value))
                 .findFirst()
                 .map(value -> departmentRepository.findDepartmentByName(value))

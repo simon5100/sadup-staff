@@ -22,7 +22,7 @@ import sadupstaff.dto.request.create.CreateDepartmentRequest;
 import sadupstaff.dto.request.update.UpdateDepartmentRequest;
 import sadupstaff.dto.response.DepartmentResponse;
 import sadupstaff.entity.management.Department;
-import sadupstaff.enums.DepartmentNameEnum;
+import sadupstaff.enums.DepartmentName;
 import sadupstaff.exception.ErrorResponse;
 import sadupstaff.mapper.department.CreateDepartmentMapper;
 import sadupstaff.mapper.department.FindDepartmentMapper;
@@ -36,8 +36,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.never;
-import static sadupstaff.enums.DepartmentNameEnum.FINANCE_AND_PLANNING;
-import static sadupstaff.enums.DepartmentNameEnum.LEGAL_SUPPORT;
+import static sadupstaff.enums.DepartmentName.FINANCE_AND_PLANNING;
+import static sadupstaff.enums.DepartmentName.LEGAL_SUPPORT;
 
 @Log4j2
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -94,7 +94,7 @@ public class DepartmentRESTControllerE2ETest {
 
     private DepartmentResponse response;
 
-    private static String URL = "/api/v1/departments";
+    private static String url = "/api/v1/departments";
 
     private ResponseEntity<DepartmentResponse> responseEntity;
 
@@ -151,11 +151,11 @@ public class DepartmentRESTControllerE2ETest {
 
             DepartmentResponse[] departmentResponses;
 
-            ResponseEntity<DepartmentResponse[]> responseList = restTemplate.getForEntity(URL, DepartmentResponse[].class);
+            ResponseEntity<DepartmentResponse[]> responseList = restTemplate.getForEntity(url, DepartmentResponse[].class);
             departmentResponses = responseList.getBody();
 
             assertNotNull(responseList);
-            assertEquals(responseList.getStatusCode(), HttpStatus.OK);
+            assertEquals(HttpStatus.OK, responseList.getStatusCode());
             assertEquals(2, departmentResponses.length);
             assertEquals(LEGAL_SUPPORT.getStringConvert(), departmentResponses[0].getName());
             assertEquals(FINANCE_AND_PLANNING.getStringConvert(), departmentResponses[1].getName());
@@ -180,14 +180,14 @@ public class DepartmentRESTControllerE2ETest {
         })
         @Tag("E2E")
         @DisplayName("Тест с позитивным исходом")
-        void getDepartmentTest(DepartmentNameEnum name, UUID id, int emps) {
+        void getDepartmentTest(DepartmentName name, UUID id, int emps) {
 
-            responseEntity = restTemplate.getForEntity(URL + "/" + id, DepartmentResponse.class);
+            responseEntity = restTemplate.getForEntity(url + "/" + id, DepartmentResponse.class);
 
             DepartmentResponse departmentResponse = responseEntity.getBody();
 
             assertNotNull(responseEntity);
-            assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
             assertEquals(departmentResponse.getName(), name.getStringConvert());
             assertEquals(departmentResponse.getEmps().size(), emps);
 
@@ -201,7 +201,7 @@ public class DepartmentRESTControllerE2ETest {
         @DisplayName("Тест с выбросом IdNotFoundException")
         void getDepartmentNotFoundIdTest() {
 
-            responseError = restTemplate.getForEntity(URL + "/" + badId, ErrorResponse.class);
+            responseError = restTemplate.getForEntity(url + "/" + badId, ErrorResponse.class);
 
             assertTrue(responseError.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND));
             assertEquals("Id '" + badId + "' не найден", responseError.getBody().getMessage());
@@ -223,11 +223,11 @@ public class DepartmentRESTControllerE2ETest {
         })
         @Tag("E2E")
         @DisplayName("Тест с позитивным исходом")
-        void addDepartment(DepartmentNameEnum createName, String responseName) {
+        void addDepartment(DepartmentName createName, String responseName) {
 
             createDepartmentRequest.setName(createName);
 
-            responseEntity = restTemplate.postForEntity(URL, createDepartmentRequest, DepartmentResponse.class);
+            responseEntity = restTemplate.postForEntity(url, createDepartmentRequest, DepartmentResponse.class);
             DepartmentResponse responseCheck = responseEntity.getBody();
 
             assertNotNull(responseEntity);
@@ -243,16 +243,16 @@ public class DepartmentRESTControllerE2ETest {
         }
 
         @ParameterizedTest
-        @EnumSource(value = DepartmentNameEnum.class,
+        @EnumSource(value = DepartmentName.class,
                 mode = EnumSource.Mode.INCLUDE,
                 names = {"LEGAL_SUPPORT", "LOGISTICS_SUPPORT"})
         @Tag("E2E")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void addDepartmentPositionOccupiedTest(DepartmentNameEnum name){
+        void addDepartmentPositionOccupiedTest(DepartmentName name){
 
             createDepartmentRequest.setName(name);
 
-            responseError = restTemplate.postForEntity(URL, createDepartmentRequest, ErrorResponse.class);
+            responseError = restTemplate.postForEntity(url, createDepartmentRequest, ErrorResponse.class);
 
             assertNotNull(responseError);
             assertTrue(responseError.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT));
@@ -281,12 +281,12 @@ public class DepartmentRESTControllerE2ETest {
         })
         @Tag("E2E")
         @DisplayName("Тест с позитивным исходом")
-        void updateDepartmentTest(DepartmentNameEnum name, String description, UUID id) {
+        void updateDepartmentTest(DepartmentName name, String description, UUID id) {
 
             updateDepartmentRequest.setName(name);
             updateDepartmentRequest.setDescription(description);
 
-            responseEntity = restTemplate.exchange(URL + "/" + id,
+            responseEntity = restTemplate.exchange(url + "/" + id,
                     HttpMethod.PUT,
                     new HttpEntity<>(updateDepartmentRequest),  DepartmentResponse.class);
 
@@ -309,7 +309,7 @@ public class DepartmentRESTControllerE2ETest {
         void updateDepartmentIdNotFoundTest() {
 
             ResponseEntity<ErrorResponse> responseError = restTemplate.exchange(
-                    URL + "/" + badId,
+                    url + "/" + badId,
                     HttpMethod.PUT,
                     new HttpEntity<>(updateDepartmentRequest),
                     ErrorResponse.class);
@@ -328,18 +328,18 @@ public class DepartmentRESTControllerE2ETest {
         }
 
         @ParameterizedTest
-        @EnumSource(value = DepartmentNameEnum.class,
+        @EnumSource(value = DepartmentName.class,
                 mode = EnumSource.Mode.INCLUDE,
                 names = {"LEGAL_SUPPORT", "FINANCE_AND_PLANNING"})
         @Tag("E2E")
         @Order(1)
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void updateDepartmentPositionOccupiedTest(DepartmentNameEnum name) {
+        void updateDepartmentPositionOccupiedTest(DepartmentName name) {
 
             updateDepartmentRequest.setName(name);
 
             ResponseEntity<ErrorResponse> responseError = restTemplate.exchange(
-                    URL + "/" + id1,
+                    url + "/" + id1,
                     HttpMethod.PUT,
                     new HttpEntity<>(updateDepartmentRequest),
                     ErrorResponse.class);
@@ -367,7 +367,7 @@ public class DepartmentRESTControllerE2ETest {
         void deleteDepartmentByIdTest() {
 
             ResponseEntity<Void> status = restTemplate.exchange(
-                    URL + "/" + id2,
+                    url + "/" + id2,
                     HttpMethod.DELETE,
                     new HttpEntity<>(Void.class),
                     Void.class);
@@ -385,7 +385,7 @@ public class DepartmentRESTControllerE2ETest {
         void deleteDepartmentIdNotFoundTest() {
 
             ResponseEntity<ErrorResponse> status = restTemplate.exchange(
-                    URL + "/" + badId,
+                    url + "/" + badId,
                     HttpMethod.DELETE,
                     new HttpEntity<>(ErrorResponse.class),
                     ErrorResponse.class);
@@ -404,13 +404,13 @@ public class DepartmentRESTControllerE2ETest {
         void deleteDepartmentByIdDeleteDepartmentExceptionTest() {
 
             ResponseEntity<ErrorResponse> status = restTemplate.exchange(
-                    URL + "/" + id1,
+                    url + "/" + id1,
                     HttpMethod.DELETE,
                     new HttpEntity<>(ErrorResponse.class),
                     ErrorResponse.class);
 
             assertTrue(status.getStatusCode().isSameCodeAs(HttpStatus.UNPROCESSABLE_ENTITY));
-            assertEquals(DepartmentNameEnum.LOGISTICS_SUPPORT.getStringConvert() + " имеет сотрудников", status.getBody().getMessage());
+            assertEquals(DepartmentName.LOGISTICS_SUPPORT.getStringConvert() + " имеет сотрудников", status.getBody().getMessage());
 
             verify(departmentService, times(1)).deleteDepartment(id1);
             verify(departmentRepository, times(1)).findById(id1);

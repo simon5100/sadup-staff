@@ -18,7 +18,7 @@ import sadupstaff.dto.request.create.CreateDepartmentRequest;
 import sadupstaff.dto.request.update.UpdateDepartmentRequest;
 import sadupstaff.dto.response.DepartmentResponse;
 import sadupstaff.entity.management.Department;
-import sadupstaff.enums.DepartmentNameEnum;
+import sadupstaff.enums.DepartmentName;
 import sadupstaff.exception.DepartmentNotFoundException;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
@@ -34,8 +34,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static sadupstaff.enums.DepartmentNameEnum.FINANCE_AND_PLANNING;
-import static sadupstaff.enums.DepartmentNameEnum.LEGAL_SUPPORT;
+import static sadupstaff.enums.DepartmentName.FINANCE_AND_PLANNING;
+import static sadupstaff.enums.DepartmentName.LEGAL_SUPPORT;
 
 @Log4j2
 @SpringBootTest()
@@ -193,11 +193,11 @@ class DepartmentServiceImplIntegrationTest {
 
         @ParameterizedTest
         @Tag("integration")
-        @EnumSource(value = DepartmentNameEnum.class,
+        @EnumSource(value = DepartmentName.class,
         mode = EnumSource.Mode.INCLUDE,
         names = {"LEGAL_SUPPORT", "FINANCE_AND_PLANNING"})
         @DisplayName("Тест с позитивным исходом")
-        void getDepartmentByNameTest(DepartmentNameEnum name) {
+        void getDepartmentByNameTest(DepartmentName name) {
 
             Department departmentCheck = departmentService.getDepartmentByName(name);
 
@@ -208,12 +208,12 @@ class DepartmentServiceImplIntegrationTest {
         }
 
         @ParameterizedTest
-        @EnumSource(value = DepartmentNameEnum.class,
+        @EnumSource(value = DepartmentName.class,
                     mode = EnumSource.Mode.EXCLUDE,
                     names = {"LEGAL_SUPPORT", "FINANCE_AND_PLANNING"})
         @Tag("integration")
         @DisplayName("Тест на выброс DepartmentNotFoundException из-за неверного имени")
-        void getDepartmentByNameNotFoundBadNameTest(DepartmentNameEnum name) {
+        void getDepartmentByNameNotFoundBadNameTest(DepartmentName name) {
 
             DepartmentNotFoundException exception = assertThrows(
                     DepartmentNotFoundException.class,
@@ -238,7 +238,7 @@ class DepartmentServiceImplIntegrationTest {
         })
         @Tag("integrationTest")
         @DisplayName("Тест с позитивным исходом")
-        void saveDepartment(DepartmentNameEnum createName, String responseName) {
+        void saveDepartment(DepartmentName createName, String responseName) {
 
             response.setName(responseName);
             createDepartmentRequest.setName(createName);
@@ -257,12 +257,12 @@ class DepartmentServiceImplIntegrationTest {
         }
 
         @ParameterizedTest
-        @EnumSource(value = DepartmentNameEnum.class,
+        @EnumSource(value = DepartmentName.class,
                     mode = EnumSource.Mode.INCLUDE,
                     names = "LEGAL_SUPPORT")
         @Tag("integrationTest")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void saveDepartmentPositionOccupiedTest(DepartmentNameEnum name){
+        void saveDepartmentPositionOccupiedTest(DepartmentName name){
 
             createDepartmentRequest.setName(name);
 
@@ -292,7 +292,7 @@ class DepartmentServiceImplIntegrationTest {
         })
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
-        void updateDepartmentTest(DepartmentNameEnum name, String description) {
+        void updateDepartmentTest(DepartmentName name, String description) {
 
             updateDepartmentRequest.setName(name);
             updateDepartmentRequest.setDescription(description);
@@ -327,12 +327,12 @@ class DepartmentServiceImplIntegrationTest {
         }
 
         @ParameterizedTest
-        @EnumSource(value = DepartmentNameEnum.class,
+        @EnumSource(value = DepartmentName.class,
         mode = EnumSource.Mode.INCLUDE,
         names = {"LEGAL_SUPPORT", "FINANCE_AND_PLANNING"})
         @Tag("integration")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void updateDepartmentPositionOccupiedTest(DepartmentNameEnum name) {
+        void updateDepartmentPositionOccupiedTest(DepartmentName name) {
 
             updateDepartmentRequest.setName(name);
 

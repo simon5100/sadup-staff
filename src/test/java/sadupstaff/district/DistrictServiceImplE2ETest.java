@@ -23,7 +23,7 @@ import sadupstaff.dto.request.create.CreateDistrictRequest;
 import sadupstaff.dto.request.update.UpdateDistrictRequest;
 import sadupstaff.dto.response.DistrictResponse;
 import sadupstaff.entity.district.District;
-import sadupstaff.enums.DistrictNameEnum;
+import sadupstaff.enums.DistrictName;
 import sadupstaff.exception.ErrorResponse;
 import sadupstaff.mapper.district.CreateDistrictMapper;
 import sadupstaff.mapper.district.FindDistrictMapper;
@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.never;
-import static sadupstaff.enums.DistrictNameEnum.CENTRALNY;
+import static sadupstaff.enums.DistrictName.CENTRALNY;
 
 @Log4j2
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -241,13 +241,13 @@ public class DistrictServiceImplE2ETest {
 
         @ParameterizedTest
         @EnumSource(
-                value = DistrictNameEnum.class,
+                value = DistrictName.class,
                 mode = EnumSource.Mode.EXCLUDE,
                 names = {"CENTRALNY", "ZHELEZNODOROZHHNY", "ZAELTSOVSKY"}
         )
         @Tag("E2E")
         @DisplayName("Тест с позитивным исходом")
-        void saveDistrictTest(DistrictNameEnum name) {
+        void saveDistrictTest(DistrictName name) {
 
             createRequest.setName(name);
             createRequest.setDescription(name.getStringConvert());
@@ -259,9 +259,9 @@ public class DistrictServiceImplE2ETest {
             assertTrue(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.OK));
             assertEquals(name.getStringConvert(), districtResponse.getName());
 
-            verify(districtRepository, times(1)).existsDistinctByName(any(DistrictNameEnum.class));
+            verify(districtRepository, times(1)).existsDistinctByName(any(DistrictName.class));
             verify(createDistrictMapper, times(1)).toEntity(any(CreateDistrictRequest.class));
-            verify(districtRepository, times(1)).existsDistinctByName(any(DistrictNameEnum.class));
+            verify(districtRepository, times(1)).existsDistinctByName(any(DistrictName.class));
             verify(districtRepository, times(1)).save(any(District.class));
             verify(districtRepository, times(1)).findById(any(UUID.class));
             verify(findDistrictMapper, times(1)).entityToResponse(any(District.class));
@@ -269,13 +269,13 @@ public class DistrictServiceImplE2ETest {
 
         @ParameterizedTest
         @EnumSource(
-                value = DistrictNameEnum.class,
+                value = DistrictName.class,
                 mode = EnumSource.Mode.INCLUDE,
                 names = {"CENTRALNY"}
         )
         @Tag("E2E")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void saveDistrictPositionOccupiedTest(DistrictNameEnum name) {
+        void saveDistrictPositionOccupiedTest(DistrictName name) {
 
             createRequest.setName(name);
             responseError = restTemplate.postForEntity(URL, createRequest, ErrorResponse.class);
@@ -284,7 +284,7 @@ public class DistrictServiceImplE2ETest {
             assertTrue(responseError.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT));
             assertEquals("Позиция '" + name.getStringConvert() + "' уже занята", responseError.getBody().getMessage());
 
-            verify(districtRepository, times(1)).existsDistinctByName(any(DistrictNameEnum.class));
+            verify(districtRepository, times(1)).existsDistinctByName(any(DistrictName.class));
             verify(createDistrictMapper, never()).toEntity(any(CreateDistrictRequest.class));
             verify(districtRepository, never()).save(any(District.class));
             verify(districtRepository, never()).findById(any(UUID.class));
@@ -298,13 +298,13 @@ public class DistrictServiceImplE2ETest {
 
         @ParameterizedTest
         @EnumSource(
-                value = DistrictNameEnum.class,
+                value = DistrictName.class,
                 mode = EnumSource.Mode.EXCLUDE,
                 names = {"CENTRALNY", "ZHELEZNODOROZHHNY", "ZAELTSOVSKY"}
         )
         @Tag("E2E")
         @DisplayName("Тест с позитивным исходом")
-        void updateDistrictTest(DistrictNameEnum name) {
+        void updateDistrictTest(DistrictName name) {
 
             updateRequest.setName(name);
             updateRequest.setDescription(name.getStringConvert());
@@ -343,7 +343,7 @@ public class DistrictServiceImplE2ETest {
             assertEquals("Id '" + badId + "' не найден", responseError.getBody().getMessage());
 
             verify(districtRepository, times(1)).findById(any(UUID.class));
-            verify(districtRepository, never()).existsDistinctByName(any(DistrictNameEnum.class));
+            verify(districtRepository, never()).existsDistinctByName(any(DistrictName.class));
             verify(updateDistrictMapper, never()).updateDistrictData(any(UpdateDistrictRequest.class), any(District.class));
             verify(districtRepository, never()).save(any(District.class));
             verify(findDistrictMapper, never()).entityToResponse(any(District.class));
@@ -352,13 +352,13 @@ public class DistrictServiceImplE2ETest {
 
         @ParameterizedTest
         @EnumSource(
-                value = DistrictNameEnum.class,
+                value = DistrictName.class,
                 mode = EnumSource.Mode.INCLUDE,
                 names = {"CENTRALNY"}
         )
         @Tag("E2E")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void updateDistrictPositionOccupiedTest(DistrictNameEnum name) {
+        void updateDistrictPositionOccupiedTest(DistrictName name) {
 
             updateRequest.setName(name);
 

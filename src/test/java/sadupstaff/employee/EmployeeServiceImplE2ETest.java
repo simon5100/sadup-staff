@@ -23,8 +23,8 @@ import sadupstaff.dto.request.create.CreateEmployeeRequest;
 import sadupstaff.dto.request.update.UpdateEmployeeRequest;
 import sadupstaff.dto.response.EmployeeResponse;
 import sadupstaff.entity.management.Employee;
-import sadupstaff.enums.DepartmentNameEnum;
-import sadupstaff.enums.PositionEmployeeEnum;
+import sadupstaff.enums.DepartmentName;
+import sadupstaff.enums.PositionEmployee;
 import sadupstaff.exception.ErrorResponse;
 import sadupstaff.mapper.employee.CreateEmployeeMapper;
 import sadupstaff.mapper.employee.FindEmployeeMapper;
@@ -37,9 +37,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.never;
-import static sadupstaff.enums.DepartmentNameEnum.LEGAL_SUPPORT;
-import static sadupstaff.enums.PositionEmployeeEnum.CONSULTANT;
-import static sadupstaff.enums.PositionEmployeeEnum.SENIOR_SPECIALIST;
+import static sadupstaff.enums.DepartmentName.LEGAL_SUPPORT;
+import static sadupstaff.enums.PositionEmployee.CONSULTANT;
+import static sadupstaff.enums.PositionEmployee.SENIOR_SPECIALIST;
 
 @Log4j2
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -198,7 +198,7 @@ public class EmployeeServiceImplE2ETest {
                 "Иванов",
                 "Иванович",
                 SENIOR_SPECIALIST,
-                DepartmentNameEnum.LEGAL_SUPPORT
+                DepartmentName.LEGAL_SUPPORT
         );
 
         updateRequest = new UpdateEmployeeRequest();
@@ -268,7 +268,7 @@ public class EmployeeServiceImplE2ETest {
     class SaveEmployeeTests {
 
         @ParameterizedTest
-        @EnumSource(value = PositionEmployeeEnum.class,
+        @EnumSource(value = PositionEmployee.class,
                 mode = EnumSource.Mode.INCLUDE,
                 names = {"HEAD_OF_DEPARTMENT",
                         "DEPUTY_HEAD_OF_DEPARTMENT",
@@ -276,7 +276,7 @@ public class EmployeeServiceImplE2ETest {
                         "DEPUTY_DEPARTMENT_HEAD"})
         @Tag("E2E")
         @DisplayName("Тест с позитивным исходом")
-        void saveEmployeeTest(PositionEmployeeEnum position) {
+        void saveEmployeeTest(PositionEmployee position) {
 
             createRequest.setPosition(position);
 
@@ -295,13 +295,13 @@ public class EmployeeServiceImplE2ETest {
         }
 
         @ParameterizedTest
-        @EnumSource(value = PositionEmployeeEnum.class,
+        @EnumSource(value = PositionEmployee.class,
                 mode = EnumSource.Mode.INCLUDE,
                 names = {"CONSULTANT"}
         )
         @Tag("E2E")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void saveEmployeePositionOccupiedTest(PositionEmployeeEnum position) {
+        void saveEmployeePositionOccupiedTest(PositionEmployee position) {
 
             createRequest.setPosition(position);
 
@@ -320,13 +320,13 @@ public class EmployeeServiceImplE2ETest {
         }
 
         @ParameterizedTest
-        @EnumSource(value = PositionEmployeeEnum.class,
+        @EnumSource(value = PositionEmployee.class,
                 mode = EnumSource.Mode.INCLUDE,
                 names = {"LEAD_EXPERT"}
         )
         @Tag("E2E")
         @DisplayName("Тест на выброс MaxEmployeeInDepartmentException")
-        void saveEmployeeMaxEmployeeInDepartmentTest(PositionEmployeeEnum position) {
+        void saveEmployeeMaxEmployeeInDepartmentTest(PositionEmployee position) {
             jdbcTemplate.execute(
                     "insert into sudstaff.employees (id, personel_number, first_name, last_name, patronymic, position, created_at, updated_at, department_id)\n" +
                             "values (\n" +
@@ -396,7 +396,7 @@ public class EmployeeServiceImplE2ETest {
             assertEquals("В '" + LEGAL_SUPPORT.getStringConvert() + "' максимальное количество сотрудников", responseError.getBody().getMessage());
 
             verify(createEmployeeMapper, times(1)).toEntity(any(CreateEmployeeRequest.class));
-            verify(departmentService, times(1)).getDepartmentByName(any(DepartmentNameEnum.class));
+            verify(departmentService, times(1)).getDepartmentByName(any(DepartmentName.class));
             verify(employeeRepository, never()).findById(any(UUID.class));
             verify(employeeRepository, never()).save(any(Employee.class));
             verify(findEmployeeMapper, never()).entityToResponse(any(Employee.class));
@@ -408,13 +408,13 @@ public class EmployeeServiceImplE2ETest {
     class UpdateEmployeeTests {
 
         @ParameterizedTest
-        @EnumSource(value = PositionEmployeeEnum.class,
+        @EnumSource(value = PositionEmployee.class,
                 mode = EnumSource.Mode.EXCLUDE,
                 names = {"CONSULTANT"}
         )
         @Tag("E2E")
         @DisplayName("Тест с позитивным исходом")
-        void updateEmployeeTest(PositionEmployeeEnum position) {
+        void updateEmployeeTest(PositionEmployee position) {
 
             updateRequest.setPosition(position);
 
@@ -452,20 +452,20 @@ public class EmployeeServiceImplE2ETest {
             assertEquals("Id '" + badId + "' не найден", responseError.getBody().getMessage());
 
             verify(employeeRepository, times(1)).findById(badId);
-            verify(employeeRepository, never()).existsEmployeeByPosition(any(PositionEmployeeEnum.class));
+            verify(employeeRepository, never()).existsEmployeeByPosition(any(PositionEmployee.class));
             verify(updateEmployeeMapper, never()).updateEmployeeData(any(UpdateEmployeeRequest.class), any(Employee.class));
             verify(employeeRepository, never()).save(any(Employee.class));
             verify(findEmployeeMapper, never()).entityToResponse(any(Employee.class));
         }
 
         @ParameterizedTest
-        @EnumSource(value = PositionEmployeeEnum.class,
+        @EnumSource(value = PositionEmployee.class,
                 mode = EnumSource.Mode.INCLUDE,
                 names = {"CONSULTANT"}
         )
         @Tag("E2E")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void updateEmployeePositionOccupiedTest(PositionEmployeeEnum position) {
+        void updateEmployeePositionOccupiedTest(PositionEmployee position) {
 
             updateRequest.setPosition(position);
 
@@ -479,7 +479,7 @@ public class EmployeeServiceImplE2ETest {
             assertEquals("Позиция '" + position.getStringConvert() + "' уже занята", responseError.getBody().getMessage());
 
             verify(employeeRepository, times(1)).findById(any(UUID.class));
-            verify(employeeRepository, times(1)).existsEmployeeByPosition(any(PositionEmployeeEnum.class));
+            verify(employeeRepository, times(1)).existsEmployeeByPosition(any(PositionEmployee.class));
             verify(updateEmployeeMapper, never()).updateEmployeeData(any(UpdateEmployeeRequest.class), any(Employee.class));
             verify(employeeRepository, never()).save(any(Employee.class));
             verify(findEmployeeMapper, never()).entityToResponse(any(Employee.class));

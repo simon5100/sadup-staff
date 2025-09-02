@@ -13,7 +13,7 @@ import sadupstaff.dto.request.update.UpdateDepartmentRequest;
 import sadupstaff.dto.response.DepartmentResponse;
 import sadupstaff.entity.management.Department;
 import sadupstaff.entity.management.Employee;
-import sadupstaff.enums.DepartmentNameEnum;
+import sadupstaff.enums.DepartmentName;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
 import sadupstaff.exception.department.DeleteDepartmentException;
@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static sadupstaff.enums.DepartmentNameEnum.LEGAL_SUPPORT;
+import static sadupstaff.enums.DepartmentName.LEGAL_SUPPORT;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Unit тесты методов DepartmentServiceImpl")
@@ -147,10 +147,10 @@ public class DepartmentServiceImplUnitTest {
     class GetDepartmentByNameTests {
 
         @ParameterizedTest
-        @EnumSource(DepartmentNameEnum.class)
+        @EnumSource(DepartmentName.class)
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
-        void getDepartmentByNameTest(DepartmentNameEnum name) {
+        void getDepartmentByNameTest(DepartmentName name) {
 
             department.setName(name);
 
@@ -167,10 +167,10 @@ public class DepartmentServiceImplUnitTest {
     class SaveDepartmentTests {
 
         @ParameterizedTest
-        @EnumSource(DepartmentNameEnum.class)
+        @EnumSource(DepartmentName.class)
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
-        void saveDepartmentTest(DepartmentNameEnum name) {
+        void saveDepartmentTest(DepartmentName name) {
 
             createDepartmentRequest.setName(name);
             department.setName(name);
@@ -193,10 +193,10 @@ public class DepartmentServiceImplUnitTest {
         }
 
         @ParameterizedTest
-        @EnumSource(DepartmentNameEnum.class)
+        @EnumSource(DepartmentName.class)
         @Tag("unit")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void saveDepartmentPositionOccupiedTest(DepartmentNameEnum name) {
+        void saveDepartmentPositionOccupiedTest(DepartmentName name) {
 
             createDepartmentRequest.setName(name);
             department.setName(name);
@@ -228,7 +228,7 @@ public class DepartmentServiceImplUnitTest {
         })
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
-        void updateDepartmentTest(DepartmentNameEnum name, String description) {
+        void updateDepartmentTest(DepartmentName name, String description) {
 
             updateDepartmentRequest.setName(name);
             updateDepartmentRequest.setDescription(description);
@@ -283,7 +283,7 @@ public class DepartmentServiceImplUnitTest {
         })
         @Tag("unit")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void updateDepartmentPositionOccupiedTest(DepartmentNameEnum name, String description) {
+        void updateDepartmentPositionOccupiedTest(DepartmentName name, String description) {
 
             updateDepartmentRequest.setName(name);
             updateDepartmentRequest.setDescription(description);

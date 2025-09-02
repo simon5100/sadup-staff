@@ -13,7 +13,7 @@ import sadupstaff.dto.response.SectionEmployeeResponse;
 import sadupstaff.entity.district.District;
 import sadupstaff.entity.district.Section;
 import sadupstaff.entity.district.SectionEmployee;
-import sadupstaff.enums.PositionSectionEmployeeEnum;
+import sadupstaff.enums.PositionSectionEmployee;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
 import sadupstaff.exception.sectionemployee.MaxEmployeeInSectionException;
@@ -68,7 +68,7 @@ public class SectionEmployeeServiceImplUnitTest {
                 "Иван",
                 "Иванов",
                 "Иванович",
-                PositionSectionEmployeeEnum.JUDGE,
+                PositionSectionEmployee.JUDGE,
                 LocalDateTime.of(2025,07,30, 15,17,00,000),
                 LocalDateTime.of(2025,07,30, 15,17,00,000),
                 new Section()
@@ -82,7 +82,7 @@ public class SectionEmployeeServiceImplUnitTest {
                 "Иван",
                 "Иванов",
                 "Иванович",
-                PositionSectionEmployeeEnum.JUDGE,
+                PositionSectionEmployee.JUDGE,
                 "1"
         );
 
@@ -91,7 +91,7 @@ public class SectionEmployeeServiceImplUnitTest {
                 "Иван",
                 "Иванов",
                 "Иванович",
-                PositionSectionEmployeeEnum.JUDGE.getStringConvert(),
+                PositionSectionEmployee.JUDGE.getStringConvert(),
                 "1"
         );
 
@@ -165,10 +165,10 @@ public class SectionEmployeeServiceImplUnitTest {
     class SaveSectionEmployeeTests {
 
         @ParameterizedTest
-        @EnumSource(PositionSectionEmployeeEnum.class)
+        @EnumSource(PositionSectionEmployee.class)
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
-        void saveSectionEmployeeTest(PositionSectionEmployeeEnum position) {
+        void saveSectionEmployeeTest(PositionSectionEmployee position) {
 
             Section section = new Section(
                     UUID.fromString("3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
@@ -204,10 +204,10 @@ public class SectionEmployeeServiceImplUnitTest {
         }
 
         @ParameterizedTest
-        @EnumSource(PositionSectionEmployeeEnum.class)
+        @EnumSource(PositionSectionEmployee.class)
         @Tag("unit")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void saveSectionEmployeePositionOccupiedTest(PositionSectionEmployeeEnum position) {
+        void saveSectionEmployeePositionOccupiedTest(PositionSectionEmployee position) {
 
             createRequest.setPosition(position);
             sectionEmployee.setPosition(position);
@@ -242,10 +242,10 @@ public class SectionEmployeeServiceImplUnitTest {
         }
 
         @ParameterizedTest
-        @EnumSource(PositionSectionEmployeeEnum.class)
+        @EnumSource(PositionSectionEmployee.class)
         @Tag("unit")
         @DisplayName("Тест на выброс MaxEmployeeInSectionException")
-        void saveEmployeeMaxEmployeeInSectionTest(PositionSectionEmployeeEnum position) {
+        void saveEmployeeMaxEmployeeInSectionTest(PositionSectionEmployee position) {
 
             sectionEmployee.setPosition(position);
             createRequest.setPosition(position);
@@ -285,10 +285,10 @@ public class SectionEmployeeServiceImplUnitTest {
     class UpdateSectionEmployeeTests {
 
         @ParameterizedTest
-        @EnumSource(PositionSectionEmployeeEnum.class)
+        @EnumSource(PositionSectionEmployee.class)
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
-        void updateSectionEmployeeTest(PositionSectionEmployeeEnum position) {
+        void updateSectionEmployeeTest(PositionSectionEmployee position) {
 
             updateRequest.setPosition(position);
             response.setPosition(position.getStringConvert());
@@ -330,17 +330,17 @@ public class SectionEmployeeServiceImplUnitTest {
             assertEquals("Id '" + badId + "' не найден", exception.getMessage());
 
             verify(sectionEmployeeRepository, times(1)).findById(badId);
-            verify(sectionEmployeeRepository, never()).existsSectionEmployeeByPosition(any(PositionSectionEmployeeEnum.class));
+            verify(sectionEmployeeRepository, never()).existsSectionEmployeeByPosition(any(PositionSectionEmployee.class));
             verify(updateSectionEmployeeMapper, never()).updateSectionEmployeeData(updateRequest, sectionEmployee);
             verify(sectionEmployeeRepository, never()).save(sectionEmployee);
             verify(findSectionEmployeeMapper, never()).entityToResponse(sectionEmployee);
         }
 
         @ParameterizedTest
-        @EnumSource(PositionSectionEmployeeEnum.class)
+        @EnumSource(PositionSectionEmployee.class)
         @Tag("unit")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void updateSectionEmployeePositionOccupiedTest(PositionSectionEmployeeEnum position) {
+        void updateSectionEmployeePositionOccupiedTest(PositionSectionEmployee position) {
 
             updateRequest.setPosition(position);
 
@@ -356,7 +356,7 @@ public class SectionEmployeeServiceImplUnitTest {
             assertEquals("Позиция '" + position.getStringConvert() + "' уже занята", exception.getMessage());
 
             verify(sectionEmployeeRepository, times(1)).findById(id);
-            verify(sectionEmployeeRepository, times(1)).existsSectionEmployeeByPosition(any(PositionSectionEmployeeEnum.class));
+            verify(sectionEmployeeRepository, times(1)).existsSectionEmployeeByPosition(any(PositionSectionEmployee.class));
             verify(updateSectionEmployeeMapper, never()).updateSectionEmployeeData(updateRequest, sectionEmployee);
             verify(sectionEmployeeRepository, never()).save(sectionEmployee);
             verify(findSectionEmployeeMapper, never()).entityToResponse(sectionEmployee);

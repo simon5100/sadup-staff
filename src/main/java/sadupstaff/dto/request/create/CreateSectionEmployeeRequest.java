@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sadupstaff.enums.PositionSectionEmployeeEnum;
+import sadupstaff.enums.PositionSectionEmployee;
 
 @Data
 @AllArgsConstructor
@@ -31,7 +31,7 @@ public class CreateSectionEmployeeRequest {
                     "Секретарь судебного участка",
                     "Специалист"},
             required = true)
-    private PositionSectionEmployeeEnum position;
+    private PositionSectionEmployee position;
 
     @Schema(description = "Участок на котором работает сотрудник", example = "1-участок центрального района", required = true)
     private String sectionName;

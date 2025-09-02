@@ -6,7 +6,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
-import sadupstaff.enums.DistrictNameEnum;
+import sadupstaff.enums.DistrictName;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +32,12 @@ public class District {
     @Column(name = "name")
     @Enumerated(EnumType.STRING)
     @Nonnull
-    private DistrictNameEnum name;
+    private DistrictName name;
 
     @Column(name = "description")
     private String description;
 
     @Column(name = "max_number_sections")
-    @Max(value = 13, message = "Количество участков в районе не может быть больше 13-и")
-    @Min(value = 2, message = "Количество участков в районе не может быть меньше 2-х")
     @Nonnull
     private Integer maxNumberSection;
 

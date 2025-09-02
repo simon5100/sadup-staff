@@ -6,11 +6,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import sadupstaff.dto.response.DistrictResponse;
 import sadupstaff.entity.district.District;
-import sadupstaff.enums.DistrictNameEnum;
+import sadupstaff.enums.DistrictName;
 import sadupstaff.mapper.section.FindSectionMapper;
-import sadupstaff.mapper.sectionemployee.FindSectionEmployeeMapper;
 
-@Mapper(componentModel = "spring", uses = {FindSectionMapper.class, DistrictNameEnum.class})
+@Mapper(componentModel = "spring", uses = {FindSectionMapper.class, DistrictName.class})
 public interface FindDistrictMapper {
 
     @Mapping(target = "name", ignore = true)

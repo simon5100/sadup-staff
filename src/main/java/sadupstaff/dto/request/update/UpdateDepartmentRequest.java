@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sadupstaff.enums.DepartmentNameEnum;
+import sadupstaff.enums.DepartmentName;
 
 @Data
 @AllArgsConstructor
@@ -13,7 +13,7 @@ import sadupstaff.enums.DepartmentNameEnum;
 public class UpdateDepartmentRequest {
 
     @Schema(description = "Имя отдела", example = "Отдел правового обеспечения")
-    private DepartmentNameEnum name;
+    private DepartmentName name;
 
     @Schema(description = "Описание отдела")
     private String description;

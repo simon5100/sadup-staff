@@ -4,7 +4,8 @@ import sadupstaff.dto.request.create.CreateDistrictRequest;
 import sadupstaff.dto.request.update.UpdateDistrictRequest;
 import sadupstaff.dto.response.DistrictResponse;
 import sadupstaff.entity.district.District;
-import sadupstaff.enums.DistrictNameEnum;
+import sadupstaff.enums.DistrictName;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ public interface DistrictService {
 
     DistrictResponse getDistrictById(UUID id);
 
-    District getDistrictByName(DistrictNameEnum name);
+    District getDistrictByName(DistrictName name);
 
     DistrictResponse saveDistrict(CreateDistrictRequest createRequest);
 

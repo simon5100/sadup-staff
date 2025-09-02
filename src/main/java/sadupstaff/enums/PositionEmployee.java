@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum PositionEmployeeEnum {
+public enum PositionEmployee {
     HEAD_OF_DEPARTMENT("Начальник управления"),
     DEPUTY_HEAD_OF_DEPARTMENT("Заместитель начальника управления"),
     DEPARTMENT_HEAD("Начальник отдела"),

@@ -3,9 +3,9 @@ package sadupstaff.mapper.employee;
 import org.mapstruct.*;
 import sadupstaff.dto.request.update.UpdateEmployeeRequest;
 import sadupstaff.entity.management.Employee;
-import sadupstaff.enums.PositionEmployeeEnum;
+import sadupstaff.enums.PositionEmployee;
 
-@Mapper(componentModel = "spring", uses = {PositionEmployeeEnum.class})
+@Mapper(componentModel = "spring", uses = {PositionEmployee.class})
 public interface UpdateEmployeeMapper {
 
     Employee toEntity(UpdateEmployeeRequest updateEmployeeRequest);

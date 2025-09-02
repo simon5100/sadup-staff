@@ -13,7 +13,7 @@ import sadupstaff.dto.request.update.UpdateDistrictRequest;
 import sadupstaff.dto.response.DistrictResponse;
 import sadupstaff.entity.district.District;
 import sadupstaff.entity.district.Section;
-import sadupstaff.enums.DistrictNameEnum;
+import sadupstaff.enums.DistrictName;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
 import sadupstaff.exception.district.DeleteDistrictException;
@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static sadupstaff.enums.DistrictNameEnum.CENTRALNY;
+import static sadupstaff.enums.DistrictName.CENTRALNY;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
@@ -158,10 +158,10 @@ public class DistrictServiceImplUnitTest {
     class GetDistrictByNameTests {
 
         @ParameterizedTest
-        @EnumSource(DistrictNameEnum.class)
+        @EnumSource(DistrictName.class)
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
-        void getDistrictByNameTest(DistrictNameEnum name) {
+        void getDistrictByNameTest(DistrictName name) {
 
             district.setName(name);
 
@@ -178,10 +178,10 @@ public class DistrictServiceImplUnitTest {
     class SaveDistrictTests {
 
         @ParameterizedTest
-        @EnumSource(DistrictNameEnum.class)
+        @EnumSource(DistrictName.class)
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
-        void saveDistrictTest(DistrictNameEnum name) {
+        void saveDistrictTest(DistrictName name) {
 
             createRequest.setName(name);
             district.setName(name);
@@ -205,10 +205,10 @@ public class DistrictServiceImplUnitTest {
         }
 
         @ParameterizedTest
-        @EnumSource(DistrictNameEnum.class)
+        @EnumSource(DistrictName.class)
         @Tag("unit")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void saveDistrictPositionOccupiedTest(DistrictNameEnum name) {
+        void saveDistrictPositionOccupiedTest(DistrictName name) {
 
             createRequest.setName(name);
             district.setName(name);
@@ -235,10 +235,10 @@ public class DistrictServiceImplUnitTest {
     class UpdateDistrictTests {
 
         @ParameterizedTest
-        @EnumSource(DistrictNameEnum.class)
+        @EnumSource(DistrictName.class)
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
-        void updateDistrictTest(DistrictNameEnum name) {
+        void updateDistrictTest(DistrictName name) {
 
             updateRequest.setName(name);
             updateRequest.setDescription(name.getStringConvert());
@@ -284,7 +284,7 @@ public class DistrictServiceImplUnitTest {
             assertEquals("Id '" + badId + "' не найден", exception.getMessage());
 
             verify(districtRepository, times(1)).findById(badId);
-            verify(districtRepository, never()).existsDistinctByName(any(DistrictNameEnum.class));
+            verify(districtRepository, never()).existsDistinctByName(any(DistrictName.class));
             verify(updateDistrictMapper, never()).updateDistrictData(updateRequest, district);
             verify(districtRepository, never()).save(district);
             verify(findDistrictMapper, never()).entityToResponse(district);
@@ -292,10 +292,10 @@ public class DistrictServiceImplUnitTest {
         }
 
         @ParameterizedTest
-        @EnumSource(DistrictNameEnum.class)
+        @EnumSource(DistrictName.class)
         @Tag("unit")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void updateDistrictPositionOccupiedTest(DistrictNameEnum name) {
+        void updateDistrictPositionOccupiedTest(DistrictName name) {
 
             updateRequest.setName(name);
 

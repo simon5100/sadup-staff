@@ -7,7 +7,7 @@ import sadupstaff.dto.request.create.CreateDistrictRequest;
 import sadupstaff.dto.request.update.UpdateDistrictRequest;
 import sadupstaff.dto.response.DistrictResponse;
 import sadupstaff.entity.district.District;
-import sadupstaff.enums.DistrictNameEnum;
+import sadupstaff.enums.DistrictName;
 import sadupstaff.exception.DistrictNotFoundException;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
@@ -50,8 +50,8 @@ public class DistrictServiceImpl implements DistrictService{
     }
 
     @Override
-    public District getDistrictByName(DistrictNameEnum name) {
-        return Arrays.stream(DistrictNameEnum.values())
+    public District getDistrictByName(DistrictName name) {
+        return Arrays.stream(DistrictName.values())
                 .filter(value -> value.equals(name))
                 .findFirst()
                 .map(value -> districtRepository.findDistrictByName(value))

@@ -18,7 +18,7 @@ import sadupstaff.dto.request.update.UpdateSectionRequest;
 import sadupstaff.dto.response.SectionResponse;
 import sadupstaff.entity.district.District;
 import sadupstaff.entity.district.Section;
-import sadupstaff.enums.DistrictNameEnum;
+import sadupstaff.enums.DistrictName;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
 import sadupstaff.exception.SectionNotFoundByNameException;
@@ -36,7 +36,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static sadupstaff.enums.DistrictNameEnum.ZHELEZNODOROZHHNY;
+import static sadupstaff.enums.DistrictName.ZHELEZNODOROZHHNY;
 
 @Log4j2
 @SpringBootTest()
@@ -107,7 +107,7 @@ public class SectionServiceImplIntegrationTest {
                 "M540000",
                 "1й участок центрального района",
                 3,
-                DistrictNameEnum.CENTRALNY
+                DistrictName.CENTRALNY
         );
 
         updateRequest = new UpdateSectionRequest();
@@ -225,7 +225,7 @@ public class SectionServiceImplIntegrationTest {
             assertEquals(result.getName(), name);
 
             verify(createSectionMapper,times(1)).toEntity(any(CreateSectionRequest.class));
-            verify(districtService,times(1)).getDistrictByName(any(DistrictNameEnum.class));
+            verify(districtService,times(1)).getDistrictByName(any(DistrictName.class));
             verify(sectionRepository,times(1)).save(any(Section.class));
             verify(sectionRepository,times(1)).findById(any(UUID.class));
             verify(findSectionMapper,times(1)).entityToResponse(any(Section.class));
@@ -247,7 +247,7 @@ public class SectionServiceImplIntegrationTest {
             assertEquals("В '" + createRequest.getDistrictName().getStringConvert() + "' максимальное количество участков", exception.getMessage());
 
             verify(createSectionMapper,times(1)).toEntity(any(CreateSectionRequest.class));
-            verify(districtService,times(1)).getDistrictByName(any(DistrictNameEnum.class));
+            verify(districtService,times(1)).getDistrictByName(any(DistrictName.class));
             verify(sectionRepository, never()).save(any(Section.class));
             verify(sectionRepository,never()).findById(any(UUID.class));
             verify(findSectionMapper,never()).entityToResponse(any(Section.class));
@@ -270,7 +270,7 @@ public class SectionServiceImplIntegrationTest {
             assertEquals("Позиция '" + createRequest.getName() + "' уже занята", exception.getMessage());
 
             verify(createSectionMapper,times(1)).toEntity(any(CreateSectionRequest.class));
-            verify(districtService,times(1)).getDistrictByName(any(DistrictNameEnum.class));
+            verify(districtService,times(1)).getDistrictByName(any(DistrictName.class));
             verify(sectionRepository, never()).save(any(Section.class));
             verify(sectionRepository,never()).findById(any(UUID.class));
             verify(findSectionMapper,never()).entityToResponse(any(Section.class));

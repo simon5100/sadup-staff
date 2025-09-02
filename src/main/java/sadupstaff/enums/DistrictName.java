@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum DistrictNameEnum {
+public enum DistrictName {
     DZERZHINSKY("Дзержинский"),
     ZHELEZNODOROZHHNY("Железнодорожный"),
     ZAELTSOVSKY("Заельцовский"),

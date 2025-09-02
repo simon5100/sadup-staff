@@ -19,7 +19,7 @@ import sadupstaff.dto.request.update.UpdateDistrictRequest;
 import sadupstaff.dto.response.DistrictResponse;
 import sadupstaff.entity.district.District;
 import sadupstaff.entity.district.Section;
-import sadupstaff.enums.DistrictNameEnum;
+import sadupstaff.enums.DistrictName;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
 import sadupstaff.exception.district.DeleteDistrictException;
@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.never;
-import static sadupstaff.enums.DistrictNameEnum.CENTRALNY;
+import static sadupstaff.enums.DistrictName.CENTRALNY;
 
 @Log4j2
 @SpringBootTest()
@@ -177,13 +177,13 @@ public class DistrictServiceImplIntegrationTest {
 
         @ParameterizedTest
         @EnumSource(
-                value = DistrictNameEnum.class,
+                value = DistrictName.class,
                 mode = EnumSource.Mode.INCLUDE,
                 names = {"CENTRALNY", "ZHELEZNODOROZHHNY"}
         )
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
-        void getDistrictByNameTest(DistrictNameEnum name) {
+        void getDistrictByNameTest(DistrictName name) {
 
             District result = districtService.getDistrictByName(name);
 
@@ -202,13 +202,13 @@ public class DistrictServiceImplIntegrationTest {
 
         @ParameterizedTest
         @EnumSource(
-                value = DistrictNameEnum.class,
+                value = DistrictName.class,
                 mode = EnumSource.Mode.EXCLUDE,
                 names = {"CENTRALNY", "ZHELEZNODOROZHHNY", "ZAELTSOVSKY"}
         )
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
-        void saveDistrictTest(DistrictNameEnum name) {
+        void saveDistrictTest(DistrictName name) {
 
             createRequest.setName(name);
 
@@ -219,7 +219,7 @@ public class DistrictServiceImplIntegrationTest {
 
             verify(districtRepository, times(1)).existsDistinctByName(name);
             verify(createDistrictMapper, times(1)).toEntity(createRequest);
-            verify(districtRepository, times(1)).existsDistinctByName(any(DistrictNameEnum.class));
+            verify(districtRepository, times(1)).existsDistinctByName(any(DistrictName.class));
             verify(districtRepository, times(1)).save(any(District.class));
             verify(districtRepository, times(1)).findById(any(UUID.class));
             verify(findDistrictMapper, times(1)).entityToResponse(any(District.class));
@@ -227,13 +227,13 @@ public class DistrictServiceImplIntegrationTest {
 
         @ParameterizedTest
         @EnumSource(
-                value = DistrictNameEnum.class,
+                value = DistrictName.class,
                 mode = EnumSource.Mode.INCLUDE,
                 names = {"CENTRALNY", "ZHELEZNODOROZHHNY"}
         )
         @Tag("integration")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void saveDistrictPositionOccupiedTest(DistrictNameEnum name) {
+        void saveDistrictPositionOccupiedTest(DistrictName name) {
 
             createRequest.setName(name);
 
@@ -259,13 +259,13 @@ public class DistrictServiceImplIntegrationTest {
 
         @ParameterizedTest
         @EnumSource(
-                value = DistrictNameEnum.class,
+                value = DistrictName.class,
                 mode = EnumSource.Mode.EXCLUDE,
                 names = {"CENTRALNY", "ZHELEZNODOROZHHNY", "ZAELTSOVSKY"}
         )
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
-        void updateDistrictTest(DistrictNameEnum name) {
+        void updateDistrictTest(DistrictName name) {
 
             updateRequest.setName(name);
             updateRequest.setDescription(name.getStringConvert());
@@ -295,7 +295,7 @@ public class DistrictServiceImplIntegrationTest {
             assertEquals("Id '" + badId + "' не найден", exception.getMessage());
 
             verify(districtRepository, times(1)).findById(any(UUID.class));
-            verify(districtRepository, never()).existsDistinctByName(any(DistrictNameEnum.class));
+            verify(districtRepository, never()).existsDistinctByName(any(DistrictName.class));
             verify(updateDistrictMapper, never()).updateDistrictData(any(UpdateDistrictRequest.class), any(District.class));
             verify(districtRepository, never()).save(any(District.class));
             verify(findDistrictMapper, never()).entityToResponse(any(District.class));
@@ -304,13 +304,13 @@ public class DistrictServiceImplIntegrationTest {
 
         @ParameterizedTest
         @EnumSource(
-                value = DistrictNameEnum.class,
+                value = DistrictName.class,
                 mode = EnumSource.Mode.INCLUDE,
                 names = {"CENTRALNY", "ZHELEZNODOROZHHNY"}
         )
         @Tag("integration")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void updateDistrictPositionOccupiedTest(DistrictNameEnum name) {
+        void updateDistrictPositionOccupiedTest(DistrictName name) {
 
             updateRequest.setName(name);
 

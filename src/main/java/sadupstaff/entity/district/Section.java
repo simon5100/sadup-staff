@@ -33,8 +33,6 @@ public class Section {
     private String name;
 
     @Column(name = "max_number_employees_section")
-    @Max(value = 4, message = "Сотрудников на участке не может быть больше 4-х")
-    @Min(value = 3, message = "Сотрудников на участке не может быть меньше 3-х")
     @Nonnull
     private Integer maxNumberEmployeeSection;
 

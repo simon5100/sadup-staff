@@ -23,7 +23,7 @@ import sadupstaff.dto.request.create.CreateSectionRequest;
 import sadupstaff.dto.request.update.UpdateSectionRequest;
 import sadupstaff.dto.response.SectionResponse;
 import sadupstaff.entity.district.Section;
-import sadupstaff.enums.DistrictNameEnum;
+import sadupstaff.enums.DistrictName;
 import sadupstaff.exception.ErrorResponse;
 import sadupstaff.mapper.section.CreateSectionMapper;
 import sadupstaff.mapper.section.FindSectionMapper;
@@ -200,7 +200,7 @@ public class SectionServiceImplE2ETest {
                 "M540001",
                 "1",
                 3,
-                DistrictNameEnum.CENTRALNY
+                DistrictName.CENTRALNY
         );
 
         updateRequest = new UpdateSectionRequest();
@@ -284,7 +284,7 @@ public class SectionServiceImplE2ETest {
             assertEquals(sectionResponse.getName(), "1");
 
             verify(createSectionMapper,times(1)).toEntity(any(CreateSectionRequest.class));
-            verify(districtService,times(1)).getDistrictByName(any(DistrictNameEnum.class));
+            verify(districtService,times(1)).getDistrictByName(any(DistrictName.class));
             verify(sectionRepository,times(1)).save(any(Section.class));
             verify(sectionRepository,times(1)).findById(any(UUID.class));
             verify(findSectionMapper,times(1)).entityToResponse(any(Section.class));
@@ -315,7 +315,7 @@ public class SectionServiceImplE2ETest {
             assertEquals("В '" + createRequest.getDistrictName().getStringConvert() + "' максимальное количество участков", responseError.getBody().getMessage());
 
             verify(createSectionMapper,times(1)).toEntity(any(CreateSectionRequest.class));
-            verify(districtService,times(1)).getDistrictByName(any(DistrictNameEnum.class));
+            verify(districtService,times(1)).getDistrictByName(any(DistrictName.class));
             verify(sectionRepository, never()).save(any(Section.class));
             verify(sectionRepository,never()).findById(any(UUID.class));
             verify(findSectionMapper,never()).entityToResponse(any(Section.class));
@@ -335,7 +335,7 @@ public class SectionServiceImplE2ETest {
             assertEquals("Позиция '" + createRequest.getName() + "' уже занята", responseError.getBody().getMessage());
 
             verify(createSectionMapper,times(1)).toEntity(any(CreateSectionRequest.class));
-            verify(districtService,times(1)).getDistrictByName(any(DistrictNameEnum.class));
+            verify(districtService,times(1)).getDistrictByName(any(DistrictName.class));
             verify(sectionRepository, never()).save(any(Section.class));
             verify(sectionRepository,never()).findById(any(UUID.class));
             verify(findSectionMapper,never()).entityToResponse(any(Section.class));

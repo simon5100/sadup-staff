@@ -13,7 +13,7 @@ import sadupstaff.dto.response.SectionResponse;
 import sadupstaff.entity.district.District;
 import sadupstaff.entity.district.Section;
 import sadupstaff.entity.district.SectionEmployee;
-import sadupstaff.enums.DistrictNameEnum;
+import sadupstaff.enums.DistrictName;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
 import sadupstaff.exception.section.DeleteSectionException;
@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static sadupstaff.enums.DistrictNameEnum.CENTRALNY;
+import static sadupstaff.enums.DistrictName.CENTRALNY;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Unit тесты методов SectionServiceImpl")
@@ -83,13 +83,13 @@ public class SectionServiceImplUnitTest {
                 "M540000",
                 "1й участок центрального района",
                 3,
-                DistrictNameEnum.CENTRALNY
+                DistrictName.CENTRALNY
         );
 
         response = new SectionResponse(
                 "M540000",
                 "1й участок центрального района",
-                DistrictNameEnum.CENTRALNY.getStringConvert(),
+                DistrictName.CENTRALNY.getStringConvert(),
                 List.of()
         );
 
@@ -208,7 +208,7 @@ public class SectionServiceImplUnitTest {
             response.setName(name);
 
             when(createSectionMapper.toEntity(createRequest)).thenReturn(section);
-            when(districtService.getDistrictByName(DistrictNameEnum.CENTRALNY)).thenReturn(district);
+            when(districtService.getDistrictByName(DistrictName.CENTRALNY)).thenReturn(district);
             when(sectionRepository.save(section)).thenReturn(section);
             when(sectionRepository.findById(id)).thenReturn(Optional.of(section));
             when(findSectionMapper.entityToResponse(section)).thenReturn(response);
@@ -219,7 +219,7 @@ public class SectionServiceImplUnitTest {
             assertEquals(response, result);
 
             verify(createSectionMapper,times(1)).toEntity(createRequest);
-            verify(districtService,times(1)).getDistrictByName(DistrictNameEnum.CENTRALNY);
+            verify(districtService,times(1)).getDistrictByName(DistrictName.CENTRALNY);
             verify(sectionRepository,times(1)).save(section);
             verify(sectionRepository,times(1)).findById(id);
             verify(findSectionMapper,times(1)).entityToResponse(section);
@@ -244,7 +244,7 @@ public class SectionServiceImplUnitTest {
             section.setName(name);
 
             when(createSectionMapper.toEntity(createRequest)).thenReturn(section);
-            when(districtService.getDistrictByName(DistrictNameEnum.CENTRALNY)).thenReturn(district);
+            when(districtService.getDistrictByName(DistrictName.CENTRALNY)).thenReturn(district);
 
             MaxSectionInDistrictException exception = assertThrows(
                     MaxSectionInDistrictException.class,
@@ -255,7 +255,7 @@ public class SectionServiceImplUnitTest {
             assertEquals("В '" + district.getName().getStringConvert() + "' максимальное количество участков", exception.getMessage());
 
             verify(createSectionMapper,times(1)).toEntity(createRequest);
-            verify(districtService,times(1)).getDistrictByName(DistrictNameEnum.CENTRALNY);
+            verify(districtService,times(1)).getDistrictByName(DistrictName.CENTRALNY);
             verify(sectionRepository, never()).save(section);
             verify(sectionRepository,never()).findById(id);
             verify(findSectionMapper,never()).entityToResponse(section);
@@ -280,7 +280,7 @@ public class SectionServiceImplUnitTest {
             section.setName(name);
 
             when(createSectionMapper.toEntity(createRequest)).thenReturn(section);
-            when(districtService.getDistrictByName(DistrictNameEnum.CENTRALNY)).thenReturn(district);
+            when(districtService.getDistrictByName(DistrictName.CENTRALNY)).thenReturn(district);
 
             PositionOccupiedException exception = assertThrows(
                     PositionOccupiedException.class,
@@ -291,7 +291,7 @@ public class SectionServiceImplUnitTest {
             assertEquals("Позиция '" + name + "' уже занята", exception.getMessage());
 
             verify(createSectionMapper,times(1)).toEntity(createRequest);
-            verify(districtService,times(1)).getDistrictByName(DistrictNameEnum.CENTRALNY);
+            verify(districtService,times(1)).getDistrictByName(DistrictName.CENTRALNY);
             verify(sectionRepository, never()).save(section);
             verify(sectionRepository,never()).findById(id);
             verify(findSectionMapper,never()).entityToResponse(section);
