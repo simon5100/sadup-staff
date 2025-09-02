@@ -13,8 +13,6 @@ public interface SectionService {
 
     SectionResponse getSectionById(UUID id);
 
-    Section getSectionByIdForUpdate(UUID id);
-
     Section getSectionByName(String name);
 
     SectionResponse saveSection(CreateSectionRequest createRequest);

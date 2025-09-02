@@ -6,8 +6,9 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import sadupstaff.dto.request.update.UpdateSectionEmployeeRequest;
 import sadupstaff.entity.district.SectionEmployee;
+import sadupstaff.enums.PositionSectionEmployee;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {PositionSectionEmployee.class})
 public interface UpdateSectionEmployeeMapper {
 
     SectionEmployee toEntity(UpdateSectionEmployeeRequest updateSectionEmployeeRequest);

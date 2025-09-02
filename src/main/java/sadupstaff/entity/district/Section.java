@@ -2,6 +2,8 @@ package sadupstaff.entity.district;
 
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,6 +31,10 @@ public class Section {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "max_number_employees_section")
+    @Nonnull
+    private Integer maxNumberEmployeeSection;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

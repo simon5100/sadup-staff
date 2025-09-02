@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="30.07.2025-ALTER-TABLE" author="Polikarpov-Semen">
+        <sql>
+            ALTER TABLE sudstaff.departments
+            ADD COLUMN
+                max_number_employees             INTEGER    NOT NULL   DEFAULT 5;
+
+            ALTER TABLE sudstaff.district
+            ADD COLUMN
+                max_number_sections             INTEGER    NOT NULL   DEFAULT 2;
+
+            ALTER TABLE sudstaff.section
+            ADD COLUMN
+                max_number_employees_section    INTEGER    NOT NULL   DEFAULT 3;
+        </sql>
+    </changeSet>
+
+    <changeSet id="15.08.2025-update-data" author="Polikarpov-Semen">
+        <sql>
+            UPDATE sudstaff.departments
+            SET name = 'LEGAL_SUPPORT'
+            WHERE name = 'Отдел правового обеспечения';
+
+            UPDATE sudstaff.employees
+            SET position = 'CONSULTANT'
+            WHERE position = 'Консультант';
+
+            UPDATE sudstaff.district
+            SET name = 'CENTRALNY'
+            WHERE name = 'Центральный район';
+        </sql>
+    </changeSet>
+
+    <changeSet id="23.08.2025-insert" author="Polikarpov-Semen">
+        <sql>
+            insert into sudstaff.departments (id, name, description, created_at, updated_at, max_number_employees)
+            values (
+                    '3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                    'FINANCE_AND_PLANNING',
+                    'обеспечивает деньгами',
+                    '2025.07.30 15:17:00',
+                    '2025.07.30 15:17:00',
+                    7
+                   );
+        </sql>
+    </changeSet>
+
+    <changeSet id="27.08.2025-insert-in-district" author="Polikarpov-Semen">
+        <sql>
+            insert into sudstaff.district (id, name, description, created_at, updated_at, max_number_sections)
+            values (
+                       '2d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                       'ZHELEZNODOROZHHNY',
+                       'Железнодорожный',
+                       '2025.07.30 15:17:00',
+                       '2025.07.30 15:17:00',
+                       2
+                   );
+        </sql>
+    </changeSet>
+
+    <changeSet id="27.08.2025-insert-in-section" author="Polikarpov-Semen">
+        <sql>
+            insert into sudstaff.section (id, personel_number, name, created_at, updated_at, district_id, max_number_employees_section)
+            values (
+                       '4d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                       '2',
+                       'а',
+                       '2025.07.30 15:17:00',
+                       '2025.07.30 15:17:00',
+                        '1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                       3
+                   );
+        </sql>
+    </changeSet>
+
+    <changeSet id="28.08.2025-insert-in-section" author="Polikarpov-Semen">
+        <sql>
+            insert into sudstaff.section (id, personel_number, name, created_at, updated_at, district_id, max_number_employees_section)
+            values (
+                       '5d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                       'rehrt',
+                       '1',
+                       '2025.07.30 15:17:00',
+                       '2025.07.30 15:17:00',
+                       '2d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                       3
+                   );
+        </sql>
+    </changeSet>
+
+    <changeSet id="28.08.2025-insert-in-district" author="Polikarpov-Semen">
+        <sql>
+            insert into sudstaff.district (id, name, description, created_at, updated_at, max_number_sections)
+            values (
+                    '3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                    'ZAELTSOVSKY',
+                    'Заельцовский',
+                    '2025.07.30 15:17:00',
+                    '2025.07.30 15:17:00',
+                    2
+                   );
+        </sql>
+    </changeSet>
+
+    <changeSet id="28.08.2025-insert-in-SectionEmployee1" author="Polikarpov-Semen">
+        <sql>
+    insert into sudstaff.section_employee (id, personel_number, first_name, last_name, patronymic, position, created_at, updated_at, section_id)
+    values (
+            '5d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+            'EMP12345',
+            'Иван',
+            'Иванов',
+            'Иванович',
+            'JUDGE_ASSISTANT',
+            '2025.07.30 15:17:00',
+            '2025.07.30 15:17:00',
+            '3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04'
+           );
+        </sql>
+    </changeSet>
+
+    <changeSet id="28.08.2025-insert-in-SectionEmployee2" author="Polikarpov-Semen">
+        <sql>
+            insert into sudstaff.section_employee (id, personel_number, first_name, last_name, patronymic, position, created_at, updated_at, section_id)
+            values (
+                    '6d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                       'EMP12345',
+                       'Иван',
+                       'Иванов',
+                       'Иванович',
+                       'SECRETARY_SESSION',
+                       '2025.07.30 15:17:00',
+                       '2025.07.30 15:17:00',
+                       '3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04'
+                   );
+        </sql>
+    </changeSet>
+
+    <changeSet id="28.08.2025-insert-in-SectionEmployee3" author="Polikarpov-Semen">
+        <sql>
+            insert into sudstaff.section_employee (id, personel_number, first_name, last_name, patronymic, position, created_at, updated_at, section_id)
+            values (
+                       '7d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',
+                       'EMP12345',
+                       'Иван',
+                       'Иванов',
+                       'Иванович',
+                       'JUDGE',
+                       '2025.07.30 15:17:00',
+                       '2025.07.30 15:17:00',
+                       '4d30f1c3-e70d-42a0-a3d3-58a5c2d50d04'
+                   );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

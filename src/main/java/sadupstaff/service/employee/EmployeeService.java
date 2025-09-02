@@ -13,8 +13,6 @@ public interface EmployeeService {
 
     EmployeeResponse getEmployee(UUID id);
 
-    Employee getEmployeeByIdForUpdate(UUID id);
-
     EmployeeResponse saveEmployee(CreateEmployeeRequest createEmployeeRequest);
 
     EmployeeResponse updateEmployee(UUID id, UpdateEmployeeRequest updateEmployeeRequest);

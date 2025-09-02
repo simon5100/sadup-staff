@@ -1,8 +1,13 @@
 package sadupstaff.entity.district;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
+import sadupstaff.enums.DistrictName;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +30,16 @@ public class District {
     private UUID id;
 
     @Column(name = "name")
-    private String name;
+    @Enumerated(EnumType.STRING)
+    @Nonnull
+    private DistrictName name;
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "max_number_sections")
+    @Nonnull
+    private Integer maxNumberSection;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

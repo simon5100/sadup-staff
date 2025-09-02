@@ -3,8 +3,9 @@ package sadupstaff.mapper.sectionemployee;
 import org.mapstruct.*;
 import sadupstaff.dto.response.SectionEmployeeResponse;
 import sadupstaff.entity.district.SectionEmployee;
+import sadupstaff.mapper.section.FindSectionMapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {FindSectionMapper.class})
 public interface FindSectionEmployeeMapper {
 
     @Mapping(target = "position", ignore = true)

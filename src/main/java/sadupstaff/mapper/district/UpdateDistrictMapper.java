@@ -6,9 +6,10 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import sadupstaff.dto.request.update.UpdateDistrictRequest;
 import sadupstaff.entity.district.District;
+import sadupstaff.enums.DistrictName;
 import sadupstaff.mapper.section.FindSectionMapper;
 
-@Mapper(componentModel = "spring", uses = {FindSectionMapper.class})
+@Mapper(componentModel = "spring", uses = {FindSectionMapper.class, DistrictName.class})
 public interface UpdateDistrictMapper {
 
     District toEntity(UpdateDistrictRequest updateRequest);

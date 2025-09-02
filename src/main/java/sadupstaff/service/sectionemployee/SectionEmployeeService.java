@@ -13,8 +13,6 @@ public interface SectionEmployeeService {
 
     SectionEmployeeResponse getSectionEmployee(UUID id);
 
-    SectionEmployee getSectionEmployeeForUpdate(UUID id);
-
     SectionEmployeeResponse saveNewSectionEmployee(CreateSectionEmployeeRequest createRequest);
 
     SectionEmployeeResponse updateSectionEmployee(UUID id, UpdateSectionEmployeeRequest updateRequest);

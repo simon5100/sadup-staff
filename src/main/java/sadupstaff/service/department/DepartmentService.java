@@ -4,6 +4,8 @@ import sadupstaff.dto.request.create.CreateDepartmentRequest;
 import sadupstaff.dto.request.update.UpdateDepartmentRequest;
 import sadupstaff.dto.response.DepartmentResponse;
 import sadupstaff.entity.management.Department;
+import sadupstaff.enums.DepartmentName;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -12,9 +14,7 @@ public interface DepartmentService {
 
     DepartmentResponse getDepartmentById(UUID id);
 
-    Department getDepartmentByIdForUpdate(UUID id);
-
-    Department getDepartmentByName(String name);
+    Department getDepartmentByName(DepartmentName name);
 
     DepartmentResponse saveDepartment(CreateDepartmentRequest createRequest);
 
