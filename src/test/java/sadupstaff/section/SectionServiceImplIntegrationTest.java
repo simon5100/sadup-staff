@@ -21,7 +21,7 @@ import sadupstaff.entity.district.Section;
 import sadupstaff.enums.DistrictName;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
-import sadupstaff.exception.SectionNotFoundByNameException;
+import sadupstaff.exception.SectionNotFoundByPersonelNumberException;
 import sadupstaff.exception.section.DeleteSectionException;
 import sadupstaff.exception.section.MaxSectionInDistrictException;
 import sadupstaff.mapper.section.CreateSectionMapper;
@@ -91,7 +91,7 @@ public class SectionServiceImplIntegrationTest {
         section = new Section(
                 UUID.fromString("3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
                 "M540000",
-                "1й участок центрального района",
+                1,
                 3,
                 LocalDateTime.of(2025,07,30, 15,17,00,000),
                 LocalDateTime.of(2025,07,30, 15,17,00,000),
@@ -105,7 +105,7 @@ public class SectionServiceImplIntegrationTest {
 
         createRequest = new CreateSectionRequest(
                 "M540000",
-                "1й участок центрального района",
+                1,
                 3,
                 DistrictName.CENTRALNY
         );
@@ -127,7 +127,7 @@ public class SectionServiceImplIntegrationTest {
 
             assertNotNull(result);
             assertEquals(3, result.size());
-            assertEquals(result.get(0).getName(), "1й участок центрального района");
+            assertEquals(result.get(0).getNumber(), 1);
 
             verify(sectionRepository).findAll();
             verify(findSectionMapper, times(3)).entityToResponse(any(Section.class));
@@ -136,7 +136,7 @@ public class SectionServiceImplIntegrationTest {
 
     @Nested
     @Testcontainers
-    @DisplayName("Тесты на метод getDistrictById поиска района по id")
+    @DisplayName("Тесты на метод getSectionById поиска района по id")
     class GetSectionByIdTests {
 
         @Test
@@ -147,7 +147,7 @@ public class SectionServiceImplIntegrationTest {
             SectionResponse result = sectionService.getSectionById(id);
 
             assertNotNull(result);
-            assertEquals(result.getName(), "1й участок центрального района");
+            assertEquals(result.getNumber(), 1);
             assertFalse(result.getEmpsSect().isEmpty());
 
             verify(sectionRepository).findById(id);
@@ -180,28 +180,28 @@ public class SectionServiceImplIntegrationTest {
         @Test
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
-        void getSectionByNameTest() {
+        void getSectionByPersonelNumberTest() {
 
-            Section result = sectionService.getSectionByName("1й участок центрального района");
+            Section result = sectionService.getSectionByPersonelNumber("M540000");
 
             assertNotNull(result);
-            assertEquals(result.getName(), "1й участок центрального района");
+            assertEquals(result.getNumber(), 1);
 
-            verify(sectionRepository, times(1)).findSectionByName("1й участок центрального района");
+            verify(sectionRepository, times(1)).findSectionByPersonelNumber("M540000");
         }
 
         @Test
         @Tag("integration")
-        @DisplayName("Тест с выбросом SectionNotFoundByNameException")
-        void getSectionByNameNotFoundTest() {
+        @DisplayName("Тест с выбросом SectionNotFoundByPersonelNumberException")
+        void getSectionByPersonelNumberNotFoundTest() {
 
-            SectionNotFoundByNameException exception = assertThrows(SectionNotFoundByNameException.class,
-                    () -> sectionService.getSectionByName("1й участок центрального районаа"));
+            SectionNotFoundByPersonelNumberException exception = assertThrows(SectionNotFoundByPersonelNumberException.class,
+                    () -> sectionService.getSectionByPersonelNumber("M5400000"));
 
             assertNotNull(exception);
-            assertEquals(exception.getMessage(), "Участок '1й участок центрального районаа' не найден");
+            assertEquals(exception.getMessage(), "Участок 'M5400000' не найден");
 
-            verify(sectionRepository, times(1)).findSectionByName("1й участок центрального районаа");
+            verify(sectionRepository, times(1)).findSectionByPersonelNumber("M5400000");
         }
     }
 
@@ -214,15 +214,15 @@ public class SectionServiceImplIntegrationTest {
         @ValueSource(strings = {"2"})
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
-        void saveSectionTest(String name) {
+        void saveSectionTest(String number) {
 
-            createRequest.setName(name);
+            createRequest.setPersonelNumber(number);
             createRequest.setDistrictName(ZHELEZNODOROZHHNY);
 
             SectionResponse result = sectionService.saveSection(createRequest);
 
             assertNotNull(result);
-            assertEquals(result.getName(), name);
+            assertEquals(result.getPersonelNumber(), number);
 
             verify(createSectionMapper,times(1)).toEntity(any(CreateSectionRequest.class));
             verify(districtService,times(1)).getDistrictByName(any(DistrictName.class));
@@ -236,7 +236,7 @@ public class SectionServiceImplIntegrationTest {
         @DisplayName("Тест на выброс MaxSectionInDistrictException")
         void saveMaxSectionInDistrictTest() {
 
-            createRequest.setName("4");
+            createRequest.setPersonelNumber("4");
 
             MaxSectionInDistrictException exception = assertThrows(
                     MaxSectionInDistrictException.class,
@@ -259,7 +259,7 @@ public class SectionServiceImplIntegrationTest {
         void saveSectionPositionOccupiedTest() {
 
             createRequest.setDistrictName(ZHELEZNODOROZHHNY);
-            createRequest.setName("1");
+            createRequest.setPersonelNumber("rehrt");
 
             PositionOccupiedException exception = assertThrows(
                     PositionOccupiedException.class,
@@ -267,7 +267,7 @@ public class SectionServiceImplIntegrationTest {
             );
 
             assertNotNull(exception);
-            assertEquals("Позиция '" + createRequest.getName() + "' уже занята", exception.getMessage());
+            assertEquals("Позиция '" + createRequest.getPersonelNumber() + "' уже занята", exception.getMessage());
 
             verify(createSectionMapper,times(1)).toEntity(any(CreateSectionRequest.class));
             verify(districtService,times(1)).getDistrictByName(any(DistrictName.class));
@@ -283,20 +283,20 @@ public class SectionServiceImplIntegrationTest {
     class UpdateSectionTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {"2", "3"})
+        @ValueSource(strings = {"4", "3"})
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
-        void updateSectionTest(String name) {
+        void updateSectionTest(String number) {
 
-            updateRequest.setName(name);
+            updateRequest.setPersonelNumber(number);
 
             SectionResponse result = sectionService.updateSection(id, updateRequest);
 
             assertNotNull(result);
-            assertEquals(result.getName(), name);
+            assertEquals(result.getPersonelNumber(), number);
 
             verify(sectionRepository, times(1)).findById(any(UUID.class));
-            verify(sectionRepository, times(1)).existsSectionByName(updateRequest.getName());
+            verify(sectionRepository, times(1)).existsSectionByPersonelNumber(updateRequest.getPersonelNumber());
             verify(updateSectionMapper, times(1)).update(any(UpdateSectionRequest.class), any(Section.class));
             verify(sectionRepository, times(1)).save(any(Section.class));
             verify(findSectionMapper, times(1)).entityToResponse(any(Section.class));
@@ -317,19 +317,19 @@ public class SectionServiceImplIntegrationTest {
             assertEquals("Id '" + badId + "' не найден", exception.getMessage());
 
             verify(sectionRepository, times(1)).findById(badId);
-            verify(sectionRepository, never()).existsSectionByName(updateRequest.getName());
+            verify(sectionRepository, never()).existsSectionByPersonelNumber(updateRequest.getPersonelNumber());
             verify(updateSectionMapper, never()).update(updateRequest, section);
             verify(sectionRepository, never()).save(section);
             verify(findSectionMapper, never()).entityToResponse(section);
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"1", "1й участок центрального района"})
+        @ValueSource(strings = {"2", "M540000"})
         @Tag("integration")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void updateSectionPositionOccupiedTest(String name) {
+        void updateSectionPositionOccupiedTest(String number) {
 
-            updateRequest.setName(name);
+            updateRequest.setPersonelNumber(number);
 
             PositionOccupiedException exception = assertThrows(
                     PositionOccupiedException.class,
@@ -337,10 +337,10 @@ public class SectionServiceImplIntegrationTest {
             );
 
             assertNotNull(exception);
-            assertEquals("Позиция '" + name + "' уже занята", exception.getMessage());
+            assertEquals("Позиция '" + number + "' уже занята", exception.getMessage());
 
             verify(sectionRepository, times(1)).findById(id);
-            verify(sectionRepository, times(1)).existsSectionByName(updateRequest.getName());
+            verify(sectionRepository, times(1)).existsSectionByPersonelNumber(updateRequest.getPersonelNumber());
             verify(updateSectionMapper, never()).update(updateRequest, section);
             verify(sectionRepository, never()).save(section);
             verify(findSectionMapper, never()).entityToResponse(section);
@@ -389,7 +389,7 @@ public class SectionServiceImplIntegrationTest {
             );
 
             assertNotNull(exception);
-            assertEquals(section.getName() + " имеет сотрудников, удаление запрещено", exception.getMessage());
+            assertEquals(section.getNumber() + " имеет сотрудников, удаление запрещено", exception.getMessage());
 
             verify(sectionRepository, times(1)).findById(id);
         }

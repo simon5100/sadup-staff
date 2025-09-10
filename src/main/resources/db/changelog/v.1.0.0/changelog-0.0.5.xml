@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="10.09.2025-ALTER-TABLE" author="Polikarpov-Semen">
+        <sql>
+            update sudstaff.section
+            set name = '2'
+            where name = '1';
+
+            update sudstaff.section
+            set name = '1'
+            where name = '1й участок центрального района';
+
+
+            ALTER TABLE sudstaff.section
+                RENAME COLUMN
+                    name to number;
+
+            ALTER TABLE sudstaff.section
+                ALTER COLUMN
+                    number      type   Integer using (
+                    case
+                      when number = '1' then 1
+                      when number = '2' then 2
+                      else 1
+                    end
+                      );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

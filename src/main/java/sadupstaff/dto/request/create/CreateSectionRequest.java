@@ -18,8 +18,8 @@ public class CreateSectionRequest {
     private String personelNumber;
 
     @NotBlank
-    @Schema(description = "Имя участка", example = "1-участок центрального района")
-    private String name;
+    @Schema(description = "Имя участка", example = "1")
+    private Integer number;
 
     @NotBlank
     @Schema(description = "Максимальое число работников закрепленных за участком", example = "3")

@@ -25,7 +25,7 @@ public class SectionEmployeeRESTControllerImpl implements SectionEmployeeRESTCon
 
     public SectionEmployeeResponse addSectionEmployee (@RequestBody CreateSectionEmployeeRequest createRequest) {
 
-        return sectionEmployeeService.saveNewSectionEmployee(createRequest);
+        return sectionEmployeeService.saveSectionEmployee(createRequest);
     }
 
     public SectionEmployeeResponse updateSectionEmployee(@PathVariable UUID id, @RequestBody UpdateSectionEmployeeRequest updateRequest) {

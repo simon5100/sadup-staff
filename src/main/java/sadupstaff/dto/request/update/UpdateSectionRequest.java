@@ -15,5 +15,5 @@ public class UpdateSectionRequest {
     private String personelNumber;
 
     @Schema(description = "Имя участка", example = "1-участок центрального района")
-    private String name;
+    private Integer number;
 }

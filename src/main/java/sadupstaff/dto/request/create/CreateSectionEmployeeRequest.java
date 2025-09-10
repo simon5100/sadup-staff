@@ -34,5 +34,5 @@ public class CreateSectionEmployeeRequest {
     private PositionSectionEmployee position;
 
     @Schema(description = "Участок на котором работает сотрудник", example = "1-участок центрального района", required = true)
-    private String sectionName;
+    private String sectionPersonelNumber;
 }

@@ -2,12 +2,9 @@ package sadupstaff.entity.district;
 
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import sadupstaff.enums.DistrictName;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

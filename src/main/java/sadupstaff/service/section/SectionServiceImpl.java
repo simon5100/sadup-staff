@@ -5,17 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sadupstaff.dto.request.create.CreateSectionRequest;
 import sadupstaff.dto.request.update.UpdateSectionRequest;
-import sadupstaff.dto.response.DepartmentResponse;
 import sadupstaff.dto.response.SectionResponse;
 import sadupstaff.entity.district.District;
 import sadupstaff.entity.district.Section;
-import sadupstaff.entity.management.Department;
-import sadupstaff.entity.management.Employee;
 import sadupstaff.exception.IdNotFoundException;
 import sadupstaff.exception.PositionOccupiedException;
-import sadupstaff.exception.SectionNotFoundByNameException;
-import sadupstaff.exception.department.DeleteDepartmentException;
-import sadupstaff.exception.employee.MaxEmployeeInDepartmentException;
+import sadupstaff.exception.SectionNotFoundByPersonelNumberException;
 import sadupstaff.exception.section.DeleteSectionException;
 import sadupstaff.exception.section.MaxSectionInDistrictException;
 import sadupstaff.mapper.section.CreateSectionMapper;
@@ -58,13 +53,13 @@ public class SectionServiceImpl implements SectionService{
     }
 
     @Override
-    public Section getSectionByName(String name) {
+    public Section getSectionByPersonelNumber(String personelNumber) {
 
-        Optional<Section> optionalSection = Optional.ofNullable(sectionRepository.findSectionByName(name));
+        Optional<Section> optionalSection = Optional.ofNullable(sectionRepository.findSectionByPersonelNumber(personelNumber));
         if(optionalSection.isPresent()) {
             return optionalSection.get();
         }
-        throw new SectionNotFoundByNameException(name);
+        throw new SectionNotFoundByPersonelNumberException(personelNumber);
     }
 
     @Override
@@ -78,8 +73,8 @@ public class SectionServiceImpl implements SectionService{
         }
 
         for (Section sect: district.getSections()) {
-            if (sect.getName().equals(section.getName())) {
-                throw new PositionOccupiedException(createRequest.getName());
+            if (sect.getPersonelNumber().equals(section.getPersonelNumber())) {
+                throw new PositionOccupiedException(String.valueOf(createRequest.getPersonelNumber()));
             }
         }
 
@@ -97,8 +92,8 @@ public class SectionServiceImpl implements SectionService{
         Section sectionOld = sectionRepository.findById(id)
                 .orElseThrow(() -> new IdNotFoundException(id.toString()));
 
-        if (updateData.getName() != null && sectionRepository.existsSectionByName((updateData.getName()))) {
-            throw new PositionOccupiedException(updateData.getName());
+        if (updateData.getPersonelNumber() != null && sectionRepository.existsSectionByPersonelNumber((updateData.getPersonelNumber()))) {
+            throw new PositionOccupiedException(String.valueOf(updateData.getPersonelNumber()));
         }
 
         updateSectionMapper.update(updateData, sectionOld);
@@ -114,7 +109,7 @@ public class SectionServiceImpl implements SectionService{
         Section section = sectionRepository.findById(id)
                 .orElseThrow(() -> new IdNotFoundException(id.toString()));
         if (!section.getEmpsSect().isEmpty()) {
-            throw new DeleteSectionException(section.getName());
+            throw new DeleteSectionException(section.getNumber());
         }
 
         sectionRepository.deleteById(id);

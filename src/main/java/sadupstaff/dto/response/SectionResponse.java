@@ -16,7 +16,7 @@ public class SectionResponse {
     private String personelNumber;
 
     @Schema(description = "Имя участка", example = "1-участок центрального района")
-    private String name;
+    private Integer number;
 
     @Schema(description = "Имя района в котором находится участок", example = "Центральный район")
     private String districtName;

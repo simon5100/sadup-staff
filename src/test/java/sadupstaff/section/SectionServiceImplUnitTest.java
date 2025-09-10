@@ -67,7 +67,7 @@ public class SectionServiceImplUnitTest {
         section = new Section(
                 UUID.fromString("3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
                 "M540000",
-                "1й участок центрального района",
+                1,
                 3,
                 LocalDateTime.of(2025,07,30, 15,17,00,000),
                 LocalDateTime.of(2025,07,30, 15,17,00,000),
@@ -81,14 +81,14 @@ public class SectionServiceImplUnitTest {
 
         createRequest = new CreateSectionRequest(
                 "M540000",
-                "1й участок центрального района",
+                1,
                 3,
                 DistrictName.CENTRALNY
         );
 
         response = new SectionResponse(
                 "M540000",
-                "1й участок центрального района",
+                1,
                 DistrictName.CENTRALNY.getStringConvert(),
                 List.of()
         );
@@ -162,24 +162,24 @@ public class SectionServiceImplUnitTest {
 
     @Nested
     @DisplayName("Тесты на метод getDistrictByName поиска района по имени")
-    class GetSectionByNameTests {
+    class GetSectionByNumberTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {"1", "2", "3"})
+        @ValueSource(strings = {"1","2", "3"})
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
-        void getSectionByNameTest(String name) {
+        void getSectionByNameTest(String number) {
 
-            section.setName(name);
+            section.setPersonelNumber(number);
 
-            when(sectionRepository.findSectionByName(name)).thenReturn(section);
+            when(sectionRepository.findSectionByPersonelNumber(number)).thenReturn(section);
 
-            Section result = sectionService.getSectionByName(name);
+            Section result = sectionService.getSectionByPersonelNumber(number);
 
             assertNotNull(result);
             assertEquals(section, result);
 
-            verify(sectionRepository, times(1)).findSectionByName(name);
+            verify(sectionRepository, times(1)).findSectionByPersonelNumber(number);
         }
     }
 
@@ -188,10 +188,10 @@ public class SectionServiceImplUnitTest {
     class SaveSectionTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {"1", "2", "3"})
+        @ValueSource(strings = {"1","2", "3"})
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
-        void saveSectionTest(String name) {
+        void saveSectionTest(String number) {
 
             District district = new District(
                     UUID.fromString("1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
@@ -203,9 +203,9 @@ public class SectionServiceImplUnitTest {
                     List.of()
             );
 
-            createRequest.setName(name);
-            section.setName(name);
-            response.setName(name);
+            createRequest.setPersonelNumber(number);
+            section.setPersonelNumber(number);
+            response.setPersonelNumber(number);
 
             when(createSectionMapper.toEntity(createRequest)).thenReturn(section);
             when(districtService.getDistrictByName(DistrictName.CENTRALNY)).thenReturn(district);
@@ -226,10 +226,10 @@ public class SectionServiceImplUnitTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"1", "2", "3"})
+        @ValueSource(strings = {"1","2", "3"})
         @Tag("unit")
         @DisplayName("Тест на выброс MaxSectionInDistrictException")
-        void saveMaxSectionInDistrictTest(String name) {
+        void saveMaxSectionInDistrictTest(String number) {
 
             District district = new District(
                     UUID.fromString("1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
@@ -240,11 +240,11 @@ public class SectionServiceImplUnitTest {
                     LocalDateTime.of(2025,07,30, 15,17,00,000),
                     List.of(section, section)
             );
-            createRequest.setName(name);
-            section.setName(name);
+            createRequest.setPersonelNumber(number);
+            section.setPersonelNumber(number);
 
             when(createSectionMapper.toEntity(createRequest)).thenReturn(section);
-            when(districtService.getDistrictByName(DistrictName.CENTRALNY)).thenReturn(district);
+            when(districtService.getDistrictByName(CENTRALNY)).thenReturn(district);
 
             MaxSectionInDistrictException exception = assertThrows(
                     MaxSectionInDistrictException.class,
@@ -255,17 +255,19 @@ public class SectionServiceImplUnitTest {
             assertEquals("В '" + district.getName().getStringConvert() + "' максимальное количество участков", exception.getMessage());
 
             verify(createSectionMapper,times(1)).toEntity(createRequest);
-            verify(districtService,times(1)).getDistrictByName(DistrictName.CENTRALNY);
+            verify(districtService,times(1)).getDistrictByName(CENTRALNY);
             verify(sectionRepository, never()).save(section);
             verify(sectionRepository,never()).findById(id);
             verify(findSectionMapper,never()).entityToResponse(section);
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"1", "2", "3"})
+        @ValueSource(strings = {"1","2", "3"})
         @Tag("unit")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void saveSectionPositionOccupiedTest(String name) {
+        void saveSectionPositionOccupiedTest(String number) {
+
+            section.setPersonelNumber(number);
 
             District district = new District(
                     UUID.fromString("1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
@@ -276,11 +278,11 @@ public class SectionServiceImplUnitTest {
                     LocalDateTime.of(2025,07,30, 15,17,00,000),
                     List.of(section)
             );
-            createRequest.setName(name);
-            section.setName(name);
+
+            createRequest.setPersonelNumber(number);
 
             when(createSectionMapper.toEntity(createRequest)).thenReturn(section);
-            when(districtService.getDistrictByName(DistrictName.CENTRALNY)).thenReturn(district);
+            when(districtService.getDistrictByName(CENTRALNY)).thenReturn(district);
 
             PositionOccupiedException exception = assertThrows(
                     PositionOccupiedException.class,
@@ -288,10 +290,10 @@ public class SectionServiceImplUnitTest {
             );
 
             assertNotNull(exception);
-            assertEquals("Позиция '" + name + "' уже занята", exception.getMessage());
+            assertEquals("Позиция '" + number + "' уже занята", exception.getMessage());
 
             verify(createSectionMapper,times(1)).toEntity(createRequest);
-            verify(districtService,times(1)).getDistrictByName(DistrictName.CENTRALNY);
+            verify(districtService,times(1)).getDistrictByName(CENTRALNY);
             verify(sectionRepository, never()).save(section);
             verify(sectionRepository,never()).findById(id);
             verify(findSectionMapper,never()).entityToResponse(section);
@@ -303,18 +305,18 @@ public class SectionServiceImplUnitTest {
     class UpdateSectionTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {"1", "2", "3"})
+        @ValueSource(strings = {"1","2", "3"})
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
-        void updateSectionTest(String name) {
+        void updateSectionTest(String number) {
 
-            updateRequest.setName(name);
-            response.setName(name);
+            updateRequest.setPersonelNumber(number);
+            response.setPersonelNumber(number);
 
             when(sectionRepository.findById(id)).thenReturn(Optional.of(section));
-            when(sectionRepository.existsSectionByName(updateRequest.getName())).thenReturn(false);
+            when(sectionRepository.existsSectionByPersonelNumber(updateRequest.getPersonelNumber())).thenReturn(false);
             doAnswer(invocationOnMock -> {
-                section.setName(updateRequest.getName());
+                section.setNumber(updateRequest.getNumber());
                 return null;
             }).when(updateSectionMapper).update(updateRequest, section);
             when(sectionRepository.save(section)).thenReturn(section);
@@ -327,7 +329,7 @@ public class SectionServiceImplUnitTest {
             assertEquals(response, result);
 
             verify(sectionRepository, times(1)).findById(id);
-            verify(sectionRepository, times(1)).existsSectionByName(updateRequest.getName());
+            verify(sectionRepository, times(1)).existsSectionByPersonelNumber(updateRequest.getPersonelNumber());
             verify(updateSectionMapper, times(1)).update(updateRequest, section);
             verify(sectionRepository, times(1)).save(section);
             verify(findSectionMapper, times(1)).entityToResponse(section);
@@ -338,7 +340,7 @@ public class SectionServiceImplUnitTest {
         @Tag("unit")
         @DisplayName("Тест на выброс IdNotFoundException")
         void updateSectionIdNotFoundTest() {
-            updateRequest.setName("1");
+            updateRequest.setNumber(1);
 
             when(sectionRepository.findById(badId)).thenReturn(Optional.empty());
 
@@ -351,22 +353,23 @@ public class SectionServiceImplUnitTest {
             assertEquals("Id '" + badId + "' не найден", exception.getMessage());
 
             verify(sectionRepository, times(1)).findById(badId);
-            verify(sectionRepository, never()).existsSectionByName(updateRequest.getName());
+            verify(sectionRepository, never()).existsSectionByPersonelNumber(updateRequest.getPersonelNumber());
             verify(updateSectionMapper, never()).update(updateRequest, section);
             verify(sectionRepository, never()).save(section);
             verify(findSectionMapper, never()).entityToResponse(section);
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"1", "2", "3"})
+        @ValueSource(strings = {"1","2", "3"})
         @Tag("unit")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void updateSectionPositionOccupiedTest(String name) {
+        void updateSectionPositionOccupiedTest(String number) {
 
-            updateRequest.setName(name);
+            updateRequest.setPersonelNumber(number);
+            section.setPersonelNumber(number);
 
             when(sectionRepository.findById(id)).thenReturn(Optional.of(section));
-            when(sectionRepository.existsSectionByName(updateRequest.getName())).thenReturn(true);
+            when(sectionRepository.existsSectionByPersonelNumber(updateRequest.getPersonelNumber())).thenReturn(true);
 
             PositionOccupiedException exception = assertThrows(
                     PositionOccupiedException.class,
@@ -374,10 +377,10 @@ public class SectionServiceImplUnitTest {
             );
 
             assertNotNull(exception);
-            assertEquals("Позиция '" + name + "' уже занята", exception.getMessage());
+            assertEquals("Позиция '" + number + "' уже занята", exception.getMessage());
 
             verify(sectionRepository, times(1)).findById(id);
-            verify(sectionRepository, times(1)).existsSectionByName(updateRequest.getName());
+            verify(sectionRepository, times(1)).existsSectionByPersonelNumber(updateRequest.getPersonelNumber());
             verify(updateSectionMapper, never()).update(updateRequest, section);
             verify(sectionRepository, never()).save(section);
             verify(findSectionMapper, never()).entityToResponse(section);
@@ -434,7 +437,7 @@ public class SectionServiceImplUnitTest {
 
             assertNotNull(exception);
             assertFalse(section.getEmpsSect().isEmpty());
-            assertEquals(section.getName() + " имеет сотрудников, удаление запрещено", exception.getMessage());
+            assertEquals(section.getNumber() + " имеет сотрудников, удаление запрещено", exception.getMessage());
 
             verify(sectionRepository, times(1)).findById(id);
         }
