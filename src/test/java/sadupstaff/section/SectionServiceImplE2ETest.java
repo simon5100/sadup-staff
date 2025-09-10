@@ -296,7 +296,7 @@ public class SectionServiceImplE2ETest {
         void saveMaxSectionInDistrictTest() {
 
             jdbcTemplate.execute(
-                    "insert into sudstaff.section (id, personel_number, name, created_at, updated_at, district_id, max_number_employees_section)\n" +
+                    "insert into sudstaff.section (id, personel_number, number, created_at, updated_at, district_id, max_number_employees_section)\n" +
                             "values (\n" +
                             "'4d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
                             "'M540005',\n" +
@@ -332,7 +332,7 @@ public class SectionServiceImplE2ETest {
 
             assertNotNull(responseError);
             assertTrue(responseError.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT));
-            assertEquals("Позиция '" + createRequest.getNumber() + "' уже занята", responseError.getBody().getMessage());
+            assertEquals("Позиция '" + createRequest.getPersonelNumber() + "' уже занята", responseError.getBody().getMessage());
 
             verify(createSectionMapper,times(1)).toEntity(any(CreateSectionRequest.class));
             verify(districtService,times(1)).getDistrictByName(any(DistrictName.class));
@@ -364,7 +364,7 @@ public class SectionServiceImplE2ETest {
 
             assertNotNull(sectionResponse);
             assertTrue(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.OK));
-            assertEquals(sectionResponse.getNumber(), number);
+            assertEquals(sectionResponse.getPersonelNumber(), number);
 
             verify(sectionRepository, times(1)).findById(any(UUID.class));
             verify(sectionRepository, times(1)).existsSectionByPersonelNumber(any(String.class));
@@ -395,7 +395,7 @@ public class SectionServiceImplE2ETest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"1й участок центрального района"})
+        @ValueSource(strings = {"M540000"})
         @Tag("E2E")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void updateSectionPositionOccupiedTest(String number) {

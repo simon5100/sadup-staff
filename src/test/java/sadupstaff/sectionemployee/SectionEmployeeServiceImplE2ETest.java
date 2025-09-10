@@ -223,7 +223,7 @@ public class SectionEmployeeServiceImplE2ETest {
                 "Иванов",
                 "Иванович",
                 JUDGE,
-                "1"
+                "M540000"
         );
 
         updateRequest = new UpdateSectionEmployeeRequest();
@@ -248,7 +248,7 @@ public class SectionEmployeeServiceImplE2ETest {
             assertTrue(responseEntityArr.getStatusCode().isSameCodeAs(HttpStatus.OK));
             assertEquals(1, employeeResponses.length);
             assertEquals(employeeResponses[0].getPosition(), JUDGE.getStringConvert());
-            assertEquals(employeeResponses[0].getSectionPersonelNumber(), "1й участок центрального района");
+            assertEquals(employeeResponses[0].getSectionPersonelNumber(), "M540000");
 
             verify(sectionEmployeeRepository, times(1)).findAll();
             verify(findSectionEmployeeMapper, times(1)).entityToResponse(any(SectionEmployee.class));
@@ -270,7 +270,7 @@ public class SectionEmployeeServiceImplE2ETest {
             assertNotNull(response);
             assertTrue(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.OK));
             assertEquals(response.getPosition(), JUDGE.getStringConvert());
-            assertEquals(response.getSectionPersonelNumber(), "1й участок центрального района");
+            assertEquals(response.getSectionPersonelNumber(), "M540000");
 
             verify(sectionEmployeeRepository, times(1)).findById(id);
             verify(findSectionEmployeeMapper, times(1)).entityToResponse(any(SectionEmployee.class));
