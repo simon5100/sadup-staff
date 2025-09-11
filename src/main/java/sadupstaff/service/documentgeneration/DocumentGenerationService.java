@@ -4,5 +4,5 @@ import sadupstaff.dto.request.generationdocument.DocumentJobRegulationRequest;
 
 public interface DocumentGenerationService {
 
-    void generateDocumentJobRegulationSecretarySession(String sectionPersonelNumber, DocumentJobRegulationRequest request);
+    byte[] generateDocumentJobRegulationSecretarySession(String sectionPersonelNumber, DocumentJobRegulationRequest request);
 }
