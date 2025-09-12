@@ -1,13 +1,17 @@
 package sadupstaff.service.documentgeneration;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import sadupstaff.dto.request.generationdocument.DocumentJobRegulationRequest;
 import sadupstaff.dto.response.DocumentJobRegulationResponse;
 import sadupstaff.entity.district.Section;
+import sadupstaff.exception.documentgeneration.DocumentGenerationException;
+import sadupstaff.exception.documentgeneration.IncorrectNAMEFormatException;
 import sadupstaff.repository.SectionRepository;
+import sadupstaff.service.section.SectionService;
 
 import java.util.regex.Pattern;
 
@@ -15,21 +19,23 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class DocumentGenerationServiceImpl implements DocumentGenerationService {
 
-    private final SectionRepository sectionRepository;
+    private final SectionService sectionService;
 
     @Override
     public byte[] generateDocumentJobRegulationSecretarySession(String sectionPersonelNumber, DocumentJobRegulationRequest request) {
 
-        Section section = sectionRepository.findSectionByPersonelNumber(sectionPersonelNumber);
+        Section section = sectionService.getSectionByPersonelNumber(sectionPersonelNumber);
 
-        Pattern pattern = Pattern.compile("[А-Я]\\.[А-Я]\\. [А-Я][а-я]*}");
+        Pattern pattern = Pattern.compile("[А-Я]\\.[А-Я]\\. [А-Я][а-я]*");
 
-        if (pattern.matcher(request.getConcordantName()).find()) {
-
+        if (!(pattern.matcher(request.getJudgeName()).find() &&
+                pattern.matcher(request.getJudgeOrganizerName()).find() &&
+                pattern.matcher(request.getConcordantName()).find())) {
+            throw new IncorrectNAMEFormatException(
+                    request.getJudgeName(),
+                    request.getJudgeOrganizerName(),
+                    request.getConcordantName());
         }
-
-
-
 
         DocumentJobRegulationResponse response = new DocumentJobRegulationResponse(
                 section.getDistrict().getName().getStringConvert(),
@@ -50,6 +56,9 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(response)
                 .retrieve()
+                .onStatus(HttpStatusCode::isError, clientResponse -> {
+                    throw new DocumentGenerationException();
+                })
                 .bodyToMono(byte[].class)
                 .block();
     }
