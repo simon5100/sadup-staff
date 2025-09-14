@@ -10,9 +10,7 @@ import sadupstaff.dto.response.DocumentJobRegulationResponse;
 import sadupstaff.entity.district.Section;
 import sadupstaff.exception.documentgeneration.DocumentGenerationException;
 import sadupstaff.exception.documentgeneration.IncorrectNAMEFormatException;
-import sadupstaff.repository.SectionRepository;
 import sadupstaff.service.section.SectionService;
-
 import java.util.regex.Pattern;
 
 @Service
