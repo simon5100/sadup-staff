@@ -20,9 +20,9 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
     private final SectionService sectionService;
 
     @Override
-    public byte[] generateDocumentJobRegulationSecretarySession(String sectionPersonelNumber, DocumentJobRegulationRequest request) {
+    public byte[] generateDocumentJobRegulationSecretarySession(String sectionPersonalNumber, DocumentJobRegulationRequest request) {
 
-        Section section = sectionService.getSectionByPersonelNumber(sectionPersonelNumber);
+        Section section = sectionService.getSectionByPersonelNumber(sectionPersonalNumber);
 
         Pattern pattern = Pattern.compile("[А-Я]\\.[А-Я]\\. [А-Я][а-я]*");
 
