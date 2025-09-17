@@ -1,8 +1,10 @@
 package sadupstaff.service.documentgeneration;
 
+import org.springframework.http.HttpHeaders;
 import sadupstaff.dto.request.generationdocument.DocumentJobRegulationRequest;
+import java.util.HashMap;
 
 public interface DocumentGenerationService {
 
-    byte[] generateDocumentJobRegulationSecretarySession(String sectionPersonelNumber, DocumentJobRegulationRequest request);
+    HashMap<HttpHeaders, byte[]> generateDocumentJobRegulationSecretarySession(DocumentJobRegulationRequest request);
 }

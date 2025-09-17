@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 public class DocumentJobRegulationRequest {
 
     @NotNull
+    String sectionPersonalNumber;
+
+    @NotNull
     String judgeName;
 
     @NotNull

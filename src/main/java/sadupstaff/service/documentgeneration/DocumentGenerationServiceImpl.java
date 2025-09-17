@@ -1,6 +1,8 @@
 package sadupstaff.service.documentgeneration;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,8 @@ import sadupstaff.entity.district.Section;
 import sadupstaff.exception.documentgeneration.DocumentGenerationException;
 import sadupstaff.exception.documentgeneration.IncorrectNAMEFormatException;
 import sadupstaff.service.section.SectionService;
+
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 @Service
@@ -18,24 +22,31 @@ import java.util.regex.Pattern;
 public class DocumentGenerationServiceImpl implements DocumentGenerationService {
 
     private final SectionService sectionService;
+    private final Pattern names = Pattern.compile("[А-Я]\\.[А-Я]\\. [А-Я][а-я]*");
+    private final Pattern sectionPersonalNumbers = Pattern.compile("54MS0[0-1]\\d{2}");
+
+    private HttpHeaders headers;
+    private byte[] document;
+    private Section section;
+    DocumentJobRegulationResponse response;
 
     @Override
-    public byte[] generateDocumentJobRegulationSecretarySession(String sectionPersonalNumber, DocumentJobRegulationRequest request) {
+    public HashMap<HttpHeaders, byte[]> generateDocumentJobRegulationSecretarySession(DocumentJobRegulationRequest request) {
 
-        Section section = sectionService.getSectionByPersonelNumber(sectionPersonalNumber);
-
-        Pattern pattern = Pattern.compile("[А-Я]\\.[А-Я]\\. [А-Я][а-я]*");
-
-        if (!(pattern.matcher(request.getJudgeName()).find() &&
-                pattern.matcher(request.getJudgeOrganizerName()).find() &&
-                pattern.matcher(request.getConcordantName()).find())) {
+        if (!sectionPersonalNumbers.matcher(request.getSectionPersonalNumber()).find()) {
+            throw new RuntimeException("неверный формат номера");
+        } else if (!(names.matcher(request.getJudgeName()).find() &&
+                names.matcher(request.getJudgeOrganizerName()).find() &&
+                names.matcher(request.getConcordantName()).find())) {
             throw new IncorrectNAMEFormatException(
                     request.getJudgeName(),
                     request.getJudgeOrganizerName(),
                     request.getConcordantName());
         }
 
-        DocumentJobRegulationResponse response = new DocumentJobRegulationResponse(
+        section = sectionService.getSectionByPersonelNumber(request.getSectionPersonalNumber());
+
+        response = new DocumentJobRegulationResponse(
                 section.getDistrict().getName().getStringConvert(),
                 section.getNumber(),
                 request.getJudgeName(),
@@ -47,10 +58,10 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
         String url = "http://localhost:8081/api/documents/v1/generation/jobRegulation/secretarySession";
 
-        return WebClient.builder()
+        document = WebClient.builder()
                 .build()
                 .post()
-                .uri(url)
+                .uri("${document-generation.urls.url-jobRegulation-secretarySession}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(response)
                 .retrieve()
@@ -59,5 +70,18 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
                 })
                 .bodyToMono(byte[].class)
                 .block();
+
+        headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.inline()
+                .filename(String.format(
+                        "Dolzhnostnoy reglament SSZ " +
+                                "rayon %s " +
+                                "uchastok № %d.pdf",
+                        section.getDistrict().getName(), section.getNumber()))
+                .build());
+        headers.setContentLength(document.length);
+
+        return (HashMap<HttpHeaders, byte[]>) new HashMap<>().put(headers, document);
     }
 }

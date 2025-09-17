@@ -6,21 +6,25 @@
 
     <changeSet id="10.09.2025-ALTER-TABLE" author="Polikarpov-Semen">
         <sql>
+            -- TAG: UPDATE_SECTION_NAMES_STEP1
             update sudstaff.section
             set name = '2'
             where name = '1';
 
+-- TAG: UPDATE_SECTION_NAMES_STEP2
             update sudstaff.section
             set name = '1'
             where name = '1й участок центрального района';
 
-
+-- TAG: RENAME_COLUMN_NAME_TO_NUMBER
             ALTER TABLE sudstaff.section
                 RENAME COLUMN
-                    name to number;
+                name to number;
 
+-- TAG: ALTER_COLUMN_TYPE_TO_INTEGER
             ALTER TABLE sudstaff.section
-                ALTER COLUMN
+            ALTER
+            COLUMN
                     number      type   Integer using (
                     case
                       when number = '1' then 1

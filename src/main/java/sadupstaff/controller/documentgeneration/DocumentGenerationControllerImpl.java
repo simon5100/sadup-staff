@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 import sadupstaff.dto.request.generationdocument.DocumentJobRegulationRequest;
 import sadupstaff.service.documentgeneration.DocumentGenerationService;
 
+import java.util.HashMap;
+
 @RestController
 @RequiredArgsConstructor
 public class DocumentGenerationControllerImpl implements DocumentGenerationController {
@@ -13,18 +15,14 @@ public class DocumentGenerationControllerImpl implements DocumentGenerationContr
     private final DocumentGenerationService documentGenerationService;
 
     @Override
-    public ResponseEntity<byte[]> jobRegulationSecretarySession(String sectionPersonelNumber, DocumentJobRegulationRequest request) {
+    public ResponseEntity<byte[]> jobRegulationSecretarySession(DocumentJobRegulationRequest request) {
 
-        byte[] bytes = documentGenerationService.generateDocumentJobRegulationSecretarySession(sectionPersonelNumber, request);
+        HashMap<HttpHeaders, byte[]> documentContainer = documentGenerationService.generateDocumentJobRegulationSecretarySession(request);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDisposition(
-                ContentDisposition.inline()
-                        .filename("document.pdf")
-                        .build());
-        headers.setContentLength(bytes.length);
+        byte[] document = documentContainer.get(documentContainer.keySet().stream().findFirst().get());
 
-        return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+        HttpHeaders headers = documentContainer.keySet().stream().findFirst().get();
+
+        return new ResponseEntity<>(document, headers, HttpStatus.OK);
     }
 }
