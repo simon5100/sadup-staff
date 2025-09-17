@@ -108,7 +108,7 @@ public class SectionEmployeeServiceImplIntegrationTest {
                 "Иванов",
                 "Иванович",
                 JUDGE,
-                "M540000"
+                "54MS0000"
         );
 
         updateRequest = new UpdateSectionEmployeeRequest();

@@ -34,4 +34,15 @@
                       );
         </sql>
     </changeSet>
+
+    <changeSet id="17.09.2025-update-section" author="Polikarpov-Semen">
+        <sql>
+            -- TAG: UPDATE_SECTION_PERSONAL_NUMBER
+            update sudstaff.section
+            set personel_number = '54MS0000'
+            where personel_number = 'M540000';
+
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

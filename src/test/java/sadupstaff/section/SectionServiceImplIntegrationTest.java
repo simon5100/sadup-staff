@@ -90,7 +90,7 @@ public class SectionServiceImplIntegrationTest {
 
         section = new Section(
                 UUID.fromString("3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
-                "M540000",
+                "54MS0000",
                 1,
                 3,
                 LocalDateTime.of(2025,07,30, 15,17,00,000),
@@ -104,7 +104,7 @@ public class SectionServiceImplIntegrationTest {
         badId = UUID.randomUUID();
 
         createRequest = new CreateSectionRequest(
-                "M540000",
+                "54MS0000",
                 1,
                 3,
                 DistrictName.CENTRALNY
@@ -182,12 +182,12 @@ public class SectionServiceImplIntegrationTest {
         @DisplayName("Тест с позитивным исходом")
         void getSectionByPersonelNumberTest() {
 
-            Section result = sectionService.getSectionByPersonelNumber("M540000");
+            Section result = sectionService.getSectionByPersonelNumber("54MS0000");
 
             assertNotNull(result);
             assertEquals(result.getNumber(), 1);
 
-            verify(sectionRepository, times(1)).findSectionByPersonelNumber("M540000");
+            verify(sectionRepository, times(1)).findSectionByPersonelNumber("54MS0000");
         }
 
         @Test
@@ -196,12 +196,12 @@ public class SectionServiceImplIntegrationTest {
         void getSectionByPersonelNumberNotFoundTest() {
 
             SectionNotFoundByPersonelNumberException exception = assertThrows(SectionNotFoundByPersonelNumberException.class,
-                    () -> sectionService.getSectionByPersonelNumber("M5400000"));
+                    () -> sectionService.getSectionByPersonelNumber("54MS00000"));
 
             assertNotNull(exception);
-            assertEquals(exception.getMessage(), "Участок 'M5400000' не найден");
+            assertEquals(exception.getMessage(), "Участок '54MS00000' не найден");
 
-            verify(sectionRepository, times(1)).findSectionByPersonelNumber("M5400000");
+            verify(sectionRepository, times(1)).findSectionByPersonelNumber("54MS00000");
         }
     }
 
@@ -211,7 +211,7 @@ public class SectionServiceImplIntegrationTest {
     class SaveSectionTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {"2"})
+        @ValueSource(strings = {"54MS0002"})
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
         void saveSectionTest(String number) {
@@ -236,7 +236,7 @@ public class SectionServiceImplIntegrationTest {
         @DisplayName("Тест на выброс MaxSectionInDistrictException")
         void saveMaxSectionInDistrictTest() {
 
-            createRequest.setPersonelNumber("4");
+            createRequest.setPersonelNumber("54MS0004");
 
             MaxSectionInDistrictException exception = assertThrows(
                     MaxSectionInDistrictException.class,
@@ -283,7 +283,7 @@ public class SectionServiceImplIntegrationTest {
     class UpdateSectionTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {"4", "3"})
+        @ValueSource(strings = {"54MS0004", "54MS0003"})
         @Tag("integration")
         @DisplayName("Тест с позитивным исходом")
         void updateSectionTest(String number) {
@@ -324,7 +324,7 @@ public class SectionServiceImplIntegrationTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"2", "M540000"})
+        @ValueSource(strings = {"2", "54MS0000"})
         @Tag("integration")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void updateSectionPositionOccupiedTest(String number) {

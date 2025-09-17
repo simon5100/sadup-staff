@@ -83,7 +83,7 @@ public class SectionEmployeeServiceImplUnitTest {
                 "Иванов",
                 "Иванович",
                 PositionSectionEmployee.JUDGE,
-                "M540000"
+                "54MS0000"
         );
 
         response = new SectionEmployeeResponse(
@@ -92,7 +92,7 @@ public class SectionEmployeeServiceImplUnitTest {
                 "Иванов",
                 "Иванович",
                 PositionSectionEmployee.JUDGE.getStringConvert(),
-                "1"
+                "54MS0000"
         );
 
         updateRequest = new UpdateSectionEmployeeRequest();
@@ -172,7 +172,7 @@ public class SectionEmployeeServiceImplUnitTest {
 
             Section section = new Section(
                     UUID.fromString("3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
-                    "M540000",
+                    "54MS0000",
                     1,
                     3,
                     LocalDateTime.of(2025,07,30, 15,17,00,000),
@@ -214,7 +214,7 @@ public class SectionEmployeeServiceImplUnitTest {
 
             Section section = new Section(
                     UUID.fromString("3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
-                    "M540000",
+                    "54MS0000",
                     1,
                     3,
                     LocalDateTime.of(2025,07,30, 15,17,00,000),
@@ -252,7 +252,7 @@ public class SectionEmployeeServiceImplUnitTest {
 
             Section section = new Section(
                     UUID.fromString("3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
-                    "M540000",
+                    "54MS0000",
                     1,
                     3,
                     LocalDateTime.of(2025,07,30, 15,17,00,000),
@@ -403,4 +403,3 @@ public class SectionEmployeeServiceImplUnitTest {
         }
     }
 }
-

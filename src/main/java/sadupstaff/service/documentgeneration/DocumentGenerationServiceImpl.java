@@ -1,6 +1,8 @@
 package sadupstaff.service.documentgeneration;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -13,10 +15,10 @@ import sadupstaff.entity.district.Section;
 import sadupstaff.exception.documentgeneration.DocumentGenerationException;
 import sadupstaff.exception.documentgeneration.IncorrectNAMEFormatException;
 import sadupstaff.service.section.SectionService;
-
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class DocumentGenerationServiceImpl implements DocumentGenerationService {
@@ -24,11 +26,15 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
     private final SectionService sectionService;
     private final Pattern names = Pattern.compile("[А-Я]\\.[А-Я]\\. [А-Я][а-я]*");
     private final Pattern sectionPersonalNumbers = Pattern.compile("54MS0[0-1]\\d{2}");
+    @Value("${document-generation.urls.url-jobRegulation-secretarySession}")
+    private String url;
 
     private HttpHeaders headers;
     private byte[] document;
     private Section section;
-    DocumentJobRegulationResponse response;
+    private DocumentJobRegulationResponse response;
+    private HashMap<HttpHeaders, byte[]> documentContainer;
+
 
     @Override
     public HashMap<HttpHeaders, byte[]> generateDocumentJobRegulationSecretarySession(DocumentJobRegulationRequest request) {
@@ -56,12 +62,10 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
                 request.getConcordantName()
         );
 
-        String url = "http://localhost:8081/api/documents/v1/generation/jobRegulation/secretarySession";
-
         document = WebClient.builder()
                 .build()
                 .post()
-                .uri("${document-generation.urls.url-jobRegulation-secretarySession}")
+                .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(response)
                 .retrieve()
@@ -77,11 +81,14 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
                 .filename(String.format(
                         "Dolzhnostnoy reglament SSZ " +
                                 "rayon %s " +
-                                "uchastok № %d.pdf",
+                                "uchastok nomer %d.pdf",
                         section.getDistrict().getName(), section.getNumber()))
                 .build());
         headers.setContentLength(document.length);
 
-        return (HashMap<HttpHeaders, byte[]>) new HashMap<>().put(headers, document);
+        documentContainer = new HashMap<>();
+        documentContainer.put(headers, document);
+
+        return documentContainer;
     }
 }

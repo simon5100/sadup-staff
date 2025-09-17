@@ -171,7 +171,7 @@ public class SectionServiceImplE2ETest {
                 "insert into sudstaff.section (id, personel_number, number, created_at, updated_at, district_id, max_number_employees_section)\n" +
                         "values (\n" +
                         "'3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
-                        "'M540000',\n" +
+                        "'54MS0000',\n" +
                         "1,\n" +
                         "'2025.07.30 15:17:00',\n" +
                         "'2025.07.30 15:17:00',\n" +
@@ -197,7 +197,7 @@ public class SectionServiceImplE2ETest {
         initializeData();
 
         createRequest = new CreateSectionRequest(
-                "M540001",
+                "54MS0000",
                 2,
                 3,
                 DistrictName.CENTRALNY
@@ -275,6 +275,8 @@ public class SectionServiceImplE2ETest {
         @DisplayName("Тест с позитивным исходом")
         void saveSectionTest() {
 
+            createRequest.setPersonelNumber("54MS0001");
+
             responseEntity = restTemplate.postForEntity(URL, createRequest, SectionResponse.class);
             sectionResponse = responseEntity.getBody();
 
@@ -326,7 +328,7 @@ public class SectionServiceImplE2ETest {
         @DisplayName("Тест на выброс PositionOccupiedException")
         void saveSectionPositionOccupiedTest() {
 
-            createRequest.setPersonelNumber("M540000");
+            createRequest.setPersonelNumber("54MS0000");
 
             responseError = restTemplate.postForEntity(URL, createRequest, ErrorResponse.class);
 
@@ -347,7 +349,7 @@ public class SectionServiceImplE2ETest {
     class UpdateSectionTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {"2", "3"})
+        @ValueSource(strings = {"54MS0002", "54MS0003"})
         @Tag("E2E")
         @DisplayName("Тест с позитивным исходом")
         void updateSectionTest(String number) {
@@ -395,7 +397,7 @@ public class SectionServiceImplE2ETest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"M540000"})
+        @ValueSource(strings = {"54MS0000"})
         @Tag("E2E")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void updateSectionPositionOccupiedTest(String number) {

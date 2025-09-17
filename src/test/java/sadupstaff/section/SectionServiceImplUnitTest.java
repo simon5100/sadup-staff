@@ -66,7 +66,7 @@ public class SectionServiceImplUnitTest {
 
         section = new Section(
                 UUID.fromString("3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
-                "M540000",
+                "54MS0000",
                 1,
                 3,
                 LocalDateTime.of(2025,07,30, 15,17,00,000),
@@ -80,14 +80,14 @@ public class SectionServiceImplUnitTest {
         badId = UUID.randomUUID();
 
         createRequest = new CreateSectionRequest(
-                "M540000",
+                "54MS0000",
                 1,
                 3,
                 DistrictName.CENTRALNY
         );
 
         response = new SectionResponse(
-                "M540000",
+                "54MS0000",
                 1,
                 DistrictName.CENTRALNY.getStringConvert(),
                 List.of()
@@ -165,7 +165,7 @@ public class SectionServiceImplUnitTest {
     class GetSectionByNumberTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {"1","2", "3"})
+        @ValueSource(strings = {"54MS0001","54MS0002", "54MS0003"})
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
         void getSectionByNameTest(String number) {
@@ -188,7 +188,7 @@ public class SectionServiceImplUnitTest {
     class SaveSectionTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {"1","2", "3"})
+        @ValueSource(strings = {"54MS0001","54MS0002", "54MS0003"})
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
         void saveSectionTest(String number) {
@@ -226,7 +226,7 @@ public class SectionServiceImplUnitTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"1","2", "3"})
+        @ValueSource(strings = {"54MS0001","54MS0002", "54MS0003"})
         @Tag("unit")
         @DisplayName("Тест на выброс MaxSectionInDistrictException")
         void saveMaxSectionInDistrictTest(String number) {
@@ -262,7 +262,7 @@ public class SectionServiceImplUnitTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"1","2", "3"})
+        @ValueSource(strings = {"54MS0001","54MS0002", "54MS0003"})
         @Tag("unit")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void saveSectionPositionOccupiedTest(String number) {
@@ -305,7 +305,7 @@ public class SectionServiceImplUnitTest {
     class UpdateSectionTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {"1","2", "3"})
+        @ValueSource(strings = {"54MS0001","54MS0002", "54MS0003"})
         @Tag("unit")
         @DisplayName("Тест с позитивным исходом")
         void updateSectionTest(String number) {
@@ -360,7 +360,7 @@ public class SectionServiceImplUnitTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"1","2", "3"})
+        @ValueSource(strings = {"54MS0001","54MS0002", "54MS0003"})
         @Tag("unit")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void updateSectionPositionOccupiedTest(String number) {
