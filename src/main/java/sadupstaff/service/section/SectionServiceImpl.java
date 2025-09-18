@@ -9,6 +9,7 @@ import sadupstaff.dto.response.SectionResponse;
 import sadupstaff.entity.district.District;
 import sadupstaff.entity.district.Section;
 import sadupstaff.exception.IdNotFoundException;
+import sadupstaff.exception.IncorrectFormatPersonalNumberException;
 import sadupstaff.exception.PositionOccupiedException;
 import sadupstaff.exception.SectionNotFoundByPersonelNumberException;
 import sadupstaff.exception.section.DeleteSectionException;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +35,7 @@ public class SectionServiceImpl implements SectionService{
     private final DistrictServiceImpl districtService;
     private final FindSectionMapper findSectionMapper;
     private final CreateSectionMapper createSectionMapper;
+    private final Pattern sectionPersonalNumbers = Pattern.compile("54MS0[0-1]\\d{2}");
 
     @Override
     @Transactional
@@ -53,18 +56,25 @@ public class SectionServiceImpl implements SectionService{
     }
 
     @Override
-    public Section getSectionByPersonelNumber(String personelNumber) {
+    public Section getSectionByPersonelNumber(String personalNumber) {
+        if (!sectionPersonalNumbers.matcher(personalNumber).find()) {
+            throw new IncorrectFormatPersonalNumberException(personalNumber);
+        }
 
-        Optional<Section> optionalSection = Optional.ofNullable(sectionRepository.findSectionByPersonelNumber(personelNumber));
+        Optional<Section> optionalSection = Optional.ofNullable(sectionRepository.findSectionByPersonelNumber(personalNumber));
         if(optionalSection.isPresent()) {
             return optionalSection.get();
         }
-        throw new SectionNotFoundByPersonelNumberException(personelNumber);
+        throw new SectionNotFoundByPersonelNumberException(personalNumber);
     }
 
     @Override
     @Transactional
     public SectionResponse saveSection(CreateSectionRequest createRequest) {
+        if (!sectionPersonalNumbers.matcher(createRequest.getPersonelNumber()).find()) {
+            throw new IncorrectFormatPersonalNumberException(createRequest.getPersonelNumber());
+        }
+
         Section section = createSectionMapper.toEntity(createRequest);
         District district = districtService.getDistrictByName(createRequest.getDistrictName());
 

@@ -25,7 +25,6 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
     private final SectionService sectionService;
     private final Pattern names = Pattern.compile("[А-Я]\\.[А-Я]\\. [А-Я][а-я]*");
-    private final Pattern sectionPersonalNumbers = Pattern.compile("54MS0[0-1]\\d{2}");
     @Value("${document-generation.urls.url-jobRegulation-secretarySession}")
     private String url;
 
@@ -39,9 +38,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
     @Override
     public HashMap<HttpHeaders, byte[]> generateDocumentJobRegulationSecretarySession(DocumentJobRegulationRequest request) {
 
-        if (!sectionPersonalNumbers.matcher(request.getSectionPersonalNumber()).find()) {
-            throw new RuntimeException("неверный формат номера");
-        } else if (!(names.matcher(request.getJudgeName()).find() &&
+        if (!(names.matcher(request.getJudgeName()).find() &&
                 names.matcher(request.getJudgeOrganizerName()).find() &&
                 names.matcher(request.getConcordantName()).find())) {
             throw new IncorrectNAMEFormatException(
