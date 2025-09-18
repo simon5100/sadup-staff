@@ -173,8 +173,8 @@ public class SectionEmployeeServiceImplE2ETest {
                 "insert into sudstaff.section (id, personel_number, number, created_at, updated_at, district_id, max_number_employees_section)\n" +
                         "values (\n" +
                         "'3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
-                        "'54MS0000',\n" +
-                        "1,\n" +
+                        "'54MS0068',\n" +
+                        "2,\n" +
                         "'2025.07.30 15:17:00',\n" +
                         "'2025.07.30 15:17:00',\n" +
                         "'1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
@@ -223,7 +223,7 @@ public class SectionEmployeeServiceImplE2ETest {
                 "Иванов",
                 "Иванович",
                 JUDGE,
-                "54MS0000"
+                "54MS0068"
         );
 
         updateRequest = new UpdateSectionEmployeeRequest();
@@ -248,7 +248,7 @@ public class SectionEmployeeServiceImplE2ETest {
             assertTrue(responseEntityArr.getStatusCode().isSameCodeAs(HttpStatus.OK));
             assertEquals(1, employeeResponses.length);
             assertEquals(employeeResponses[0].getPosition(), JUDGE.getStringConvert());
-            assertEquals(employeeResponses[0].getSectionPersonelNumber(), "54MS0000");
+            assertEquals(employeeResponses[0].getSectionPersonelNumber(), "54MS0068");
 
             verify(sectionEmployeeRepository, times(1)).findAll();
             verify(findSectionEmployeeMapper, times(1)).entityToResponse(any(SectionEmployee.class));
@@ -270,7 +270,7 @@ public class SectionEmployeeServiceImplE2ETest {
             assertNotNull(response);
             assertTrue(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.OK));
             assertEquals(response.getPosition(), JUDGE.getStringConvert());
-            assertEquals(response.getSectionPersonelNumber(), "54MS0000");
+            assertEquals(response.getSectionPersonelNumber(), "54MS0068");
 
             verify(sectionEmployeeRepository, times(1)).findById(id);
             verify(findSectionEmployeeMapper, times(1)).entityToResponse(any(SectionEmployee.class));

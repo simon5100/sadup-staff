@@ -427,8 +427,8 @@ public class DistrictServiceImplE2ETest {
             jdbcTemplate.execute("insert into sudstaff.section (id, personel_number, number, created_at, updated_at, district_id, max_number_employees_section)\n" +
                     "values (\n" +
                     "'3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
-                    "'54MS0000',\n" +
-                    "3,\n" +
+                    "'54MS0010',\n" +
+                    "2,\n" +
                     "'2025.07.30 15:17:00',\n" +
                     "'2025.07.30 15:17:00',\n" +
                     "'1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +

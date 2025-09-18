@@ -108,7 +108,7 @@ public class SectionEmployeeServiceImplIntegrationTest {
                 "Иванов",
                 "Иванович",
                 JUDGE,
-                "54MS0000"
+                "54MS0068"
         );
 
         updateRequest = new UpdateSectionEmployeeRequest();
@@ -182,7 +182,7 @@ public class SectionEmployeeServiceImplIntegrationTest {
         void saveSectionEmployeeTest(PositionSectionEmployee position) {
 
             createRequest.setPosition(position);
-            createRequest.setSectionPersonelNumber("rehrt");
+            createRequest.setSectionPersonelNumber("54MS0010");
 
             SectionEmployeeResponse result = sectionEmployeeService.saveSectionEmployee(createRequest);
 
@@ -206,7 +206,7 @@ public class SectionEmployeeServiceImplIntegrationTest {
         void saveSectionEmployeePositionOccupiedTest(PositionSectionEmployee position) {
 
             createRequest.setPosition(position);
-            createRequest.setSectionPersonelNumber("2");
+            createRequest.setSectionPersonelNumber("54MS0067");
 
             PositionOccupiedException exception = assertThrows(
                     PositionOccupiedException.class,

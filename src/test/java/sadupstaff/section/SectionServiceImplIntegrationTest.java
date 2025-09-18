@@ -90,8 +90,8 @@ public class SectionServiceImplIntegrationTest {
 
         section = new Section(
                 UUID.fromString("3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
-                "54MS0000",
-                1,
+                "54MS0068",
+                2,
                 3,
                 LocalDateTime.of(2025,07,30, 15,17,00,000),
                 LocalDateTime.of(2025,07,30, 15,17,00,000),
@@ -127,7 +127,7 @@ public class SectionServiceImplIntegrationTest {
 
             assertNotNull(result);
             assertEquals(3, result.size());
-            assertEquals(result.get(0).getNumber(), 1);
+            assertEquals(result.get(0).getNumber(), 2);
 
             verify(sectionRepository).findAll();
             verify(findSectionMapper, times(3)).entityToResponse(any(Section.class));
@@ -147,7 +147,7 @@ public class SectionServiceImplIntegrationTest {
             SectionResponse result = sectionService.getSectionById(id);
 
             assertNotNull(result);
-            assertEquals(result.getNumber(), 1);
+            assertEquals(result.getNumber(), 2);
             assertFalse(result.getEmpsSect().isEmpty());
 
             verify(sectionRepository).findById(id);
@@ -182,12 +182,12 @@ public class SectionServiceImplIntegrationTest {
         @DisplayName("Тест с позитивным исходом")
         void getSectionByPersonelNumberTest() {
 
-            Section result = sectionService.getSectionByPersonelNumber("54MS0000");
+            Section result = sectionService.getSectionByPersonelNumber("54MS0010");
 
             assertNotNull(result);
-            assertEquals(result.getNumber(), 1);
+            assertEquals(result.getNumber(), 2);
 
-            verify(sectionRepository, times(1)).findSectionByPersonelNumber("54MS0000");
+            verify(sectionRepository, times(1)).findSectionByPersonelNumber("54MS0010");
         }
 
         @Test
@@ -259,7 +259,7 @@ public class SectionServiceImplIntegrationTest {
         void saveSectionPositionOccupiedTest() {
 
             createRequest.setDistrictName(ZHELEZNODOROZHHNY);
-            createRequest.setPersonelNumber("rehrt");
+            createRequest.setPersonelNumber("54MS0010");
 
             PositionOccupiedException exception = assertThrows(
                     PositionOccupiedException.class,
@@ -324,7 +324,7 @@ public class SectionServiceImplIntegrationTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"2", "54MS0000"})
+        @ValueSource(strings = {"54MS0068", "54MS0010"})
         @Tag("integration")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void updateSectionPositionOccupiedTest(String number) {

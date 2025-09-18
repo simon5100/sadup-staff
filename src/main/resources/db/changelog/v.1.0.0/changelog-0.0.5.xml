@@ -45,4 +45,34 @@
         </sql>
     </changeSet>
 
+    <changeSet id="18.09.2025-update-section" author="Polikarpov-Semen">
+        <sql>
+            -- TAG: UPDATE_SECTION_PERSONAL_NUMBER
+            update sudstaff.section
+            set personel_number = '54MS0010'
+            where personel_number = 'rehrt';
+
+        </sql>
+    </changeSet>
+
+    <changeSet id="18.09.2025:21:38-update-section" author="Polikarpov-Semen">
+        <sql>
+            -- TAG: UPDATE_SECTION_PERSONAL_NUMBER
+            update sudstaff.section
+            set personel_number = '54MS0067'
+            where personel_number = '2';
+
+-- TAG: UPDATE_SECTION_PERSONAL_NUMBER
+            update sudstaff.section
+            set personel_number = '54MS0068'
+            where personel_number = '54MS0000';
+
+-- TAG: UPDATE_SECTION_NUMBER
+            update sudstaff.section
+            set number = '2'
+            where personel_number = '54MS0068';
+
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

@@ -171,8 +171,8 @@ public class SectionServiceImplE2ETest {
                 "insert into sudstaff.section (id, personel_number, number, created_at, updated_at, district_id, max_number_employees_section)\n" +
                         "values (\n" +
                         "'3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
-                        "'54MS0000',\n" +
-                        "1,\n" +
+                        "'54MS0068',\n" +
+                        "2,\n" +
                         "'2025.07.30 15:17:00',\n" +
                         "'2025.07.30 15:17:00',\n" +
                         "'1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
@@ -223,7 +223,7 @@ public class SectionServiceImplE2ETest {
             assertTrue(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.OK));
             assertEquals(1, sectionResponses.length);
             assertTrue(sectionResponses[0].getEmpsSect().isEmpty());
-            assertEquals(sectionResponses[0].getNumber(), 1);
+            assertEquals(sectionResponses[0].getNumber(), 2);
 
             verify(sectionRepository).findAll();
             verify(findSectionMapper, times(1)).entityToResponse(any(Section.class));
@@ -245,7 +245,7 @@ public class SectionServiceImplE2ETest {
             assertNotNull(sectionResponse);
             assertTrue(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.OK));
             assertTrue(sectionResponse.getEmpsSect().isEmpty());
-            assertEquals(sectionResponse.getNumber(), 1);
+            assertEquals(sectionResponse.getNumber(), 2);
 
             verify(sectionRepository).findById(id);
             verify(findSectionMapper, times(1)).entityToResponse(any(Section.class));
@@ -301,8 +301,8 @@ public class SectionServiceImplE2ETest {
                     "insert into sudstaff.section (id, personel_number, number, created_at, updated_at, district_id, max_number_employees_section)\n" +
                             "values (\n" +
                             "'4d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
-                            "'M540005',\n" +
-                            "3,\n" +
+                            "'54MS0067',\n" +
+                            "1,\n" +
                             "'2025.07.30 15:17:00',\n" +
                             "'2025.07.30 15:17:00',\n" +
                             "'1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
@@ -328,7 +328,7 @@ public class SectionServiceImplE2ETest {
         @DisplayName("Тест на выброс PositionOccupiedException")
         void saveSectionPositionOccupiedTest() {
 
-            createRequest.setPersonelNumber("54MS0000");
+            createRequest.setPersonelNumber("54MS0068");
 
             responseError = restTemplate.postForEntity(URL, createRequest, ErrorResponse.class);
 
@@ -397,7 +397,7 @@ public class SectionServiceImplE2ETest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"54MS0000"})
+        @ValueSource(strings = {"54MS0068"})
         @Tag("E2E")
         @DisplayName("Тест на выброс PositionOccupiedException")
         void updateSectionPositionOccupiedTest(String number) {
@@ -484,7 +484,7 @@ public class SectionServiceImplE2ETest {
 
             assertTrue(status.getStatusCode().isSameCodeAs(HttpStatus.UNPROCESSABLE_ENTITY));
 
-            assertEquals("1 имеет сотрудников, удаление запрещено", status.getBody().getMessage());
+            assertEquals("2 имеет сотрудников, удаление запрещено", status.getBody().getMessage());
 
             verify(sectionRepository, times(1)).findById(id);
         }
