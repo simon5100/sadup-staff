@@ -10,11 +10,11 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.xml
 
 document-generation:
-  port: 8081
+  port: 8082
   document-type: jobRegulation
   position: secretarySession
   urls:
     url-jobRegulation-secretarySession: http://localhost:${document-generation.port}/api/documents/v1/generation/${document-generation.document-type}/${document-generation.position}
 
 server:
-  port: 8080
+  port: 8081
