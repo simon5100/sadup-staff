@@ -38,9 +38,15 @@ public class GlobalRestApiExceptionHandler {
         return new ErrorResponse(exception.getMessage());
     }
 
-    @ExceptionHandler(SectionNotFoundByNameException.class)
+    @ExceptionHandler(SectionNotFoundByPersonelNumberException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handlerSectionNotFoundByNameException(SectionNotFoundByNameException exception) {
+    public ErrorResponse handlerSectionNotFoundByNameException(SectionNotFoundByPersonelNumberException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
+
+    @ExceptionHandler(IncorrectFormatPersonalNumberException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErrorResponse handlerIncorrectFormatPersonalNumberException(IncorrectFormatPersonalNumberException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 }

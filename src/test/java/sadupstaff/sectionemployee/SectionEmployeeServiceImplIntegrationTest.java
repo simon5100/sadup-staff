@@ -108,7 +108,7 @@ public class SectionEmployeeServiceImplIntegrationTest {
                 "Иванов",
                 "Иванович",
                 JUDGE,
-                "1й участок центрального района"
+                "54MS0068"
         );
 
         updateRequest = new UpdateSectionEmployeeRequest();
@@ -182,15 +182,15 @@ public class SectionEmployeeServiceImplIntegrationTest {
         void saveSectionEmployeeTest(PositionSectionEmployee position) {
 
             createRequest.setPosition(position);
-            createRequest.setSectionName("1");
+            createRequest.setSectionPersonelNumber("54MS0010");
 
-            SectionEmployeeResponse result = sectionEmployeeService.saveNewSectionEmployee(createRequest);
+            SectionEmployeeResponse result = sectionEmployeeService.saveSectionEmployee(createRequest);
 
             assertNotNull(result);
             assertEquals(result.getPosition(), position.getStringConvert());
 
             verify(createSectionEmployeeMapper, times(1)).toEntity(any(CreateSectionEmployeeRequest.class));
-            verify(sectionService, times(1)).getSectionByName(any(String.class));
+            verify(sectionService, times(1)).getSectionByPersonelNumber(any(String.class));
             verify(sectionEmployeeRepository, times(1)).findById(any(UUID.class));
             verify(sectionEmployeeRepository, times(1)).save(any(SectionEmployee.class));
             verify(findSectionEmployeeMapper, times(1)).entityToResponse(any(SectionEmployee.class));
@@ -206,18 +206,18 @@ public class SectionEmployeeServiceImplIntegrationTest {
         void saveSectionEmployeePositionOccupiedTest(PositionSectionEmployee position) {
 
             createRequest.setPosition(position);
-            createRequest.setSectionName("а");
+            createRequest.setSectionPersonelNumber("54MS0067");
 
             PositionOccupiedException exception = assertThrows(
                     PositionOccupiedException.class,
-                    () -> sectionEmployeeService.saveNewSectionEmployee(createRequest)
+                    () -> sectionEmployeeService.saveSectionEmployee(createRequest)
             );
 
             assertNotNull(exception);
             assertEquals("Позиция '" + position.getStringConvert() + "' уже занята", exception.getMessage());
 
             verify(createSectionEmployeeMapper, times(1)).toEntity(any(CreateSectionEmployeeRequest.class));
-            verify(sectionService, times(1)).getSectionByName(any(String.class));
+            verify(sectionService, times(1)).getSectionByPersonelNumber(any(String.class));
             verify(sectionEmployeeRepository, never()).findById(any(UUID.class));
             verify(sectionEmployeeRepository, never()).save(any(SectionEmployee.class));
             verify(findSectionEmployeeMapper, never()).entityToResponse(any(SectionEmployee.class));
@@ -233,14 +233,14 @@ public class SectionEmployeeServiceImplIntegrationTest {
 
             MaxEmployeeInSectionException exception = assertThrows(
                     MaxEmployeeInSectionException.class,
-                    () -> sectionEmployeeService.saveNewSectionEmployee(createRequest)
+                    () -> sectionEmployeeService.saveSectionEmployee(createRequest)
             );
 
             assertNotNull(exception);
-            assertEquals("В '" + createRequest.getSectionName() + "' максимальное количество сотрудников", exception.getMessage());
+            assertEquals("В '" + createRequest.getSectionPersonelNumber() + "' максимальное количество сотрудников", exception.getMessage());
 
             verify(createSectionEmployeeMapper, times(1)).toEntity(any(CreateSectionEmployeeRequest.class));
-            verify(sectionService, times(1)).getSectionByName(any(String.class));
+            verify(sectionService, times(1)).getSectionByPersonelNumber(any(String.class));
             verify(sectionEmployeeRepository, never()).findById(any(UUID.class));
             verify(sectionEmployeeRepository, never()).save(any(SectionEmployee.class));
             verify(findSectionEmployeeMapper, never()).entityToResponse(any(SectionEmployee.class));

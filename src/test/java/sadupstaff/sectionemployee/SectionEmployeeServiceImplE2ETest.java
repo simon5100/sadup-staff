@@ -124,7 +124,7 @@ public class SectionEmployeeServiceImplE2ETest {
                 "CREATE TABLE IF NOT EXISTS sudstaff.section (\n" +
                         "id UUID PRIMARY KEY,\n" +
                         "personel_number VARCHAR(255)    NOT NULL,\n" +
-                        "name VARCHAR(255)               NOT NULL,\n" +
+                        "number     Integer              NOT NULL,\n" +
                         "created_at TIMESTAMP            NOT NULL,\n" +
                         "updated_at TIMESTAMP            NOT NULL,\n" +
                         "district_id UUID                NOT NULL,\n" +
@@ -170,11 +170,11 @@ public class SectionEmployeeServiceImplE2ETest {
         );
 
         jdbcTemplate.execute(
-                "insert into sudstaff.section (id, personel_number, name, created_at, updated_at, district_id, max_number_employees_section)\n" +
+                "insert into sudstaff.section (id, personel_number, number, created_at, updated_at, district_id, max_number_employees_section)\n" +
                         "values (\n" +
                         "'3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
-                        "'M540000',\n" +
-                        "'1й участок центрального района',\n" +
+                        "'54MS0068',\n" +
+                        "2,\n" +
                         "'2025.07.30 15:17:00',\n" +
                         "'2025.07.30 15:17:00',\n" +
                         "'1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
@@ -223,7 +223,7 @@ public class SectionEmployeeServiceImplE2ETest {
                 "Иванов",
                 "Иванович",
                 JUDGE,
-                "1й участок центрального района"
+                "54MS0068"
         );
 
         updateRequest = new UpdateSectionEmployeeRequest();
@@ -248,7 +248,7 @@ public class SectionEmployeeServiceImplE2ETest {
             assertTrue(responseEntityArr.getStatusCode().isSameCodeAs(HttpStatus.OK));
             assertEquals(1, employeeResponses.length);
             assertEquals(employeeResponses[0].getPosition(), JUDGE.getStringConvert());
-            assertEquals(employeeResponses[0].getSectionName(), "1й участок центрального района");
+            assertEquals(employeeResponses[0].getSectionPersonelNumber(), "54MS0068");
 
             verify(sectionEmployeeRepository, times(1)).findAll();
             verify(findSectionEmployeeMapper, times(1)).entityToResponse(any(SectionEmployee.class));
@@ -270,7 +270,7 @@ public class SectionEmployeeServiceImplE2ETest {
             assertNotNull(response);
             assertTrue(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.OK));
             assertEquals(response.getPosition(), JUDGE.getStringConvert());
-            assertEquals(response.getSectionName(), "1й участок центрального района");
+            assertEquals(response.getSectionPersonelNumber(), "54MS0068");
 
             verify(sectionEmployeeRepository, times(1)).findById(id);
             verify(findSectionEmployeeMapper, times(1)).entityToResponse(any(SectionEmployee.class));
@@ -314,7 +314,7 @@ public class SectionEmployeeServiceImplE2ETest {
             assertEquals(response.getPosition(), position.getStringConvert());
 
             verify(createSectionEmployeeMapper, times(1)).toEntity(any(CreateSectionEmployeeRequest.class));
-            verify(sectionService, times(1)).getSectionByName(any(String.class));
+            verify(sectionService, times(1)).getSectionByPersonelNumber(any(String.class));
             verify(sectionEmployeeRepository, times(1)).findById(any(UUID.class));
             verify(sectionEmployeeRepository, times(1)).save(any(SectionEmployee.class));
             verify(findSectionEmployeeMapper, times(1)).entityToResponse(any(SectionEmployee.class));
@@ -338,7 +338,7 @@ public class SectionEmployeeServiceImplE2ETest {
             assertEquals("Позиция '" + position.getStringConvert() + "' уже занята", responseError.getBody().getMessage());
 
             verify(createSectionEmployeeMapper, times(1)).toEntity(any(CreateSectionEmployeeRequest.class));
-            verify(sectionService, times(1)).getSectionByName(any(String.class));
+            verify(sectionService, times(1)).getSectionByPersonelNumber(any(String.class));
             verify(sectionEmployeeRepository, never()).findById(any(UUID.class));
             verify(sectionEmployeeRepository, never()).save(any(SectionEmployee.class));
             verify(findSectionEmployeeMapper, never()).entityToResponse(any(SectionEmployee.class));
@@ -386,10 +386,10 @@ public class SectionEmployeeServiceImplE2ETest {
 
             assertNotNull(responseError);
             assertTrue(responseError.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT));
-            assertEquals("В '" + createRequest.getSectionName() + "' максимальное количество сотрудников", responseError.getBody().getMessage());
+            assertEquals("В '" + createRequest.getSectionPersonelNumber() + "' максимальное количество сотрудников", responseError.getBody().getMessage());
 
             verify(createSectionEmployeeMapper, times(1)).toEntity(any(CreateSectionEmployeeRequest.class));
-            verify(sectionService, times(1)).getSectionByName(any(String.class));
+            verify(sectionService, times(1)).getSectionByPersonelNumber(any(String.class));
             verify(sectionEmployeeRepository, never()).findById(any(UUID.class));
             verify(sectionEmployeeRepository, never()).save(any(SectionEmployee.class));
             verify(findSectionEmployeeMapper, never()).entityToResponse(any(SectionEmployee.class));

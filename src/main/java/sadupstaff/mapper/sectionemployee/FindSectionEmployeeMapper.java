@@ -9,7 +9,7 @@ import sadupstaff.mapper.section.FindSectionMapper;
 public interface FindSectionEmployeeMapper {
 
     @Mapping(target = "position", ignore = true)
-    @Mapping(target = "sectionName", source = "section.name")
+    @Mapping(target = "sectionPersonelNumber", source = "section.personelNumber")
     SectionEmployeeResponse entityToResponse(SectionEmployee sectionEmployee);
 
     @AfterMapping

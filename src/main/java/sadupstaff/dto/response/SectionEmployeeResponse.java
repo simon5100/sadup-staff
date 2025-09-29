@@ -24,7 +24,7 @@ public class SectionEmployeeResponse {
     private String patronymic;
 
     @Schema(description = "Должность сотрудника",
-            allowableValues = { "Судья",
+            allowableValues = {"Судья",
                     "Помощник мирового судьи",
                     "Секретарь судебного заседания",
                     "Секретарь судебного участка",
@@ -32,6 +32,6 @@ public class SectionEmployeeResponse {
             required = true)
     private String position;
 
-    @Schema(description = "Участок на котором работает сотрудник", example = "1-участок центрального района", required = true)
-    private String sectionName;
+    @Schema(description = "Участок на котором работает сотрудник", example = "1", required = true)
+    private String sectionPersonelNumber;
 }

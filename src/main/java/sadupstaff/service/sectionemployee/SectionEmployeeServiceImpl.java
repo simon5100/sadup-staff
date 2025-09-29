@@ -51,12 +51,12 @@ public class SectionEmployeeServiceImpl implements SectionEmployeeService {
 
     @Override
     @Transactional
-    public SectionEmployeeResponse saveNewSectionEmployee(CreateSectionEmployeeRequest createRequest) {
+    public SectionEmployeeResponse saveSectionEmployee(CreateSectionEmployeeRequest createRequest) {
         SectionEmployee sectionEmployee = createSectionEmployeeMapper.toEntity(createRequest);
-        Section section = sectionService.getSectionByName(createRequest.getSectionName());
+        Section section = sectionService.getSectionByPersonelNumber(createRequest.getSectionPersonelNumber());
 
         if (section.getMaxNumberEmployeeSection() == section.getEmpsSect().size()) {
-            throw new MaxEmployeeInSectionException(createRequest.getSectionName());
+            throw new MaxEmployeeInSectionException(createRequest.getSectionPersonelNumber());
         }
         for (SectionEmployee sctemps: section.getEmpsSect()) {
             if (sectionEmployee.getPosition().equals(sctemps.getPosition())) {

@@ -83,7 +83,7 @@ public class SectionEmployeeServiceImplUnitTest {
                 "Иванов",
                 "Иванович",
                 PositionSectionEmployee.JUDGE,
-                "1"
+                "54MS0000"
         );
 
         response = new SectionEmployeeResponse(
@@ -92,7 +92,7 @@ public class SectionEmployeeServiceImplUnitTest {
                 "Иванов",
                 "Иванович",
                 PositionSectionEmployee.JUDGE.getStringConvert(),
-                "1"
+                "54MS0000"
         );
 
         updateRequest = new UpdateSectionEmployeeRequest();
@@ -172,8 +172,8 @@ public class SectionEmployeeServiceImplUnitTest {
 
             Section section = new Section(
                     UUID.fromString("3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
-                    "M540000",
-                    "1",
+                    "54MS0000",
+                    1,
                     3,
                     LocalDateTime.of(2025,07,30, 15,17,00,000),
                     LocalDateTime.of(2025,07,30, 15,17,00,000),
@@ -186,18 +186,18 @@ public class SectionEmployeeServiceImplUnitTest {
             response.setPosition(position.getStringConvert());
 
             when(createSectionEmployeeMapper.toEntity(createRequest)).thenReturn(sectionEmployee);
-            when(sectionService.getSectionByName(createRequest.getSectionName())).thenReturn(section);
+            when(sectionService.getSectionByPersonelNumber(createRequest.getSectionPersonelNumber())).thenReturn(section);
             when(sectionEmployeeRepository.save(sectionEmployee)).thenReturn(sectionEmployee);
             when(sectionEmployeeRepository.findById(id)).thenReturn(Optional.of(sectionEmployee));
             when(findSectionEmployeeMapper.entityToResponse(sectionEmployee)).thenReturn(response);
 
-            SectionEmployeeResponse result = sectionEmployeeService.saveNewSectionEmployee(createRequest);
+            SectionEmployeeResponse result = sectionEmployeeService.saveSectionEmployee(createRequest);
 
             assertNotNull(result);
             assertEquals(response, result);
 
             verify(createSectionEmployeeMapper, times(1)).toEntity(createRequest);
-            verify(sectionService, times(1)).getSectionByName(createRequest.getSectionName());
+            verify(sectionService, times(1)).getSectionByPersonelNumber(createRequest.getSectionPersonelNumber());
             verify(sectionEmployeeRepository, times(1)).findById(id);
             verify(sectionEmployeeRepository, times(1)).save(sectionEmployee);
             verify(findSectionEmployeeMapper, times(1)).entityToResponse(sectionEmployee);
@@ -214,8 +214,8 @@ public class SectionEmployeeServiceImplUnitTest {
 
             Section section = new Section(
                     UUID.fromString("3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
-                    "M540000",
-                    "1",
+                    "54MS0000",
+                    1,
                     3,
                     LocalDateTime.of(2025,07,30, 15,17,00,000),
                     LocalDateTime.of(2025,07,30, 15,17,00,000),
@@ -224,18 +224,18 @@ public class SectionEmployeeServiceImplUnitTest {
             );
 
             when(createSectionEmployeeMapper.toEntity(createRequest)).thenReturn(sectionEmployee);
-            when(sectionService.getSectionByName(createRequest.getSectionName())).thenReturn(section);
+            when(sectionService.getSectionByPersonelNumber(createRequest.getSectionPersonelNumber())).thenReturn(section);
 
             PositionOccupiedException exception = assertThrows(
                     PositionOccupiedException.class,
-                    () -> sectionEmployeeService.saveNewSectionEmployee(createRequest)
+                    () -> sectionEmployeeService.saveSectionEmployee(createRequest)
             );
 
             assertNotNull(exception);
             assertEquals("Позиция '" + position.getStringConvert() + "' уже занята", exception.getMessage());
 
             verify(createSectionEmployeeMapper, times(1)).toEntity(createRequest);
-            verify(sectionService, times(1)).getSectionByName(createRequest.getSectionName());
+            verify(sectionService, times(1)).getSectionByPersonelNumber(createRequest.getSectionPersonelNumber());
             verify(sectionEmployeeRepository, never()).findById(id);
             verify(sectionEmployeeRepository, never()).save(sectionEmployee);
             verify(findSectionEmployeeMapper, never()).entityToResponse(sectionEmployee);
@@ -252,8 +252,8 @@ public class SectionEmployeeServiceImplUnitTest {
 
             Section section = new Section(
                     UUID.fromString("3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04"),
-                    "M540000",
-                    "1",
+                    "54MS0000",
+                    1,
                     3,
                     LocalDateTime.of(2025,07,30, 15,17,00,000),
                     LocalDateTime.of(2025,07,30, 15,17,00,000),
@@ -262,18 +262,18 @@ public class SectionEmployeeServiceImplUnitTest {
             );
 
             when(createSectionEmployeeMapper.toEntity(createRequest)).thenReturn(sectionEmployee);
-            when(sectionService.getSectionByName(createRequest.getSectionName())).thenReturn(section);
+            when(sectionService.getSectionByPersonelNumber(createRequest.getSectionPersonelNumber())).thenReturn(section);
 
             MaxEmployeeInSectionException exception = assertThrows(
                     MaxEmployeeInSectionException .class,
-                    () -> sectionEmployeeService.saveNewSectionEmployee(createRequest)
+                    () -> sectionEmployeeService.saveSectionEmployee(createRequest)
             );
 
             assertNotNull(exception);
-            assertEquals("В '" + section.getName() + "' максимальное количество сотрудников", exception.getMessage());
+            assertEquals("В '" + section.getPersonelNumber() + "' максимальное количество сотрудников", exception.getMessage());
 
             verify(createSectionEmployeeMapper, times(1)).toEntity(createRequest);
-            verify(sectionService, times(1)).getSectionByName(createRequest.getSectionName());
+            verify(sectionService, times(1)).getSectionByPersonelNumber(createRequest.getSectionPersonelNumber());
             verify(sectionEmployeeRepository, never()).findById(id);
             verify(sectionEmployeeRepository, never()).save(sectionEmployee);
             verify(findSectionEmployeeMapper, never()).entityToResponse(sectionEmployee);
@@ -403,4 +403,3 @@ public class SectionEmployeeServiceImplUnitTest {
         }
     }
 }
-

@@ -122,7 +122,7 @@ public class SectionServiceImplE2ETest {
                 "CREATE TABLE IF NOT EXISTS sudstaff.section (\n" +
                         "id UUID PRIMARY KEY,\n" +
                         "personel_number VARCHAR(255)    NOT NULL,\n" +
-                        "name VARCHAR(255)               NOT NULL,\n" +
+                        "number     Integer              NOT NULL,\n" +
                         "created_at TIMESTAMP            NOT NULL,\n" +
                         "updated_at TIMESTAMP            NOT NULL,\n" +
                         "district_id UUID                NOT NULL,\n" +
@@ -168,11 +168,11 @@ public class SectionServiceImplE2ETest {
         );
 
         jdbcTemplate.execute(
-                "insert into sudstaff.section (id, personel_number, name, created_at, updated_at, district_id, max_number_employees_section)\n" +
+                "insert into sudstaff.section (id, personel_number, number, created_at, updated_at, district_id, max_number_employees_section)\n" +
                         "values (\n" +
                         "'3d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
-                        "'M540000',\n" +
-                        "'1й участок центрального района',\n" +
+                        "'54MS0068',\n" +
+                        "2,\n" +
                         "'2025.07.30 15:17:00',\n" +
                         "'2025.07.30 15:17:00',\n" +
                         "'1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
@@ -197,8 +197,8 @@ public class SectionServiceImplE2ETest {
         initializeData();
 
         createRequest = new CreateSectionRequest(
-                "M540001",
-                "1",
+                "54MS0000",
+                2,
                 3,
                 DistrictName.CENTRALNY
         );
@@ -223,7 +223,7 @@ public class SectionServiceImplE2ETest {
             assertTrue(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.OK));
             assertEquals(1, sectionResponses.length);
             assertTrue(sectionResponses[0].getEmpsSect().isEmpty());
-            assertEquals(sectionResponses[0].getName(), "1й участок центрального района");
+            assertEquals(sectionResponses[0].getNumber(), 2);
 
             verify(sectionRepository).findAll();
             verify(findSectionMapper, times(1)).entityToResponse(any(Section.class));
@@ -245,7 +245,7 @@ public class SectionServiceImplE2ETest {
             assertNotNull(sectionResponse);
             assertTrue(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.OK));
             assertTrue(sectionResponse.getEmpsSect().isEmpty());
-            assertEquals(sectionResponse.getName(), "1й участок центрального района");
+            assertEquals(sectionResponse.getNumber(), 2);
 
             verify(sectionRepository).findById(id);
             verify(findSectionMapper, times(1)).entityToResponse(any(Section.class));
@@ -275,13 +275,15 @@ public class SectionServiceImplE2ETest {
         @DisplayName("Тест с позитивным исходом")
         void saveSectionTest() {
 
+            createRequest.setPersonelNumber("54MS0001");
+
             responseEntity = restTemplate.postForEntity(URL, createRequest, SectionResponse.class);
             sectionResponse = responseEntity.getBody();
 
             assertNotNull(sectionResponse);
             assertTrue(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.OK));
             assertTrue(sectionResponse.getEmpsSect().isEmpty());
-            assertEquals(sectionResponse.getName(), "1");
+            assertEquals(sectionResponse.getNumber(), 2);
 
             verify(createSectionMapper,times(1)).toEntity(any(CreateSectionRequest.class));
             verify(districtService,times(1)).getDistrictByName(any(DistrictName.class));
@@ -296,11 +298,11 @@ public class SectionServiceImplE2ETest {
         void saveMaxSectionInDistrictTest() {
 
             jdbcTemplate.execute(
-                    "insert into sudstaff.section (id, personel_number, name, created_at, updated_at, district_id, max_number_employees_section)\n" +
+                    "insert into sudstaff.section (id, personel_number, number, created_at, updated_at, district_id, max_number_employees_section)\n" +
                             "values (\n" +
                             "'4d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
-                            "'M540000',\n" +
-                            "'2',\n" +
+                            "'54MS0067',\n" +
+                            "1,\n" +
                             "'2025.07.30 15:17:00',\n" +
                             "'2025.07.30 15:17:00',\n" +
                             "'1d30f1c3-e70d-42a0-a3d3-58a5c2d50d04',\n" +
@@ -326,13 +328,13 @@ public class SectionServiceImplE2ETest {
         @DisplayName("Тест на выброс PositionOccupiedException")
         void saveSectionPositionOccupiedTest() {
 
-            createRequest.setName("1й участок центрального района");
+            createRequest.setPersonelNumber("54MS0068");
 
             responseError = restTemplate.postForEntity(URL, createRequest, ErrorResponse.class);
 
             assertNotNull(responseError);
             assertTrue(responseError.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT));
-            assertEquals("Позиция '" + createRequest.getName() + "' уже занята", responseError.getBody().getMessage());
+            assertEquals("Позиция '" + createRequest.getPersonelNumber() + "' уже занята", responseError.getBody().getMessage());
 
             verify(createSectionMapper,times(1)).toEntity(any(CreateSectionRequest.class));
             verify(districtService,times(1)).getDistrictByName(any(DistrictName.class));
@@ -347,12 +349,12 @@ public class SectionServiceImplE2ETest {
     class UpdateSectionTests {
 
         @ParameterizedTest
-        @ValueSource(strings = {"2", "3"})
+        @ValueSource(strings = {"54MS0002", "54MS0003"})
         @Tag("E2E")
         @DisplayName("Тест с позитивным исходом")
-        void updateSectionTest(String name) {
+        void updateSectionTest(String number) {
 
-            updateRequest.setName(name);
+            updateRequest.setPersonelNumber(number);
 
             responseEntity = restTemplate.exchange(
                     URL + "/" + id,
@@ -364,10 +366,10 @@ public class SectionServiceImplE2ETest {
 
             assertNotNull(sectionResponse);
             assertTrue(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.OK));
-            assertEquals(sectionResponse.getName(), name);
+            assertEquals(sectionResponse.getPersonelNumber(), number);
 
             verify(sectionRepository, times(1)).findById(any(UUID.class));
-            verify(sectionRepository, times(1)).existsSectionByName(any(String.class));
+            verify(sectionRepository, times(1)).existsSectionByPersonelNumber(any(String.class));
             verify(updateSectionMapper, times(1)).update(any(UpdateSectionRequest.class), any(Section.class));
             verify(sectionRepository, times(1)).save(any(Section.class));
             verify(findSectionMapper, times(1)).entityToResponse(any(Section.class));
@@ -388,19 +390,19 @@ public class SectionServiceImplE2ETest {
             assertEquals("Id '" + badId + "' не найден", responseError.getBody().getMessage());
 
             verify(sectionRepository, times(1)).findById(badId);
-            verify(sectionRepository, never()).existsSectionByName(any(String.class));
+            verify(sectionRepository, never()).existsSectionByPersonelNumber(any(String.class));
             verify(updateSectionMapper, never()).update(any(UpdateSectionRequest.class), any(Section.class));
             verify(sectionRepository, never()).save(any(Section.class));
             verify(findSectionMapper, never()).entityToResponse(any(Section.class));
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"1й участок центрального района"})
+        @ValueSource(strings = {"54MS0068"})
         @Tag("E2E")
         @DisplayName("Тест на выброс PositionOccupiedException")
-        void updateSectionPositionOccupiedTest(String name) {
+        void updateSectionPositionOccupiedTest(String number) {
 
-            updateRequest.setName(name);
+            updateRequest.setPersonelNumber(number);
 
             responseError = restTemplate.exchange(
                     URL + "/" + id,
@@ -409,10 +411,10 @@ public class SectionServiceImplE2ETest {
                     ErrorResponse.class);
 
             assertTrue(responseError.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT));
-            assertEquals("Позиция '" + name + "' уже занята", responseError.getBody().getMessage());
+            assertEquals("Позиция '" + number + "' уже занята", responseError.getBody().getMessage());
 
             verify(sectionRepository, times(1)).findById(id);
-            verify(sectionRepository, times(1)).existsSectionByName(any(String.class));
+            verify(sectionRepository, times(1)).existsSectionByPersonelNumber(any(String.class));
             verify(updateSectionMapper, never()).update(any(UpdateSectionRequest.class), any(Section.class));
             verify(sectionRepository, never()).save(any(Section.class));
             verify(findSectionMapper, never()).entityToResponse(any(Section.class));
@@ -482,7 +484,7 @@ public class SectionServiceImplE2ETest {
 
             assertTrue(status.getStatusCode().isSameCodeAs(HttpStatus.UNPROCESSABLE_ENTITY));
 
-            assertEquals("1й участок центрального района имеет сотрудников, удаление запрещено", status.getBody().getMessage());
+            assertEquals("2 имеет сотрудников, удаление запрещено", status.getBody().getMessage());
 
             verify(sectionRepository, times(1)).findById(id);
         }

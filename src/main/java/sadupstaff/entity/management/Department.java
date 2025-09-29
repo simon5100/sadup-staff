@@ -4,7 +4,6 @@ import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.*;
 import sadupstaff.enums.DepartmentName;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

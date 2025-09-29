@@ -1,6 +1,6 @@
 package sadupstaff.district;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static sadupstaff.enums.DistrictName.CENTRALNY;
 
-@Slf4j
+@Log4j2
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Unit тесты методов DistrictServiceImpl")
 public class DistrictServiceImplUnitTest {
